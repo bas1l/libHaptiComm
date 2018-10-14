@@ -1,0 +1,12 @@
+//#define TAP_MOVE_DURATION 20 // ms
+
+//#define APPARENT_ASC_DURATION 100 // ms
+//#define APPARENT_MOVE_DURATION 400 // ms
+//#define APPARENT_DURATION (APPARENT_ASC_DURATION+APPARENT_MOVE_DURATION)
+
+//#define APPARENT_MOVE_AMPLITUDE 700 //unit of voltage (0 < v < 4095)
+//#define APPARENT_NB_ACT_SUPERPOSED 4
+// equivaut a la valeur 1/act_superposed
+//#define APPARENT_PERCENTAGE_COVERING 0.25
+//#define APPARENT_MOVE_FREQUENCY  //?
+

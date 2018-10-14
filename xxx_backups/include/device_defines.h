@@ -1,0 +1,2 @@
+#define ACTUATOR_NB 24
+#define ACTUATOR_MAXVALUE 4095

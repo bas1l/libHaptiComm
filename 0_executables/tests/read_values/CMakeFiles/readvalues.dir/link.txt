@@ -1,0 +1,1 @@
+/usr/bin/c++   -O2 -std=c++11 -O2 -g -DNDEBUG   CMakeFiles/readvalues.dir/read_values.cpp.o  -o readvalues -rdynamic -lpthread -lncurses ../../../liblibad5383.a ../../../liblibutils.a ../../../liblibalphabet.a ../../../liblibwaveform.a ../../../liblibGPIOClass.a ../../../liblibutils.a ../../../libwavFileReader.a ../../../liblibdevice.a 

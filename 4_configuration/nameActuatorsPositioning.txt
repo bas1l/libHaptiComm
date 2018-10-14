@@ -1,0 +1,60 @@
+
+
+
+
+
+
+
+
+
+
+
+
+HaptiComm side:
+			"rf3"		"mf3"		"ff3"
+			
+	"p2"	"rf2"		"mf2"		"ff2"
+	
+	"p1"	"rf1"		"mf1"		"ff1"		"t2"
+	
+			"palm11"	"palm12"	"palm13"	"t1"	
+			
+"palmleft"	"palm21"	"palm22"	"palm23"
+
+			"palm31"	"palm32"	"palm33"
+			
+						"palmbot"
+						
+						
+						
+						
+
+
+
+
+
+
+
+
+
+
+
+
+						
+						
+						
+Interpret side:
+			"ff3"		"mf3"		"rf3"
+			
+			"ff2"		"mf2"		"rf2"		"p2"
+	
+	"t2"	"ff1"		"mf1"		"rf1"		"p1"
+	
+	"t1"	"palm13"	"palm32"	"palm11"	
+			
+			"palm23"	"palm22"	"palm21"	"palmleft"
+
+			"palm33"	"palm12"	"palm31"
+			
+						"palmbot"
+						
