@@ -1,0 +1,243 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="TapHoldMulti-20181031_data" version="1.3.0" audacityversion="2.2.2" sel0="0.0000000000" sel1="0.0850113379" vpos="1424" h="0.0000000000" zoom="2916.2258162031" rate="44100.0" snapto="off" selectionformat="hh:mm:ss + milliseconds" frequencyformat="Hz" bandwidthformat="octaves">
+	<tags/>
+	<wavetrack name="TapHoldMulti 1" channel="0" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3749">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808b3e.au" len="3749" min="0.0" max="0.505127" rms="0.422657"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 2" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3749">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808ec6.au" len="3749" min="0.0" max="0.505127" rms="0.422657"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 3" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3749">
+				<waveblock start="0">
+					<simpleblockfile filename="e08084c4.au" len="3749" min="0.0" max="0.505127" rms="0.422657"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 4" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3749">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808fd9.au" len="3749" min="0.0" max="0.505127" rms="0.422657"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 5" channel="2" linked="0" mute="0" solo="0" height="148" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e080841c.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808b23.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 6" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e08080e1.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808934.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 7" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808d7f.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808305.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 8" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e080849c.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e080853f.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 9" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e080876b.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808fc2.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 10" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e08080ec.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e08082a9.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 11" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808a6f.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808e1e.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 12" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e080842a.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808063.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 13" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e08083ae.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e08080c1.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 14" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808028.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808399.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapHoldMulti 15" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="3308">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808bc0.au" len="3308" min="0.0" max="0.505127" rms="0.449949"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.07501134" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="441">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808d94.au" len="441" min="0.0" max="0.0" rms="0.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>
