@@ -6,7 +6,7 @@ int main (void)
     wiringPiSetup() ;
   
     int powerSupplyPin=25;
-    int LEDPin=28;
+    int LEDPin=25;
     
     pinMode(powerSupplyPin, INPUT);
     pinMode(LEDPin, OUTPUT);
