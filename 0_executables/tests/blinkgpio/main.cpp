@@ -9,8 +9,8 @@ int main (void)
     {
         pinMode (numGPIO, OUTPUT) ;
     }
-  int a=0;
-  int b=7;
+  int a=7;
+  int b=10;
     while(true){
         for (int numGPIO=a;numGPIO<b;numGPIO++)
         {
