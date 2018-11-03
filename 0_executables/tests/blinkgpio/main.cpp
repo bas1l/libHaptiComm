@@ -12,7 +12,7 @@ int main (void)
     pinMode(LEDPin, OUTPUT);
     
     while(true){
-        if(digitalRead(powerSupplyPin) == HIGH)
+        //if(digitalRead(powerSupplyPin) == HIGH)
         {
             digitalWrite(LEDPin, HIGH); delay (500);
             digitalWrite(LEDPin,  LOW); delay (500);
