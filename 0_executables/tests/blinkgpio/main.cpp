@@ -6,13 +6,13 @@ int main (void)
     wiringPiSetup() ;
   
     int powerSupplyPin=25;
-    int LEDPin=25;
+    int LEDPin=28;
     
     pinMode(powerSupplyPin, INPUT);
     pinMode(LEDPin, OUTPUT);
     
     while(true){
-        //if(digitalRead(powerSupplyPin) == HIGH)
+        if(digitalRead(powerSupplyPin) == HIGH)
         {
             digitalWrite(LEDPin, HIGH); delay (500);
             digitalWrite(LEDPin,  LOW); delay (500);
