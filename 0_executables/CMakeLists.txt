@@ -7,6 +7,9 @@ add_subdirectory("determine-up")
 add_subdirectory("demo_standard")
 add_subdirectory("neutral")
 
+add_subdirectory("tests/blinkgpio")
+
+
 #add_subdirectory("caracterise2018")
 #add_subdirectory("sinefunction_generator")
 #add_subdirectory("apparent_motion_experiment")
