@@ -3,7 +3,7 @@ int main (void)
 {
   
     //int numGPIO=4;
-    wiringPiSetup () ;
+    wiringPiSetup() ;
   
     int powerSupplyPin=7;
     int LEDPin=0;
@@ -12,7 +12,7 @@ int main (void)
     pinMode(LEDPin, OUTPUT);
     
     while(true){
-        if(digitalRead(powerSupplyPin))
+        if(digitalRead(powerSupplyPin) == HIGH)
         {
             digitalWrite(LEDPin, HIGH); delay (500);
             digitalWrite(LEDPin,  LOW); delay (500);
