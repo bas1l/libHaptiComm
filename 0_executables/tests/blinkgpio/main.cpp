@@ -9,19 +9,13 @@ int main (void)
     {
         pinMode (numGPIO, OUTPUT) ;
     }
-  int a=7;
-  int b=8;
+  
     while(true){
-        for (int numGPIO=a;numGPIO<b;numGPIO++)
-        {
-            digitalWrite (numGPIO, HIGH) ;
-        }
+        digitalWrite (8, HIGH) ;
+        digitalWrite (7, HIGH) ;
         delay (500) ;
-
-        for (int numGPIO=a;numGPIO<b;numGPIO++)
-        { 
-            digitalWrite (numGPIO,  LOW) ;
-        } 
+        digitalWrite (7,  LOW) ;
+        digitalWrite (8,  LOW) ;
         delay (500) ;
     }
   
