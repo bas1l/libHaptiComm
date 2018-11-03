@@ -12,9 +12,9 @@ int main (void)
   
     while(true){
         //digitalWrite (8, HIGH) ;
-        digitalWrite (7, HIGH) ;
+        digitalWrite (0, HIGH) ;
         delay (500) ;
-        digitalWrite (7,  LOW) ;
+        digitalWrite (0,  LOW) ;
         //digitalWrite (8,  LOW) ;
         delay (500) ;
     }
