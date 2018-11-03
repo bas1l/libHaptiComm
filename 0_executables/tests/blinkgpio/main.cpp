@@ -3,20 +3,20 @@ int main (void)
 {
   
     //int numGPIO=4;
-  wiringPiSetup () ;
+    wiringPiSetup () ;
   
-    for (int numGPIO=0;numGPIO<28;numGPIO++)
-    {
-        pinMode (numGPIO, OUTPUT) ;
-    }
-  
+    int powerSupplyPin=7;
+    int LEDPin=0;
+    
+    pinMode(powerSupplyPin, INPUT);
+    pinMode(LEDPin, OUTPUT);
+    
     while(true){
-        //digitalWrite (8, HIGH) ;
-        digitalWrite (0, HIGH) ;
-        delay (500) ;
-        digitalWrite (0,  LOW) ;
-        //digitalWrite (8,  LOW) ;
-        delay (500) ;
+        if(digitalRead(powerSupplyPin))
+        {
+            digitalWrite(LEDPin, HIGH); delay (500);
+            digitalWrite(LEDPin,  LOW); delay (500);
+        }
     }
   
   
