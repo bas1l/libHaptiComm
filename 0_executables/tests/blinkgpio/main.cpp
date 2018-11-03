@@ -9,14 +9,16 @@ int main (void)
     {
         pinMode (numGPIO, OUTPUT) ;
     }
+  int a=0;
+  int b=14;
     while(true){
-        for (int numGPIO=0;numGPIO<28;numGPIO++)
+        for (int numGPIO=a;numGPIO<b;numGPIO++)
         {
             digitalWrite (numGPIO, HIGH) ;
         }
         delay (500) ;
 
-        for (int numGPIO=0;numGPIO<28;numGPIO++)
+        for (int numGPIO=a;numGPIO<b;numGPIO++)
         { 
             digitalWrite (numGPIO,  LOW) ;
         } 
