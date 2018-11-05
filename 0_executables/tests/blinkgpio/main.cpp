@@ -5,7 +5,7 @@ int main (void)
     //int numGPIO=4;
     wiringPiSetup() ;
   
-    int powerSupplyPin=25;
+    int powerSupplyPin=6;
     int LEDPin=28;
     
     pinMode(powerSupplyPin, INPUT);
