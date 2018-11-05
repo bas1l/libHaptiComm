@@ -12,6 +12,7 @@
 #include <sys/ioctl.h>
 using namespace std;
 
+// sudo ./0_executables/daemonPowerSupply/daemonPS 6 150
 int main (int argc, char** argv)
 {
     /**
