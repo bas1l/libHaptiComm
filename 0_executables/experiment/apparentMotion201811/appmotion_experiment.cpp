@@ -128,6 +128,7 @@ void work(ALPHABET *& alph)
     */
     
     int choice;
+    bool continue = true;
     while(1)
     {
         choice = wgetch(wActuators);
