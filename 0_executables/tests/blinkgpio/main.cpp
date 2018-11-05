@@ -1,11 +1,15 @@
 #include <wiringPi.h>
-int main (void)
+#include <iostream>
+#include <stdio.h>      /* printf, fgets */
+#include <stdlib.h>     /* atoi */
+
+int main (int argc, char** argv)
 {
   
     //int numGPIO=4;
     wiringPiSetup() ;
-  
-    int powerSupplyPin=6;
+    
+    int powerSupplyPin=atoi(argv[1]);
     int LEDPin=28;
     
     pinMode(powerSupplyPin, INPUT);
