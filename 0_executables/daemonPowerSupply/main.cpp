@@ -68,14 +68,16 @@ int main (int argc, char** argv)
      */
     while(true){
         currStatement = digitalRead(powerSupplyPin);
+        
         if(prevStatement == LOW && currStatement == HIGH)
         {
             delay (d);
             ad.execute_trajectory(values, ms *1000000);
             
+            digitalWrite(LEDPin, HIGH); delay (200);
+            digitalWrite(LEDPin,  LOW);
+            
             prevStatement = currStatement;
-            digitalWrite(LEDPin, HIGH); delay (500);
-            digitalWrite(LEDPin,  LOW); delay (500);
         }
         else if (currStatement == LOW && prevStatement == HIGH){
             prevStatement = currStatement;
