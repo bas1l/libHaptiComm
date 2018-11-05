@@ -110,7 +110,6 @@ void work(ALPHABET *& alph)
     noecho();
     cbreak();
     
-    keypad(stdscr, TRUE);
     //raw();
     
     
@@ -118,6 +117,8 @@ void work(ALPHABET *& alph)
     wborder(wActuators, '|','|','_','_',' ',' ',' ',' ');
     refresh();
     wrefresh(wActuators);
+    keypad(wActuators, TRUE);
+    
     /*
     WINDOW * wSignal = newwin(LINES/2-2, COLS/2-3, 1, COLS/2-1);
     wborder(wSignal, '|','|','_','_',' ',' ',' ',' ');
