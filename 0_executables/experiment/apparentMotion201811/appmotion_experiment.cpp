@@ -134,7 +134,7 @@ void work(ALPHABET *& alph)
         choice = wgetch(wActuators);
         switch(choice)
         {
-            case "a":
+            case 'a':
                 goOn = false;
                 break;
             case KEY_UP:
