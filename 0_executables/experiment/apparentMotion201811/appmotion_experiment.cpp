@@ -119,8 +119,7 @@ void work(ALPHABET *& alph)
     alph->configure();
     alph->insertSymbol(s);
     
-    
-    while(1){}
+    mssleep(5000);
     refresh();
     endwin();
 }
