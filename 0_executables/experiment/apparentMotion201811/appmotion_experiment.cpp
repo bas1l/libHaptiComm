@@ -108,12 +108,15 @@ void work(ALPHABET *& alph)
     
     initscr();
     noecho();
+    cbreak();
+    
     keypad(stdscr, TRUE);
-    raw();
+    //raw();
     
     
     WINDOW * wActuators = newwin(LINES-3, COLS/2-3, 1, 1);
-    box(wActuators, 0, 0);
+    //box(wActuators, 0, 0);
+    wborder(wActuators, ACS_S9, ACS_VLINE, ACS_VLINE, ACS_VLINE, ACS_VLINE, ACS_VLINE, ACS_VLINE, ACS_VLINE);
     WINDOW * wSignal = newwin(LINES/2-3, COLS/2-3, 1, COLS/2-1);
     wborder(wSignal, 0, 0, 0, 0, 0, 0, 0, 0);
     WINDOW * wStatus = newwin(LINES/2-3, COLS/2-3, LINES/2-1, COLS/2-1);
