@@ -45,7 +45,8 @@ int main (int argc, char** argv)
             perror("mlockall failed");
             exit(-2);
     }
-    while(false == ad.spi_open())
+    while(false == ad.spi_open()){}
+    std::cout << "SPI connected." << std::endl;
     
     powerSupplyPin=atoi(argv[1]);
     LEDPin=28;
