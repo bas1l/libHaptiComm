@@ -22,6 +22,7 @@ int main (int argc, char** argv)
     struct timespec t;
     struct sched_param param;
     
+    int d;
     int ms;
     int powerSupplyPin;
     int LEDPin;
@@ -49,7 +50,8 @@ int main (int argc, char** argv)
     ad.configure();
     std::cout << "SPI connected." << std::endl;
     
-    ms = 20;
+    ms = 1;
+    d=atoi(argv[2]);
     powerSupplyPin=atoi(argv[1]);
     LEDPin=28;
     wiringPiSetup() ;
@@ -68,7 +70,7 @@ int main (int argc, char** argv)
         currStatement = digitalRead(powerSupplyPin);
         if(prevStatement == LOW && currStatement == HIGH)
         {
-            delay (500);
+            delay (d);
             ad.execute_trajectory(values, ms *1000000);
             
             prevStatement = currStatement;
