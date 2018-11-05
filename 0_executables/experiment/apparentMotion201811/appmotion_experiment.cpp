@@ -22,15 +22,29 @@
 
 using namespace std;
 
+struct position{
+    int x;
+    int y;
+};
+
+template<class T>
+struct option{
+    T value;
+    position pos;
+};
+
+struct varOption{
+    option<int> durationMs;
+    option<char*> shape;
+    option<char*> body;
+    option<int> volume;
+}ascOpt, actOpt;
 
 
-
-void        work(ALPHABET* & alph);
+void work(ALPHABET* & alph);
 static void parseCmdLineArgs(   int argc, char ** argv, 
                                 const char *& cfgSource, const char *& scope);
 static void usage();
-
-
 
 
 
@@ -115,6 +129,7 @@ void work(ALPHABET *& alph)
     
     WINDOW * wActuators = newwin(LINES-3, COLS/2-3, 1, 1);
     wborder(wActuators, '|','|','_','_',' ',' ',' ',' ');
+    mvwprintw(wActuators, "duration:")
     refresh();
     wrefresh(wActuators);
     keypad(wActuators, TRUE);
@@ -130,7 +145,7 @@ void work(ALPHABET *& alph)
     
     int choice;
     bool goOn = true;
-    while(1)
+    while(false == goOn)
     {
         choice = wgetch(wActuators);
         switch(choice)
@@ -150,10 +165,10 @@ void work(ALPHABET *& alph)
             case KEY_EXIT:
                 goOn = false;
                 break;
+            default:
+                break;
         }
         
-        if (false == goOn)
-            break;
     }
     
     //alph->configure();
