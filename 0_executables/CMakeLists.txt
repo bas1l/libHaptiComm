@@ -3,14 +3,15 @@ cmake_minimum_required(VERSION 2.8)
 ###
 # Executable Directory
 ###
-add_subdirectory("determine-up")
 add_subdirectory("demo_standard")
 add_subdirectory("neutral")
 add_subdirectory("daemonPowerSupply")
 add_subdirectory("daemonEMOMNeutral")
 
-add_subdirectory("tests/blinkgpio")
+add_subdirectory("experiment/apparentMotion201811")
 
+add_subdirectory("tests/determine-up")
+add_subdirectory("tests/blinkgpio")
 
 #add_subdirectory("caracterise2018")
 #add_subdirectory("sinefunction_generator")
