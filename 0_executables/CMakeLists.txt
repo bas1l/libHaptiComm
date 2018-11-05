@@ -7,6 +7,7 @@ add_subdirectory("determine-up")
 add_subdirectory("demo_standard")
 add_subdirectory("neutral")
 add_subdirectory("daemonPowerSupply")
+add_subdirectory("daemonEMOMNeutral")
 
 add_subdirectory("tests/blinkgpio")
 
