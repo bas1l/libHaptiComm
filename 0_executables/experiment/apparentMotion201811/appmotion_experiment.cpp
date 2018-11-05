@@ -129,7 +129,7 @@ void work(ALPHABET *& alph)
     
     WINDOW * wActuators = newwin(LINES-3, COLS/2-3, 1, 1);
     wborder(wActuators, '|','|','_','_',' ',' ',' ',' ');
-    mvwprintw(wActuators, "duration:")
+    //mvwprintw(wActuators, "duration:")
     refresh();
     wrefresh(wActuators);
     keypad(wActuators, TRUE);
