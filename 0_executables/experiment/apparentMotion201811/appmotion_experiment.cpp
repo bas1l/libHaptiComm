@@ -128,27 +128,27 @@ void work(ALPHABET *& alph)
 static void 
 parseCmdLineArgs(int argc, char ** argv, const char *& cfgSource, const char *& scope)
 {
-	int i;
+    int i;
 
-	cfgSource = "";
-	scope = "";
+    cfgSource = "";
+    scope = "";
 
-	for (i = 1; i < argc; i++) {
-		if (strcmp(argv[i], "-h") == 0) {
-			usage();
-		} else if (strcmp(argv[i], "-cfg") == 0) {
-			if (i == argc-1) { usage(); }
-			cfgSource = argv[i+1];
-			i++;
-		} else if (strcmp(argv[i], "-scope") == 0) {
-			if (i == argc-1) { usage(); }
-			scope = argv[i+1];
-			i++;
-		} else {
-			fprintf(stderr, "Unrecognised option '%s'\n\n", argv[i]);
-			usage();
-		}
-	}
+    for (i = 1; i < argc; i++) {
+        if (strcmp(argv[i], "-h") == 0) {
+            usage();
+        } else if (strcmp(argv[i], "-cfg") == 0) {
+            if (i == argc-1) { usage(); }
+            cfgSource = argv[i+1];
+            i++;
+        } else if (strcmp(argv[i], "-scope") == 0) {
+            if (i == argc-1) { usage(); }
+            scope = argv[i+1];
+            i++;
+        } else {
+            fprintf(stderr, "Unrecognised option '%s'\n\n", argv[i]);
+            usage();
+        }
+    }
 }
 
 
@@ -156,18 +156,18 @@ parseCmdLineArgs(int argc, char ** argv, const char *& cfgSource, const char *& 
 static void
 usage()
 {
-	fprintf(stderr,
-            "\n"
-	    "usage: demo <options>\n"
-            "\n"
-	    "The <options> can be:\n"
-	    "  -h             Print this usage statement\n"
-	    "  -cfg <source>  Parse the specified configuration file\n"
-	    "  -scope <name>  Application scope in the configuration source\n"
-	    "\n"
-	    "A configuration <source> can be one of the following:\n"
-	    "  file.cfg       A configuration file\n"
-	    "  file#file.cfg  A configuration file\n"
-	    "  exec#<command> Output from executing the specified command\n\n");
-	exit(1);
+    fprintf(stderr,
+        "\n"
+        "usage: demo <options>\n"
+        "\n"
+        "The <options> can be:\n"
+        "  -h             Print this usage statement\n"
+        "  -cfg <source>  Parse the specified configuration file\n"
+        "  -scope <name>  Application scope in the configuration source\n"
+        "\n"
+        "A configuration <source> can be one of the following:\n"
+        "  file.cfg       A configuration file\n"
+        "  file#file.cfg  A configuration file\n"
+        "  exec#<command> Output from executing the specified command\n\n");
+    exit(1);
 }
