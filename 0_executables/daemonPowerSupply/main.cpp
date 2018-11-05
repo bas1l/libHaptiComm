@@ -21,7 +21,7 @@ int main (int argc, char** argv)
     std::vector<std::vector<uint16_t> > values(AD5383::num_channels);
     struct timespec t;
     struct sched_param param;
-    long ms;
+    
     
     int powerSupplyPin;
     int LEDPin;
@@ -35,7 +35,7 @@ int main (int argc, char** argv)
     {
         values[j].push_back(2048);
     }
-    ms = 900;
+    
     param.sched_priority = sched_get_priority_max(SCHED_FIFO);
     if(sched_setscheduler(0, SCHED_FIFO, &param) == -1) {
             perror("sched_setscheduler failed");
@@ -45,6 +45,7 @@ int main (int argc, char** argv)
             perror("mlockall failed");
             exit(-2);
     }
+    while(false == ad.spi_open())
     
     powerSupplyPin=atoi(argv[1]);
     LEDPin=28;
@@ -66,10 +67,8 @@ int main (int argc, char** argv)
         {
             prevStatement = currStatement;
             
-            ad.spi_open();
             ad.configure();
-            ad.execute_trajectory(values, ms *1000000);
-            ad.spi_close();
+            //ad.spi_close();
             
             digitalWrite(LEDPin, HIGH); delay (500);
             digitalWrite(LEDPin,  LOW); delay (500);
