@@ -93,17 +93,10 @@ int main(int argc, char *argv[])
 
 void work(ALPHABET *& alph)
 {
-    initscr();
-    noecho();
-    keypad(stdscr, TRUE);
-    raw();
-    
     // init drive electronics
     AD5383 ad;
     ad.spi_open();
     ad.configure();
-    
-    
     
     struct symbol s;
     s.id = "a";
@@ -114,10 +107,21 @@ void work(ALPHABET *& alph)
     
     
     
+    initscr();
+    noecho();
+    keypad(stdscr, TRUE);
+    raw();
     
     
-    alph->configure();
-    alph->insertSymbol(s);
+    WINDOW * wActuators = newwin(LINES-3, COLUMNS/2-3, 1, 1);
+    WINDOW * wSignal = newwin(LINES/2-3, COLUMNS/2-3, 1, COLUMNS/2-1);
+    WINDOW * wStatus = newwin(LINES/2-3, COLUMNS/2-3, LINES/2-1, COLUMNS/2-1);
+    wrefresh(wActuators);
+    wrefresh(wSignal);
+    wrefresh(wStatus);
+    
+    //alph->configure();
+    //alph->insertSymbol(s);
     
     mssleep(5000);
     refresh();
