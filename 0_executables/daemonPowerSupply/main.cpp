@@ -35,7 +35,7 @@ int main (int argc, char** argv)
     {
         values[j].push_back(2048);
     }
-    ms = 24;
+    ms = 900;
     param.sched_priority = sched_get_priority_max(SCHED_FIFO);
     if(sched_setscheduler(0, SCHED_FIFO, &param) == -1) {
             perror("sched_setscheduler failed");
