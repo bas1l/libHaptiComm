@@ -68,6 +68,7 @@ int main (int argc, char** argv)
         currStatement = digitalRead(powerSupplyPin);
         if(prevStatement == LOW && currStatement == HIGH)
         {
+            delay (5);
             ad.execute_trajectory(values, ms *1000000);
             
             prevStatement = currStatement;
