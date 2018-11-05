@@ -128,24 +128,24 @@ void work(ALPHABET *& alph)
     */
     
     int choice;
-    bool continue = true;
+    bool goOn = true;
     while(1)
     {
         choice = wgetch(wActuators);
         switch(choice)
         {
             case KEY_ENTER:
-                continue = false;
+                goOn = false;
                 break;
             case KEY_CLOSE:
-                continue = false;
+                goOn = false;
                 break;
             case KEY_EXIT:
-                continue = false;
+                goOn = false;
                 break;
         }
         
-        if (false == continue)
+        if (false == goOn)
             break;
     }
     
