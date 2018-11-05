@@ -25,7 +25,6 @@ int main (int argc, char** argv)
     int d;
     int ms;
     int powerSupplyPin;
-    int LEDPin;
     int currStatement;
     int prevStatement;
     
@@ -53,10 +52,8 @@ int main (int argc, char** argv)
     ms = 1;
     d=atoi(argv[2]);
     powerSupplyPin=atoi(argv[1]);
-    LEDPin=28;
     wiringPiSetup() ;
     pinMode(powerSupplyPin, INPUT);
-    pinMode(LEDPin, OUTPUT);
     currStatement = LOW;
     prevStatement = LOW;
     
@@ -73,9 +70,6 @@ int main (int argc, char** argv)
         {
             delay (d);
             ad.execute_trajectory(values, ms *1000000);
-            
-            digitalWrite(LEDPin, HIGH); delay (200);
-            digitalWrite(LEDPin,  LOW);
             
             prevStatement = currStatement;
         }
