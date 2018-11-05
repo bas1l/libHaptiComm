@@ -116,11 +116,11 @@ void work(ALPHABET *& alph)
     
     
     
-    //alph->configure();
-    //alph->insertSymbol(s);
+    alph->configure();
+    alph->insertSymbol(s);
     
     
-    
+    while(1){}
     refresh();
     endwin();
 }
