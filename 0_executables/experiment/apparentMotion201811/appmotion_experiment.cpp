@@ -117,9 +117,9 @@ void work(ALPHABET *& alph)
     WINDOW * wActuators = newwin(LINES-3, COLS/2-3, 1, 1);
     //box(wActuators, 0, 0);
     wborder(wActuators, '|','|','_','_',' ',' ',' ',' ');
-    WINDOW * wSignal = newwin(LINES/2-2, COLS/2-3, 1, COLS/2-1);
+    WINDOW * wSignal = newwin(LINES/2-1, COLS/2-3, 1, COLS/2-1);
     wborder(wSignal, '|','|','_','_',' ',' ',' ',' ');
-    WINDOW * wStatus = newwin(LINES/2-2, COLS/2-3, LINES/2-1, COLS/2-1);
+    WINDOW * wStatus = newwin(LINES/2-1, COLS/2-3, LINES/2-1, COLS/2-1);
     wborder(wStatus, '|','|','_','_',' ',' ',' ',' ');
     
     wrefresh(wActuators);
