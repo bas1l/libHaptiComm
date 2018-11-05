@@ -115,9 +115,10 @@ void work(ALPHABET *& alph)
     WINDOW * wActuators = newwin(LINES-3, COLS/2-3, 1, 1);
     wborder(wActuators, 0, 0, 0, 0, 0, 0, 0, 0);
     WINDOW * wSignal = newwin(LINES/2-3, COLS/2-3, 1, COLS/2-1);
-    wborder(wActuators, 0, 0, 0, 0, 0, 0, 0, 0);
+    wborder(wSignal, 0, 0, 0, 0, 0, 0, 0, 0);
     WINDOW * wStatus = newwin(LINES/2-3, COLS/2-3, LINES/2-1, COLS/2-1);
-    wborder(wActuators, 0, 0, 0, 0, 0, 0, 0, 0);
+    wborder(wStatus, 0, 0, 0, 0, 0, 0, 0, 0);
+    
     wrefresh(wActuators);
     wrefresh(wSignal);
     wrefresh(wStatus);
