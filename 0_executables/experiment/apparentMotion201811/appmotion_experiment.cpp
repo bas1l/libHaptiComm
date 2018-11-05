@@ -14,7 +14,6 @@
 #include <math.h>
 #include <unistd.h>
 
-
 #include "HaptiCommConfiguration.h"
 #include "waveform.h"
 #include "ad5383.h"
@@ -113,9 +112,9 @@ void work(ALPHABET *& alph)
     raw();
     
     
-    WINDOW * wActuators = newwin(LINES-3, COLUMNS/2-3, 1, 1);
-    WINDOW * wSignal = newwin(LINES/2-3, COLUMNS/2-3, 1, COLUMNS/2-1);
-    WINDOW * wStatus = newwin(LINES/2-3, COLUMNS/2-3, LINES/2-1, COLUMNS/2-1);
+    WINDOW * wActuators = newwin(LINES-3, COLS/2-3, 1, 1);
+    WINDOW * wSignal = newwin(LINES/2-3, COLS/2-3, 1, COLS/2-1);
+    WINDOW * wStatus = newwin(LINES/2-3, COLS/2-3, LINES/2-1, COLS/2-1);
     wrefresh(wActuators);
     wrefresh(wSignal);
     wrefresh(wStatus);
