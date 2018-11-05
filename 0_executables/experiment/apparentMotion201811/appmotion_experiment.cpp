@@ -115,21 +115,43 @@ void work(ALPHABET *& alph)
     
     
     WINDOW * wActuators = newwin(LINES-3, COLS/2-3, 1, 1);
-    //box(wActuators, 0, 0);
     wborder(wActuators, '|','|','_','_',' ',' ',' ',' ');
+    refresh();
+    wrefresh(wActuators);
+    /*
     WINDOW * wSignal = newwin(LINES/2-2, COLS/2-3, 1, COLS/2-1);
     wborder(wSignal, '|','|','_','_',' ',' ',' ',' ');
+    wrefresh(wSignal);
     WINDOW * wStatus = newwin(LINES/2-2, COLS/2-3, LINES/2+1, COLS/2-1);
     wborder(wStatus, '|','|','_','_',' ',' ',' ',' ');
-    
-    wrefresh(wActuators);
-    wrefresh(wSignal);
     wrefresh(wStatus);
+    */
+    
+    int choice;
+    while(1)
+    {
+        choice = wgetch(wActuators);
+        switch(choice)
+        {
+            case KEY_ENTER:
+                continue = false;
+                break;
+            case KEY_CLOSE:
+                continue = false;
+                break;
+            case KEY_EXIT:
+                continue = false;
+                break;
+        }
+        
+        if (false == continue)
+            break;
+    }
     
     //alph->configure();
     //alph->insertSymbol(s);
     
-    mssleep(5000);
+    mssleep(500);
     refresh();
     endwin();
 }
