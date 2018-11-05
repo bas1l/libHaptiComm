@@ -1,3 +1,4 @@
+#include <wiringPi.h>
 #include <iostream>
 #include <stdio.h>      /* printf, fgets */
 #include <stdlib.h>     /* atoi */
@@ -23,6 +24,7 @@ int main (int argc, char** argv)
     struct sched_param param;
     
     int d;
+    int ms;
     
     /**
      * SET UP
