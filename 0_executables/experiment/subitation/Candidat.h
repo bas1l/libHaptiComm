@@ -12,7 +12,7 @@
 #include <chrono>   // std::clock, std::chrono::high_resolution_clock::now
 #include <bitset> 	// to check bit value on number
 #include <dirent.h> // readdir
-#include <iostream> // std::cin, std::cout 
+#include <iostream> // std::cin, std::cout
 #include <sstream>  // std::istringstream
 #include <fstream>  // std::ifstream
 #include <map> 		// expEnums order variable
@@ -33,13 +33,11 @@ using namespace boost::filesystem;
 #ifndef CANDIDAT_H_
 #define CANDIDAT_H_
 
-<<<<<<< Updated upstream
-=======
 #define SIZE_ARRAY_TIMERS 3
->>>>>>> Stashed changes
+
 
 enum expEnum {BrailleDevSpace=10, BrailleDevTemp=11,
-			  FingersSpace=20, FingersTemp=21, 
+			  FingersSpace=20, FingersTemp=21,
 			  BuzzerSpace=30, BuzzerTemp=31};
 
 typedef std::chrono::time_point<std::chrono::high_resolution_clock> td_highresclock;
@@ -52,7 +50,7 @@ public:
 	Candidat(string _pathDict, string _pathDirectory, string _firstname, string _lastname);
 	// Destroy the candidat object
 	virtual ~Candidat();
-	
+
 	// check if the candidat already exist
 	bool exist();
 	// create the candidat
@@ -64,22 +62,21 @@ public:
 	// return the next experiment to execute
 	expEnum nextExp();
 	// return the next experiment to execute
-<<<<<<< Updated upstream
-	bool saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> * answers);
-=======
+
+	//bool saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> * answers);
 	bool saveResults(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end);
->>>>>>> Stashed changes
-	
-	// get string of an expEnum 
+
+
+	// get string of an expEnum
 	string expstring(expEnum ee);
-	
+
 	/* getters */
 	int 					getId();
 	string 					getFirstname();
 	string 					getLastname();
-	
+
 	vector<pair<bool, expEnum>> getExpeOrder();
-	
+
 	vector<vector<int>> 	getSequence();
 	string 					getPathDirectory();
 
@@ -97,28 +94,28 @@ private:
 	string lastname; // lastname of the candidat
 	int    age; // age of the candidat
 	string type; // man or woman candidat
-	
+
 	/* General variables for making the use of some functions easier */
 	int a,i,j,r,s; // classic iteration variables
 	int nextit; // iteration variable of (??? more precisions needed)
-	vector<vector<int>> apc; // sequence of All the Possible Combinaisons for the expEnums	
-	
+	vector<vector<int>> apc; // sequence of All the Possible Combinaisons for the expEnums
+
 	/* experiment variables */
 	int nba; // NumBer of Actuators
 	int nbr; // NumBer of Repetition by subgroup of stimuli
 	vector<pair<bool, expEnum>> expeOrder; // the ordered expEnums and the bool statement aknowleding if it has been done already
-	vector<vector<int>> seq; // SEQuence of the stimuli for the expEnums	
-	
+	vector<vector<int>> seq; // SEQuence of the stimuli for the expEnums
+
 	/* File information paths */
 	string pathDirectory; // path of the main directory of candidat
 	string candidatsListFile;
 	string infoFile;
-	
+
 	/* Dictionary related variables */
 	string langage; // langage used by the candidat
 	string pathDict; // path of the main dictionary directory
-	
-	
+
+
 	/* setters */
 	bool setId(int _id);
 	bool setName(string fn, string ln);
