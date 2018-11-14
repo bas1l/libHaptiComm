@@ -40,6 +40,10 @@ struct varOption{
     option<int> volume;
 }ascOpt, actOpt;
 
+struct overviewOption{
+    int overlap;
+    sudo 
+}orchesOpt;
 
 void work(ALPHABET* & alph);
 static void parseCmdLineArgs(   int argc, char ** argv, 
@@ -151,20 +155,30 @@ void work(ALPHABET *& alph)
         switch(choice)
         {
             case 'a':
+            {
                 goOn = false;
                 break;
+            }
             case KEY_UP:
+            {
                 goOn = false;
                 break;
+            }
             case KEY_ENTER:
+            {
                 goOn = false;
                 break;
+            }
             case KEY_CLOSE:
+            {
                 goOn = false;
                 break;
+            }
             case KEY_EXIT:
+            {
                 goOn = false;
                 break;
+            }
             default:
                 break;
         }
