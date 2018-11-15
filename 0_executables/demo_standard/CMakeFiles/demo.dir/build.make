@@ -43,42 +43,42 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 # Include any dependencies generated for this target.
-include executables/demo_standard/CMakeFiles/demo.dir/depend.make
+include 0_executables/demo_standard/CMakeFiles/demo.dir/depend.make
 
 # Include the progress variables for this target.
-include executables/demo_standard/CMakeFiles/demo.dir/progress.make
+include 0_executables/demo_standard/CMakeFiles/demo.dir/progress.make
 
 # Include the compile flags for this target's objects.
-include executables/demo_standard/CMakeFiles/demo.dir/flags.make
+include 0_executables/demo_standard/CMakeFiles/demo.dir/flags.make
 
-executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o: executables/demo_standard/CMakeFiles/demo.dir/flags.make
-executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o: executables/demo_standard/demo.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pi/Tacom/libtacom/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o"
-	cd /home/pi/Tacom/libtacom/executables/demo_standard && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/demo.dir/demo.cpp.o -c /home/pi/Tacom/libtacom/executables/demo_standard/demo.cpp
+0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o: 0_executables/demo_standard/CMakeFiles/demo.dir/flags.make
+0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o: 0_executables/demo_standard/demo.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pi/haptiComm/libHaptiComm/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o"
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/demo.dir/demo.cpp.o -c /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard/demo.cpp
 
-executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.i: cmake_force
+0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/demo.dir/demo.cpp.i"
-	cd /home/pi/Tacom/libtacom/executables/demo_standard && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pi/Tacom/libtacom/executables/demo_standard/demo.cpp > CMakeFiles/demo.dir/demo.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard/demo.cpp > CMakeFiles/demo.dir/demo.cpp.i
 
-executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.s: cmake_force
+0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/demo.dir/demo.cpp.s"
-	cd /home/pi/Tacom/libtacom/executables/demo_standard && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pi/Tacom/libtacom/executables/demo_standard/demo.cpp -o CMakeFiles/demo.dir/demo.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard/demo.cpp -o CMakeFiles/demo.dir/demo.cpp.s
 
-executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.requires:
+0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.requires:
 
-.PHONY : executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.requires
+.PHONY : 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.requires
 
-executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.provides: executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.requires
-	$(MAKE) -f executables/demo_standard/CMakeFiles/demo.dir/build.make executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.provides.build
-.PHONY : executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.provides
+0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.provides: 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.requires
+	$(MAKE) -f 0_executables/demo_standard/CMakeFiles/demo.dir/build.make 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.provides.build
+.PHONY : 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.provides
 
-executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.provides.build: executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o
+0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.provides.build: 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o
 
 
 # Object files for target demo
@@ -88,37 +88,37 @@ demo_OBJECTS = \
 # External object files for target demo
 demo_EXTERNAL_OBJECTS =
 
-executables/demo_standard/demo: executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o
-executables/demo_standard/demo: executables/demo_standard/CMakeFiles/demo.dir/build.make
-executables/demo_standard/demo: libconfig4HaptiComm.a
-executables/demo_standard/demo: liblibad5383.a
-executables/demo_standard/demo: liblibutils.a
-executables/demo_standard/demo: liblibwaveform.a
-executables/demo_standard/demo: liblibdevice.a
-executables/demo_standard/demo: liblibalphabet.a
-executables/demo_standard/demo: external_lib/libconfig4cpp.a
-executables/demo_standard/demo: liblibwaveform.a
-executables/demo_standard/demo: liblibutils.a
-executables/demo_standard/demo: libwavFileReader.a
-executables/demo_standard/demo: liblibdevice.a
-executables/demo_standard/demo: executables/demo_standard/CMakeFiles/demo.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pi/Tacom/libtacom/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable demo"
-	cd /home/pi/Tacom/libtacom/executables/demo_standard && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/demo.dir/link.txt --verbose=$(VERBOSE)
+0_executables/demo_standard/demo: 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o
+0_executables/demo_standard/demo: 0_executables/demo_standard/CMakeFiles/demo.dir/build.make
+0_executables/demo_standard/demo: libconfig4HaptiComm.a
+0_executables/demo_standard/demo: liblibad5383.a
+0_executables/demo_standard/demo: liblibutils.a
+0_executables/demo_standard/demo: liblibwaveform.a
+0_executables/demo_standard/demo: liblibdevice.a
+0_executables/demo_standard/demo: liblibalphabet.a
+0_executables/demo_standard/demo: 3_external_lib/libconfig4cpp.a
+0_executables/demo_standard/demo: liblibwaveform.a
+0_executables/demo_standard/demo: liblibutils.a
+0_executables/demo_standard/demo: libaudioFile.a
+0_executables/demo_standard/demo: liblibdevice.a
+0_executables/demo_standard/demo: 0_executables/demo_standard/CMakeFiles/demo.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pi/haptiComm/libHaptiComm/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable demo"
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/demo.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-executables/demo_standard/CMakeFiles/demo.dir/build: executables/demo_standard/demo
+0_executables/demo_standard/CMakeFiles/demo.dir/build: 0_executables/demo_standard/demo
 
-.PHONY : executables/demo_standard/CMakeFiles/demo.dir/build
+.PHONY : 0_executables/demo_standard/CMakeFiles/demo.dir/build
 
-executables/demo_standard/CMakeFiles/demo.dir/requires: executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.requires
+0_executables/demo_standard/CMakeFiles/demo.dir/requires: 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o.requires
 
-.PHONY : executables/demo_standard/CMakeFiles/demo.dir/requires
+.PHONY : 0_executables/demo_standard/CMakeFiles/demo.dir/requires
 
-executables/demo_standard/CMakeFiles/demo.dir/clean:
-	cd /home/pi/Tacom/libtacom/executables/demo_standard && $(CMAKE_COMMAND) -P CMakeFiles/demo.dir/cmake_clean.cmake
-.PHONY : executables/demo_standard/CMakeFiles/demo.dir/clean
+0_executables/demo_standard/CMakeFiles/demo.dir/clean:
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard && $(CMAKE_COMMAND) -P CMakeFiles/demo.dir/cmake_clean.cmake
+.PHONY : 0_executables/demo_standard/CMakeFiles/demo.dir/clean
 
-executables/demo_standard/CMakeFiles/demo.dir/depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pi/Tacom/libtacom /home/pi/Tacom/libtacom/executables/demo_standard /home/pi/Tacom/libtacom /home/pi/Tacom/libtacom/executables/demo_standard /home/pi/Tacom/libtacom/executables/demo_standard/CMakeFiles/demo.dir/DependInfo.cmake --color=$(COLOR)
-.PHONY : executables/demo_standard/CMakeFiles/demo.dir/depend
+0_executables/demo_standard/CMakeFiles/demo.dir/depend:
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pi/haptiComm/libHaptiComm /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard /home/pi/haptiComm/libHaptiComm /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard/CMakeFiles/demo.dir/DependInfo.cmake --color=$(COLOR)
+.PHONY : 0_executables/demo_standard/CMakeFiles/demo.dir/depend
 

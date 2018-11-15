@@ -1,0 +1,2 @@
+/usr/bin/ar qc libtoolstap.a  CMakeFiles/toolstap.dir/src/toolstap.cpp.o
+/usr/bin/ranlib libtoolstap.a

@@ -4,23 +4,23 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/pi/Tacom/libtacom/executables/determine-up/determine-up.cpp" "/home/pi/Tacom/libtacom/executables/determine-up/CMakeFiles/determine-up.dir/determine-up.cpp.o"
+  "/home/pi/haptiComm/libHaptiComm/0_executables/determine-up/determine-up.cpp" "/home/pi/haptiComm/libHaptiComm/0_executables/determine-up/CMakeFiles/determine-up.dir/determine-up.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "include"
+  "1_include"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/pi/Tacom/libtacom/CMakeFiles/libad5383.dir/DependInfo.cmake"
-  "/home/pi/Tacom/libtacom/CMakeFiles/libutils.dir/DependInfo.cmake"
-  "/home/pi/Tacom/libtacom/CMakeFiles/libalphabet.dir/DependInfo.cmake"
-  "/home/pi/Tacom/libtacom/CMakeFiles/libwaveform.dir/DependInfo.cmake"
-  "/home/pi/Tacom/libtacom/CMakeFiles/wavFileReader.dir/DependInfo.cmake"
-  "/home/pi/Tacom/libtacom/CMakeFiles/libdevice.dir/DependInfo.cmake"
+  "/home/pi/haptiComm/libHaptiComm/CMakeFiles/libad5383.dir/DependInfo.cmake"
+  "/home/pi/haptiComm/libHaptiComm/CMakeFiles/libutils.dir/DependInfo.cmake"
+  "/home/pi/haptiComm/libHaptiComm/CMakeFiles/libalphabet.dir/DependInfo.cmake"
+  "/home/pi/haptiComm/libHaptiComm/CMakeFiles/libwaveform.dir/DependInfo.cmake"
+  "/home/pi/haptiComm/libHaptiComm/CMakeFiles/audioFile.dir/DependInfo.cmake"
+  "/home/pi/haptiComm/libHaptiComm/CMakeFiles/libdevice.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

@@ -43,42 +43,42 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 # Include any dependencies generated for this target.
-include executables/caracterise2018/CMakeFiles/caracterise2018.dir/depend.make
+include 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/depend.make
 
 # Include the progress variables for this target.
-include executables/caracterise2018/CMakeFiles/caracterise2018.dir/progress.make
+include 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/progress.make
 
 # Include the compile flags for this target's objects.
-include executables/caracterise2018/CMakeFiles/caracterise2018.dir/flags.make
+include 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/flags.make
 
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o: executables/caracterise2018/CMakeFiles/caracterise2018.dir/flags.make
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o: executables/caracterise2018/caracterise2018.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pi/Tacom/libtacom/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o"
-	cd /home/pi/Tacom/libtacom/executables/caracterise2018 && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o -c /home/pi/Tacom/libtacom/executables/caracterise2018/caracterise2018.cpp
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o: 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/flags.make
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o: 0_executables/caracterise2018/caracterise2018.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pi/haptiComm/libHaptiComm/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o"
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018 && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o -c /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018/caracterise2018.cpp
 
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.i: cmake_force
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/caracterise2018.dir/caracterise2018.cpp.i"
-	cd /home/pi/Tacom/libtacom/executables/caracterise2018 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pi/Tacom/libtacom/executables/caracterise2018/caracterise2018.cpp > CMakeFiles/caracterise2018.dir/caracterise2018.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018/caracterise2018.cpp > CMakeFiles/caracterise2018.dir/caracterise2018.cpp.i
 
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.s: cmake_force
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/caracterise2018.dir/caracterise2018.cpp.s"
-	cd /home/pi/Tacom/libtacom/executables/caracterise2018 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pi/Tacom/libtacom/executables/caracterise2018/caracterise2018.cpp -o CMakeFiles/caracterise2018.dir/caracterise2018.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018 && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018/caracterise2018.cpp -o CMakeFiles/caracterise2018.dir/caracterise2018.cpp.s
 
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.requires:
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.requires:
 
-.PHONY : executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.requires
+.PHONY : 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.requires
 
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.provides: executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.requires
-	$(MAKE) -f executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.provides.build
-.PHONY : executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.provides
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.provides: 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.requires
+	$(MAKE) -f 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.provides.build
+.PHONY : 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.provides
 
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.provides.build: executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.provides.build: 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o
 
 
 # Object files for target caracterise2018
@@ -88,35 +88,35 @@ caracterise2018_OBJECTS = \
 # External object files for target caracterise2018
 caracterise2018_EXTERNAL_OBJECTS =
 
-executables/caracterise2018/caracterise2018: executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o
-executables/caracterise2018/caracterise2018: executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make
-executables/caracterise2018/caracterise2018: libconfig4HaptiComm.a
-executables/caracterise2018/caracterise2018: liblibad5383.a
-executables/caracterise2018/caracterise2018: liblibutils.a
-executables/caracterise2018/caracterise2018: liblibalphabet.a
-executables/caracterise2018/caracterise2018: liblibwaveform.a
-executables/caracterise2018/caracterise2018: external_lib/libconfig4cpp.a
-executables/caracterise2018/caracterise2018: liblibutils.a
-executables/caracterise2018/caracterise2018: libwavFileReader.a
-executables/caracterise2018/caracterise2018: liblibdevice.a
-executables/caracterise2018/caracterise2018: executables/caracterise2018/CMakeFiles/caracterise2018.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pi/Tacom/libtacom/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable caracterise2018"
-	cd /home/pi/Tacom/libtacom/executables/caracterise2018 && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/caracterise2018.dir/link.txt --verbose=$(VERBOSE)
+0_executables/caracterise2018/caracterise2018: 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o
+0_executables/caracterise2018/caracterise2018: 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make
+0_executables/caracterise2018/caracterise2018: libconfig4HaptiComm.a
+0_executables/caracterise2018/caracterise2018: liblibad5383.a
+0_executables/caracterise2018/caracterise2018: liblibutils.a
+0_executables/caracterise2018/caracterise2018: liblibalphabet.a
+0_executables/caracterise2018/caracterise2018: liblibwaveform.a
+0_executables/caracterise2018/caracterise2018: 3_external_lib/libconfig4cpp.a
+0_executables/caracterise2018/caracterise2018: liblibutils.a
+0_executables/caracterise2018/caracterise2018: libaudioFile.a
+0_executables/caracterise2018/caracterise2018: liblibdevice.a
+0_executables/caracterise2018/caracterise2018: 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pi/haptiComm/libHaptiComm/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable caracterise2018"
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018 && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/caracterise2018.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/build: executables/caracterise2018/caracterise2018
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/build: 0_executables/caracterise2018/caracterise2018
 
-.PHONY : executables/caracterise2018/CMakeFiles/caracterise2018.dir/build
+.PHONY : 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/build
 
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/requires: executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.requires
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/requires: 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o.requires
 
-.PHONY : executables/caracterise2018/CMakeFiles/caracterise2018.dir/requires
+.PHONY : 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/requires
 
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/clean:
-	cd /home/pi/Tacom/libtacom/executables/caracterise2018 && $(CMAKE_COMMAND) -P CMakeFiles/caracterise2018.dir/cmake_clean.cmake
-.PHONY : executables/caracterise2018/CMakeFiles/caracterise2018.dir/clean
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/clean:
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018 && $(CMAKE_COMMAND) -P CMakeFiles/caracterise2018.dir/cmake_clean.cmake
+.PHONY : 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/clean
 
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pi/Tacom/libtacom /home/pi/Tacom/libtacom/executables/caracterise2018 /home/pi/Tacom/libtacom /home/pi/Tacom/libtacom/executables/caracterise2018 /home/pi/Tacom/libtacom/executables/caracterise2018/CMakeFiles/caracterise2018.dir/DependInfo.cmake --color=$(COLOR)
-.PHONY : executables/caracterise2018/CMakeFiles/caracterise2018.dir/depend
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/depend:
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pi/haptiComm/libHaptiComm /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018 /home/pi/haptiComm/libHaptiComm /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018 /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/DependInfo.cmake --color=$(COLOR)
+.PHONY : 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/depend
 

@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles /home/pi/Tacom/libtacom/executables/apparent_motion_experiment/CMakeFiles/progress.marks
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/apparent_motion_experiment/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment/CMakeFiles/progress.marks
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/apparent_motion_experiment/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/apparent_motion_experiment/clean
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/apparent_motion_experiment/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,47 +97,47 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/apparent_motion_experiment/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/apparent_motion_experiment/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/apparent_motion_experiment/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/apparent_motion_experiment/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/rule:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/rule
-.PHONY : executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/rule
+0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/rule:
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/rule
+.PHONY : 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/rule
 
 # Convenience name for target.
-appmotion_experiment: executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/rule
+appmotionExperiment: 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/rule
 
-.PHONY : appmotion_experiment
+.PHONY : appmotionExperiment
 
 # fast build rule for target.
-appmotion_experiment/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/build.make executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/build
-.PHONY : appmotion_experiment/fast
+appmotionExperiment/fast:
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/build.make 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/build
+.PHONY : appmotionExperiment/fast
 
 # Convenience name for target.
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/rule:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/apparent_motion_experiment/CMakeFiles/tools.dir/rule
-.PHONY : executables/apparent_motion_experiment/CMakeFiles/tools.dir/rule
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/rule:
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/rule
+.PHONY : 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/rule
 
 # Convenience name for target.
-tools: executables/apparent_motion_experiment/CMakeFiles/tools.dir/rule
+tools: 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/rule
 
 .PHONY : tools
 
 # fast build rule for target.
 tools/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make executables/apparent_motion_experiment/CMakeFiles/tools.dir/build
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/build
 .PHONY : tools/fast
 
 appmotion_experiment.o: appmotion_experiment.cpp.o
@@ -146,7 +146,7 @@ appmotion_experiment.o: appmotion_experiment.cpp.o
 
 # target to build an object file
 appmotion_experiment.cpp.o:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/build.make executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/appmotion_experiment.cpp.o
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/build.make 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/appmotion_experiment.cpp.o
 .PHONY : appmotion_experiment.cpp.o
 
 appmotion_experiment.i: appmotion_experiment.cpp.i
@@ -155,7 +155,7 @@ appmotion_experiment.i: appmotion_experiment.cpp.i
 
 # target to preprocess a source file
 appmotion_experiment.cpp.i:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/build.make executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/appmotion_experiment.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/build.make 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/appmotion_experiment.cpp.i
 .PHONY : appmotion_experiment.cpp.i
 
 appmotion_experiment.s: appmotion_experiment.cpp.s
@@ -164,7 +164,7 @@ appmotion_experiment.s: appmotion_experiment.cpp.s
 
 # target to generate assembly for a file
 appmotion_experiment.cpp.s:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/build.make executables/apparent_motion_experiment/CMakeFiles/appmotion_experiment.dir/appmotion_experiment.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/build.make 0_executables/apparent_motion_experiment/CMakeFiles/appmotionExperiment.dir/appmotion_experiment.cpp.s
 .PHONY : appmotion_experiment.cpp.s
 
 src/tools.o: src/tools.cpp.o
@@ -173,7 +173,7 @@ src/tools.o: src/tools.cpp.o
 
 # target to build an object file
 src/tools.cpp.o:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o
 .PHONY : src/tools.cpp.o
 
 src/tools.i: src/tools.cpp.i
@@ -182,7 +182,7 @@ src/tools.i: src/tools.cpp.i
 
 # target to preprocess a source file
 src/tools.cpp.i:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.i
 .PHONY : src/tools.cpp.i
 
 src/tools.s: src/tools.cpp.s
@@ -191,7 +191,7 @@ src/tools.s: src/tools.cpp.s
 
 # target to generate assembly for a file
 src/tools.cpp.s:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.s
 .PHONY : src/tools.cpp.s
 
 # Help Target
@@ -202,7 +202,7 @@ help:
 	@echo "... depend"
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
-	@echo "... appmotion_experiment"
+	@echo "... appmotionExperiment"
 	@echo "... tools"
 	@echo "... appmotion_experiment.o"
 	@echo "... appmotion_experiment.i"
@@ -221,6 +221,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

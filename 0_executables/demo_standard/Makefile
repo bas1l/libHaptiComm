@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles /home/pi/Tacom/libtacom/executables/demo_standard/CMakeFiles/progress.marks
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/demo_standard/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles /home/pi/haptiComm/libHaptiComm/0_executables/demo_standard/CMakeFiles/progress.marks
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/demo_standard/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/demo_standard/clean
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/demo_standard/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,32 +97,32 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/demo_standard/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/demo_standard/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/demo_standard/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/demo_standard/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-executables/demo_standard/CMakeFiles/demo.dir/rule:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/demo_standard/CMakeFiles/demo.dir/rule
-.PHONY : executables/demo_standard/CMakeFiles/demo.dir/rule
+0_executables/demo_standard/CMakeFiles/demo.dir/rule:
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/demo_standard/CMakeFiles/demo.dir/rule
+.PHONY : 0_executables/demo_standard/CMakeFiles/demo.dir/rule
 
 # Convenience name for target.
-demo: executables/demo_standard/CMakeFiles/demo.dir/rule
+demo: 0_executables/demo_standard/CMakeFiles/demo.dir/rule
 
 .PHONY : demo
 
 # fast build rule for target.
 demo/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/demo_standard/CMakeFiles/demo.dir/build.make executables/demo_standard/CMakeFiles/demo.dir/build
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/demo_standard/CMakeFiles/demo.dir/build.make 0_executables/demo_standard/CMakeFiles/demo.dir/build
 .PHONY : demo/fast
 
 demo.o: demo.cpp.o
@@ -131,7 +131,7 @@ demo.o: demo.cpp.o
 
 # target to build an object file
 demo.cpp.o:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/demo_standard/CMakeFiles/demo.dir/build.make executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/demo_standard/CMakeFiles/demo.dir/build.make 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.o
 .PHONY : demo.cpp.o
 
 demo.i: demo.cpp.i
@@ -140,7 +140,7 @@ demo.i: demo.cpp.i
 
 # target to preprocess a source file
 demo.cpp.i:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/demo_standard/CMakeFiles/demo.dir/build.make executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/demo_standard/CMakeFiles/demo.dir/build.make 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.i
 .PHONY : demo.cpp.i
 
 demo.s: demo.cpp.s
@@ -149,7 +149,7 @@ demo.s: demo.cpp.s
 
 # target to generate assembly for a file
 demo.cpp.s:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/demo_standard/CMakeFiles/demo.dir/build.make executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/demo_standard/CMakeFiles/demo.dir/build.make 0_executables/demo_standard/CMakeFiles/demo.dir/demo.cpp.s
 .PHONY : demo.cpp.s
 
 # Help Target
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

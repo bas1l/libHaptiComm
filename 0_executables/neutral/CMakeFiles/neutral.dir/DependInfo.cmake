@@ -4,18 +4,18 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/pi/Tacom/libtacom/executables/neutral/neutral.cpp" "/home/pi/Tacom/libtacom/executables/neutral/CMakeFiles/neutral.dir/neutral.cpp.o"
+  "/home/pi/haptiComm/libHaptiComm/0_executables/neutral/neutral.cpp" "/home/pi/haptiComm/libHaptiComm/0_executables/neutral/CMakeFiles/neutral.dir/neutral.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "include"
+  "1_include"
   )
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/pi/Tacom/libtacom/CMakeFiles/libad5383.dir/DependInfo.cmake"
+  "/home/pi/haptiComm/libHaptiComm/CMakeFiles/libad5383.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

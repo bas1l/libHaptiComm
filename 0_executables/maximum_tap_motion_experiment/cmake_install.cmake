@@ -1,4 +1,4 @@
-# Install script for directory: /home/pi/Tacom/libtacom/executables/apparent_motion_experiment
+# Install script for directory: /home/pi/haptiComm/libHaptiComm/0_executables/maximum_tap_motion_experiment
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles /home/pi/Tacom/libtacom/executables/caracterise2018/CMakeFiles/progress.marks
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/caracterise2018/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles /home/pi/haptiComm/libHaptiComm/0_executables/caracterise2018/CMakeFiles/progress.marks
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/caracterise2018/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/caracterise2018/clean
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/caracterise2018/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,32 +97,32 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/caracterise2018/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/caracterise2018/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/caracterise2018/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/caracterise2018/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-executables/caracterise2018/CMakeFiles/caracterise2018.dir/rule:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/caracterise2018/CMakeFiles/caracterise2018.dir/rule
-.PHONY : executables/caracterise2018/CMakeFiles/caracterise2018.dir/rule
+0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/rule:
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/rule
+.PHONY : 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/rule
 
 # Convenience name for target.
-caracterise2018: executables/caracterise2018/CMakeFiles/caracterise2018.dir/rule
+caracterise2018: 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/rule
 
 .PHONY : caracterise2018
 
 # fast build rule for target.
 caracterise2018/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make executables/caracterise2018/CMakeFiles/caracterise2018.dir/build
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/build
 .PHONY : caracterise2018/fast
 
 caracterise2018.o: caracterise2018.cpp.o
@@ -131,7 +131,7 @@ caracterise2018.o: caracterise2018.cpp.o
 
 # target to build an object file
 caracterise2018.cpp.o:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.o
 .PHONY : caracterise2018.cpp.o
 
 caracterise2018.i: caracterise2018.cpp.i
@@ -140,7 +140,7 @@ caracterise2018.i: caracterise2018.cpp.i
 
 # target to preprocess a source file
 caracterise2018.cpp.i:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.i
 .PHONY : caracterise2018.cpp.i
 
 caracterise2018.s: caracterise2018.cpp.s
@@ -149,7 +149,7 @@ caracterise2018.s: caracterise2018.cpp.s
 
 # target to generate assembly for a file
 caracterise2018.cpp.s:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/build.make 0_executables/caracterise2018/CMakeFiles/caracterise2018.dir/caracterise2018.cpp.s
 .PHONY : caracterise2018.cpp.s
 
 # Help Target
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

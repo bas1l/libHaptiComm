@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles /home/pi/Tacom/libtacom/executables/neutral/CMakeFiles/progress.marks
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/neutral/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles /home/pi/haptiComm/libHaptiComm/0_executables/neutral/CMakeFiles/progress.marks
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/neutral/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/neutral/clean
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/neutral/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,32 +97,32 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/neutral/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/neutral/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/neutral/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/neutral/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-executables/neutral/CMakeFiles/neutral.dir/rule:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/neutral/CMakeFiles/neutral.dir/rule
-.PHONY : executables/neutral/CMakeFiles/neutral.dir/rule
+0_executables/neutral/CMakeFiles/neutral.dir/rule:
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/neutral/CMakeFiles/neutral.dir/rule
+.PHONY : 0_executables/neutral/CMakeFiles/neutral.dir/rule
 
 # Convenience name for target.
-neutral: executables/neutral/CMakeFiles/neutral.dir/rule
+neutral: 0_executables/neutral/CMakeFiles/neutral.dir/rule
 
 .PHONY : neutral
 
 # fast build rule for target.
 neutral/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/neutral/CMakeFiles/neutral.dir/build.make executables/neutral/CMakeFiles/neutral.dir/build
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/neutral/CMakeFiles/neutral.dir/build.make 0_executables/neutral/CMakeFiles/neutral.dir/build
 .PHONY : neutral/fast
 
 neutral.o: neutral.cpp.o
@@ -131,7 +131,7 @@ neutral.o: neutral.cpp.o
 
 # target to build an object file
 neutral.cpp.o:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/neutral/CMakeFiles/neutral.dir/build.make executables/neutral/CMakeFiles/neutral.dir/neutral.cpp.o
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/neutral/CMakeFiles/neutral.dir/build.make 0_executables/neutral/CMakeFiles/neutral.dir/neutral.cpp.o
 .PHONY : neutral.cpp.o
 
 neutral.i: neutral.cpp.i
@@ -140,7 +140,7 @@ neutral.i: neutral.cpp.i
 
 # target to preprocess a source file
 neutral.cpp.i:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/neutral/CMakeFiles/neutral.dir/build.make executables/neutral/CMakeFiles/neutral.dir/neutral.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/neutral/CMakeFiles/neutral.dir/build.make 0_executables/neutral/CMakeFiles/neutral.dir/neutral.cpp.i
 .PHONY : neutral.cpp.i
 
 neutral.s: neutral.cpp.s
@@ -149,7 +149,7 @@ neutral.s: neutral.cpp.s
 
 # target to generate assembly for a file
 neutral.cpp.s:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/neutral/CMakeFiles/neutral.dir/build.make executables/neutral/CMakeFiles/neutral.dir/neutral.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/neutral/CMakeFiles/neutral.dir/build.make 0_executables/neutral/CMakeFiles/neutral.dir/neutral.cpp.s
 .PHONY : neutral.cpp.s
 
 # Help Target
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

@@ -43,42 +43,42 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 # Include any dependencies generated for this target.
-include executables/apparent_motion_experiment/CMakeFiles/tools.dir/depend.make
+include 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/depend.make
 
 # Include the progress variables for this target.
-include executables/apparent_motion_experiment/CMakeFiles/tools.dir/progress.make
+include 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/progress.make
 
 # Include the compile flags for this target's objects.
-include executables/apparent_motion_experiment/CMakeFiles/tools.dir/flags.make
+include 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/flags.make
 
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o: executables/apparent_motion_experiment/CMakeFiles/tools.dir/flags.make
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o: executables/apparent_motion_experiment/src/tools.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pi/Tacom/libtacom/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o"
-	cd /home/pi/Tacom/libtacom/executables/apparent_motion_experiment && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tools.dir/src/tools.cpp.o -c /home/pi/Tacom/libtacom/executables/apparent_motion_experiment/src/tools.cpp
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o: 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/flags.make
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o: 0_executables/apparent_motion_experiment/src/tools.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pi/haptiComm/libHaptiComm/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o"
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/tools.dir/src/tools.cpp.o -c /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment/src/tools.cpp
 
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.i: cmake_force
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/tools.dir/src/tools.cpp.i"
-	cd /home/pi/Tacom/libtacom/executables/apparent_motion_experiment && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pi/Tacom/libtacom/executables/apparent_motion_experiment/src/tools.cpp > CMakeFiles/tools.dir/src/tools.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment/src/tools.cpp > CMakeFiles/tools.dir/src/tools.cpp.i
 
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.s: cmake_force
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/tools.dir/src/tools.cpp.s"
-	cd /home/pi/Tacom/libtacom/executables/apparent_motion_experiment && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pi/Tacom/libtacom/executables/apparent_motion_experiment/src/tools.cpp -o CMakeFiles/tools.dir/src/tools.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment/src/tools.cpp -o CMakeFiles/tools.dir/src/tools.cpp.s
 
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.requires:
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.requires:
 
-.PHONY : executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.requires
+.PHONY : 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.requires
 
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.provides: executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.requires
-	$(MAKE) -f executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.provides.build
-.PHONY : executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.provides
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.provides: 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.requires
+	$(MAKE) -f 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.provides.build
+.PHONY : 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.provides
 
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.provides.build: executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.provides.build: 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o
 
 
 # Object files for target tools
@@ -88,27 +88,27 @@ tools_OBJECTS = \
 # External object files for target tools
 tools_EXTERNAL_OBJECTS =
 
-executables/apparent_motion_experiment/libtools.a: executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o
-executables/apparent_motion_experiment/libtools.a: executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make
-executables/apparent_motion_experiment/libtools.a: executables/apparent_motion_experiment/CMakeFiles/tools.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pi/Tacom/libtacom/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libtools.a"
-	cd /home/pi/Tacom/libtacom/executables/apparent_motion_experiment && $(CMAKE_COMMAND) -P CMakeFiles/tools.dir/cmake_clean_target.cmake
-	cd /home/pi/Tacom/libtacom/executables/apparent_motion_experiment && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tools.dir/link.txt --verbose=$(VERBOSE)
+0_executables/apparent_motion_experiment/libtools.a: 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o
+0_executables/apparent_motion_experiment/libtools.a: 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/build.make
+0_executables/apparent_motion_experiment/libtools.a: 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pi/haptiComm/libHaptiComm/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library libtools.a"
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment && $(CMAKE_COMMAND) -P CMakeFiles/tools.dir/cmake_clean_target.cmake
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/tools.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/build: executables/apparent_motion_experiment/libtools.a
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/build: 0_executables/apparent_motion_experiment/libtools.a
 
-.PHONY : executables/apparent_motion_experiment/CMakeFiles/tools.dir/build
+.PHONY : 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/build
 
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/requires: executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.requires
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/requires: 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/src/tools.cpp.o.requires
 
-.PHONY : executables/apparent_motion_experiment/CMakeFiles/tools.dir/requires
+.PHONY : 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/requires
 
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/clean:
-	cd /home/pi/Tacom/libtacom/executables/apparent_motion_experiment && $(CMAKE_COMMAND) -P CMakeFiles/tools.dir/cmake_clean.cmake
-.PHONY : executables/apparent_motion_experiment/CMakeFiles/tools.dir/clean
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/clean:
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment && $(CMAKE_COMMAND) -P CMakeFiles/tools.dir/cmake_clean.cmake
+.PHONY : 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/clean
 
-executables/apparent_motion_experiment/CMakeFiles/tools.dir/depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pi/Tacom/libtacom /home/pi/Tacom/libtacom/executables/apparent_motion_experiment /home/pi/Tacom/libtacom /home/pi/Tacom/libtacom/executables/apparent_motion_experiment /home/pi/Tacom/libtacom/executables/apparent_motion_experiment/CMakeFiles/tools.dir/DependInfo.cmake --color=$(COLOR)
-.PHONY : executables/apparent_motion_experiment/CMakeFiles/tools.dir/depend
+0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/depend:
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pi/haptiComm/libHaptiComm /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment /home/pi/haptiComm/libHaptiComm /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment /home/pi/haptiComm/libHaptiComm/0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/DependInfo.cmake --color=$(COLOR)
+.PHONY : 0_executables/apparent_motion_experiment/CMakeFiles/tools.dir/depend
 

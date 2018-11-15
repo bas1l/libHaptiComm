@@ -43,42 +43,42 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 # Include any dependencies generated for this target.
-include executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/depend.make
+include 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/depend.make
 
 # Include the progress variables for this target.
-include executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/progress.make
+include 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/progress.make
 
 # Include the compile flags for this target's objects.
-include executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/flags.make
+include 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/flags.make
 
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o: executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/flags.make
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o: executables/sinefunction_generator/sinefunction_generator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pi/Tacom/libtacom/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o"
-	cd /home/pi/Tacom/libtacom/executables/sinefunction_generator && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o -c /home/pi/Tacom/libtacom/executables/sinefunction_generator/sinefunction_generator.cpp
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o: 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/flags.make
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o: 0_executables/sinefunction_generator/sinefunction_generator.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/pi/haptiComm/libHaptiComm/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o"
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator && /usr/bin/c++   $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o -c /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator/sinefunction_generator.cpp
 
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.i: cmake_force
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.i"
-	cd /home/pi/Tacom/libtacom/executables/sinefunction_generator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pi/Tacom/libtacom/executables/sinefunction_generator/sinefunction_generator.cpp > CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator/sinefunction_generator.cpp > CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.i
 
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.s: cmake_force
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.s"
-	cd /home/pi/Tacom/libtacom/executables/sinefunction_generator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pi/Tacom/libtacom/executables/sinefunction_generator/sinefunction_generator.cpp -o CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator/sinefunction_generator.cpp -o CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.s
 
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.requires:
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.requires:
 
-.PHONY : executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.requires
+.PHONY : 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.requires
 
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.provides: executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.requires
-	$(MAKE) -f executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.provides.build
-.PHONY : executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.provides
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.provides: 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.requires
+	$(MAKE) -f 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.provides.build
+.PHONY : 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.provides
 
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.provides.build: executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.provides.build: 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o
 
 
 # Object files for target sinefunction_generator
@@ -88,35 +88,36 @@ sinefunction_generator_OBJECTS = \
 # External object files for target sinefunction_generator
 sinefunction_generator_EXTERNAL_OBJECTS =
 
-executables/sinefunction_generator/sinefunction_generator: executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o
-executables/sinefunction_generator/sinefunction_generator: executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make
-executables/sinefunction_generator/sinefunction_generator: libconfig4HaptiComm.a
-executables/sinefunction_generator/sinefunction_generator: liblibad5383.a
-executables/sinefunction_generator/sinefunction_generator: liblibutils.a
-executables/sinefunction_generator/sinefunction_generator: liblibalphabet.a
-executables/sinefunction_generator/sinefunction_generator: liblibwaveform.a
-executables/sinefunction_generator/sinefunction_generator: external_lib/libconfig4cpp.a
-executables/sinefunction_generator/sinefunction_generator: liblibutils.a
-executables/sinefunction_generator/sinefunction_generator: libwavFileReader.a
-executables/sinefunction_generator/sinefunction_generator: liblibdevice.a
-executables/sinefunction_generator/sinefunction_generator: executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pi/Tacom/libtacom/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable sinefunction_generator"
-	cd /home/pi/Tacom/libtacom/executables/sinefunction_generator && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sinefunction_generator.dir/link.txt --verbose=$(VERBOSE)
+0_executables/sinefunction_generator/sinefunction_generator: 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o
+0_executables/sinefunction_generator/sinefunction_generator: 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make
+0_executables/sinefunction_generator/sinefunction_generator: libconfig4HaptiComm.a
+0_executables/sinefunction_generator/sinefunction_generator: liblibad5383.a
+0_executables/sinefunction_generator/sinefunction_generator: liblibutils.a
+0_executables/sinefunction_generator/sinefunction_generator: liblibalphabet.a
+0_executables/sinefunction_generator/sinefunction_generator: liblibdevice.a
+0_executables/sinefunction_generator/sinefunction_generator: liblibwaveform.a
+0_executables/sinefunction_generator/sinefunction_generator: 3_external_lib/libconfig4cpp.a
+0_executables/sinefunction_generator/sinefunction_generator: liblibutils.a
+0_executables/sinefunction_generator/sinefunction_generator: liblibdevice.a
+0_executables/sinefunction_generator/sinefunction_generator: libaudioFile.a
+0_executables/sinefunction_generator/sinefunction_generator: 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/link.txt
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/pi/haptiComm/libHaptiComm/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable sinefunction_generator"
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/sinefunction_generator.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build: executables/sinefunction_generator/sinefunction_generator
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build: 0_executables/sinefunction_generator/sinefunction_generator
 
-.PHONY : executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build
+.PHONY : 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build
 
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/requires: executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.requires
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/requires: 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o.requires
 
-.PHONY : executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/requires
+.PHONY : 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/requires
 
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/clean:
-	cd /home/pi/Tacom/libtacom/executables/sinefunction_generator && $(CMAKE_COMMAND) -P CMakeFiles/sinefunction_generator.dir/cmake_clean.cmake
-.PHONY : executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/clean
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/clean:
+	cd /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator && $(CMAKE_COMMAND) -P CMakeFiles/sinefunction_generator.dir/cmake_clean.cmake
+.PHONY : 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/clean
 
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pi/Tacom/libtacom /home/pi/Tacom/libtacom/executables/sinefunction_generator /home/pi/Tacom/libtacom /home/pi/Tacom/libtacom/executables/sinefunction_generator /home/pi/Tacom/libtacom/executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/DependInfo.cmake --color=$(COLOR)
-.PHONY : executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/depend
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/depend:
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/pi/haptiComm/libHaptiComm /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator /home/pi/haptiComm/libHaptiComm /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/DependInfo.cmake --color=$(COLOR)
+.PHONY : 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/depend
 

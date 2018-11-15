@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles /home/pi/Tacom/libtacom/executables/determine-up/CMakeFiles/progress.marks
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/determine-up/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles /home/pi/haptiComm/libHaptiComm/0_executables/determine-up/CMakeFiles/progress.marks
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/determine-up/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/determine-up/clean
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/determine-up/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,32 +97,32 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/determine-up/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/determine-up/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/determine-up/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/determine-up/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-executables/determine-up/CMakeFiles/determine-up.dir/rule:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/determine-up/CMakeFiles/determine-up.dir/rule
-.PHONY : executables/determine-up/CMakeFiles/determine-up.dir/rule
+0_executables/determine-up/CMakeFiles/determine-up.dir/rule:
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/determine-up/CMakeFiles/determine-up.dir/rule
+.PHONY : 0_executables/determine-up/CMakeFiles/determine-up.dir/rule
 
 # Convenience name for target.
-determine-up: executables/determine-up/CMakeFiles/determine-up.dir/rule
+determine-up: 0_executables/determine-up/CMakeFiles/determine-up.dir/rule
 
 .PHONY : determine-up
 
 # fast build rule for target.
 determine-up/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/determine-up/CMakeFiles/determine-up.dir/build.make executables/determine-up/CMakeFiles/determine-up.dir/build
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/determine-up/CMakeFiles/determine-up.dir/build.make 0_executables/determine-up/CMakeFiles/determine-up.dir/build
 .PHONY : determine-up/fast
 
 determine-up.o: determine-up.cpp.o
@@ -131,7 +131,7 @@ determine-up.o: determine-up.cpp.o
 
 # target to build an object file
 determine-up.cpp.o:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/determine-up/CMakeFiles/determine-up.dir/build.make executables/determine-up/CMakeFiles/determine-up.dir/determine-up.cpp.o
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/determine-up/CMakeFiles/determine-up.dir/build.make 0_executables/determine-up/CMakeFiles/determine-up.dir/determine-up.cpp.o
 .PHONY : determine-up.cpp.o
 
 determine-up.i: determine-up.cpp.i
@@ -140,7 +140,7 @@ determine-up.i: determine-up.cpp.i
 
 # target to preprocess a source file
 determine-up.cpp.i:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/determine-up/CMakeFiles/determine-up.dir/build.make executables/determine-up/CMakeFiles/determine-up.dir/determine-up.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/determine-up/CMakeFiles/determine-up.dir/build.make 0_executables/determine-up/CMakeFiles/determine-up.dir/determine-up.cpp.i
 .PHONY : determine-up.cpp.i
 
 determine-up.s: determine-up.cpp.s
@@ -149,7 +149,7 @@ determine-up.s: determine-up.cpp.s
 
 # target to generate assembly for a file
 determine-up.cpp.s:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/determine-up/CMakeFiles/determine-up.dir/build.make executables/determine-up/CMakeFiles/determine-up.dir/determine-up.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/determine-up/CMakeFiles/determine-up.dir/build.make 0_executables/determine-up/CMakeFiles/determine-up.dir/determine-up.cpp.s
 .PHONY : determine-up.cpp.s
 
 # Help Target
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 

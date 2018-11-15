@@ -1,4 +1,4 @@
-# Install script for directory: /home/pi/Tacom/libtacom/executables/sinefunction_generator
+# Install script for directory: /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

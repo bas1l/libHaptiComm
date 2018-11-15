@@ -1,0 +1,2 @@
+/usr/bin/ar qc libtoolstaphold.a  CMakeFiles/toolstaphold.dir/src/toolstaphold.cpp.o
+/usr/bin/ranlib libtoolstaphold.a

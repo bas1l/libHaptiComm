@@ -6,5 +6,5 @@ CXX_FLAGS = -O2 -std=c++11
 
 CXX_DEFINES = 
 
-CXX_INCLUDES = -I/home/pi/Tacom/libtacom/include 
+CXX_INCLUDES = -I/home/pi/haptiComm/libHaptiComm/1_include 
 

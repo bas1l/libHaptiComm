@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/pi/Tacom/libtacom
+CMAKE_SOURCE_DIR = /home/pi/haptiComm/libHaptiComm
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/pi/Tacom/libtacom
+CMAKE_BINARY_DIR = /home/pi/haptiComm/libHaptiComm
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -80,14 +80,14 @@ edit_cache/fast: edit_cache
 
 # The main all target
 all: cmake_check_build_system
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles /home/pi/Tacom/libtacom/executables/sinefunction_generator/CMakeFiles/progress.marks
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/sinefunction_generator/all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/Tacom/libtacom/CMakeFiles 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles /home/pi/haptiComm/libHaptiComm/0_executables/sinefunction_generator/CMakeFiles/progress.marks
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/sinefunction_generator/all
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/pi/haptiComm/libHaptiComm/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
 clean:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/sinefunction_generator/clean
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/sinefunction_generator/clean
 .PHONY : clean
 
 # The main clean target
@@ -97,32 +97,32 @@ clean/fast: clean
 
 # Prepare targets for installation.
 preinstall: all
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/sinefunction_generator/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/sinefunction_generator/preinstall
 .PHONY : preinstall
 
 # Prepare targets for installation.
 preinstall/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/sinefunction_generator/preinstall
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/sinefunction_generator/preinstall
 .PHONY : preinstall/fast
 
 # clear depends
 depend:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 1
 .PHONY : depend
 
 # Convenience name for target.
-executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/rule:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f CMakeFiles/Makefile2 executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/rule
-.PHONY : executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/rule
+0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/rule:
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f CMakeFiles/Makefile2 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/rule
+.PHONY : 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/rule
 
 # Convenience name for target.
-sinefunction_generator: executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/rule
+sinefunction_generator: 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/rule
 
 .PHONY : sinefunction_generator
 
 # fast build rule for target.
 sinefunction_generator/fast:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build
 .PHONY : sinefunction_generator/fast
 
 sinefunction_generator.o: sinefunction_generator.cpp.o
@@ -131,7 +131,7 @@ sinefunction_generator.o: sinefunction_generator.cpp.o
 
 # target to build an object file
 sinefunction_generator.cpp.o:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.o
 .PHONY : sinefunction_generator.cpp.o
 
 sinefunction_generator.i: sinefunction_generator.cpp.i
@@ -140,7 +140,7 @@ sinefunction_generator.i: sinefunction_generator.cpp.i
 
 # target to preprocess a source file
 sinefunction_generator.cpp.i:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.i
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.i
 .PHONY : sinefunction_generator.cpp.i
 
 sinefunction_generator.s: sinefunction_generator.cpp.s
@@ -149,7 +149,7 @@ sinefunction_generator.s: sinefunction_generator.cpp.s
 
 # target to generate assembly for a file
 sinefunction_generator.cpp.s:
-	cd /home/pi/Tacom/libtacom && $(MAKE) -f executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.s
+	cd /home/pi/haptiComm/libHaptiComm && $(MAKE) -f 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/build.make 0_executables/sinefunction_generator/CMakeFiles/sinefunction_generator.dir/sinefunction_generator.cpp.s
 .PHONY : sinefunction_generator.cpp.s
 
 # Help Target
@@ -175,6 +175,6 @@ help:
 # No rule that depends on this can have commands that come from listfiles
 # because they might be regenerated.
 cmake_check_build_system:
-	cd /home/pi/Tacom/libtacom && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
+	cd /home/pi/haptiComm/libHaptiComm && $(CMAKE_COMMAND) -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR) --check-build-system CMakeFiles/Makefile.cmake 0
 .PHONY : cmake_check_build_system
 
