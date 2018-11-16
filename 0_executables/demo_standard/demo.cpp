@@ -162,6 +162,18 @@ void generateSentences(std::queue<char> & sentences, std::condition_variable & c
             {
                 printw("%c", ch);
             }
+            else if (ch == '0')
+            {
+                std::unique_lock<std::mutex> lk(m);
+                std::string s = "The quick brown fox jumps over the lazy dog";
+                printw("%s. ", s);
+                for(int i=0; i<s.length();++i)
+                {
+                    sentences.push(s[i]);
+                    cv.notify_one();
+                    cv.wait(lk);
+                }
+            }
             else
             {
                 //printw("\n<Key not implemented> Need to Exit ? Press '*'.\n");
