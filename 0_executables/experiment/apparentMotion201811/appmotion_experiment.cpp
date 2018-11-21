@@ -42,7 +42,6 @@ struct varOption{
 
 struct overviewOption{
     int overlap;
-    sudo 
 }orchesOpt;
 
 void work(ALPHABET* & alph);

@@ -10,23 +10,25 @@ set(CMAKE_CXX_FLAGS "-O2 -std=c++11")
 ###
 include_directories("1_include")
 
-include_directories("/usr/local/boost_1_69_0")
-include_directories("/usr/local/boost_1_69_0/stage/lib")
-
-include_directories("/usr/local/lib")
-include_directories("/usr/local/include")
-include_directories("/usr/local/boost_1_69_0/boost")
-include_directories("/usr/local/boost_1_69_0/boost/filesystem")
-
 
 ### EXTERNAL LIBRARIES ###
 # Static Libraries
 add_library(config4cpp STATIC IMPORTED)
+#add_library(filesystem STATIC IMPORTED)
 set_target_properties(config4cpp PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/3_external_lib/libconfig4cpp.a)
+#set_target_properties(filesystem PROPERTIES IMPORTED_LOCATION /usr/lib/arm-linux-gnueabihf/libboost_filesystem.a) 
+# Shared Objects
+#set (filesystem /usr/lib/arm-linux-gnueabihf/libboost_filesystem.so)
 # Dynamic Libraries
 add_library(wavFileReader "2_src/wav_file.cpp")
 add_library(audioFile "3_external_lib/AudioFile-master/AudioFile.cpp")
 #add_subdirectory("external_lib/sound_master")
+# Boost libraries
+#set(Boost_INCLUDE_DIR 3_external_lib/boost_1_69_0)
+#set(Boost_LIBRARY_DIR 3_external_lib/boost_1_69_0/libs)
+find_package(Boost COMPONENTS filesystem REQUIRED)
+#include_directories(${Boost_INCLUDE_DIR})
+#link_directories(${Boost_LIBRARY_DIR})
 
 
 
