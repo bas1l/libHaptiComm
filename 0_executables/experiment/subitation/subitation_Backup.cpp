@@ -14,6 +14,13 @@
 #include <math.h>
 #include <unistd.h>
 
+// C++ program to create a directory in Linux
+#include <bits/stdc++.h>
+#include <iostream>
+#include <sys/stat.h>
+#include <sys/types.h>
+using namespace std;
+
 
 #include "HaptiCommConfiguration.h"
 #include "waveform.h"
@@ -25,13 +32,9 @@ using namespace std;
 
 
 
-
-
-
-void        generateSentences(  std::queue<char> & sentences, 
+void        recogByMicrophone(  std::queue<char> & sentences,
                                 std::condition_variable & cv,
-                                std::mutex & m, std::atomic<bool> & workdone, 
-                                std::string str_alph);
+                                std::mutex & m, std::atomic<bool> & workdone);
 void        workSymbols(std::queue<char> & sentences, 
                         std::condition_variable & cv, 
                         std::mutex & m, std::atomic<bool> & workdone, 
@@ -42,9 +45,11 @@ static void usage();
 
 
 
-
-
-
+/*
+ * Argument 1 = Name of the participant
+ *
+ *
+ */
 int main(int argc, char *argv[])
 {   
     /* CREATE VARIABLES
@@ -84,10 +89,6 @@ int main(int argc, char *argv[])
     parseCmdLineArgs(argc, argv, cfgSource, scope);
     cfg->configure(cfgSource, dev, wf, alph);
     
-    //std::vector<std::string> idMotions = {"tap", "apparent", "tapSync", "tapHoldSync"};
-    //wf->printWAVData(idMotions[0]);
-    //wf->printData(idMotions[0]);
-    //alph->printData("h");
     
     cout << "END" << endl;
     
@@ -105,17 +106,22 @@ int main(int argc, char *argv[])
                                 std::ref(m), std::ref(workdone), 
                                 std::ref(alph));
     std::thread send_to_dac;
-    send_to_dac = std::thread(  generateSentences, 
+    send_to_dac = std::thread(  recogByMicrophone,
                                 std::ref(sentences), std::ref(cv),
-                                std::ref(m), std::ref(workdone), 
-                                alph->getlistSymbols());
+                                std::ref(m), std::ref(workdone));
     
-    
+    // Creating a directory
+	if (mkdir("geeksforgeeks", 0777) == -1)
+		cerr << "Error :  " << strerror(errno) << endl;
+
+	else
+		cout << "Directory created";
+
     /* WORK
      * 
      */
-    extract_text.join();
-    send_to_dac.join();
+    //extract_text.join();
+    //send_to_dac.join();
     
     
     /* CLEAN
@@ -130,22 +136,20 @@ int main(int argc, char *argv[])
 }
 
 
-void generateSentences(std::queue<char> & sentences, std::condition_variable & cv,
-            std::mutex & m, std::atomic<bool> & workdone, std::string str_alph)
+/*
+ *
+ *
+ */
+void recogByMicrophone(std::queue<char> & sentences, std::condition_variable & cv,
+            std::mutex & m, std::atomic<bool> & workdone)
 {
 
-    initscr();
-    raw();
-    keypad(stdscr, TRUE);
-    noecho();
 
-    std::string s = "the quick brown fox jumps over the lazy dog";
-    std::string str_ponc = " '.,;:!?-";
-    //printw("alphabet:%s", str_alph.c_str());
     
     int ch;
     printw("You can start to write a letter, a word, a sentence \n --- When you are done, press '*' to Exit ---\n");
     do{
+    	/*
         if (ch != ERR) 
         {
             // if part of the alphabet
@@ -166,10 +170,11 @@ void generateSentences(std::queue<char> & sentences, std::condition_variable & c
             else if (ch == '0')
             {
                 std::unique_lock<std::mutex> lk(m);
+                std::string s = "the quick brown fox jumps over the lazy dog";
                // printw("%s. ", s);
                 for(int i=0; i<s.length();++i)
                 {
-                    sentences.push(s[i]);//s[i].c_str());
+                    sentences.push(s[i]);
                     cv.notify_one();
                     cv.wait(lk);
                 }
@@ -179,6 +184,7 @@ void generateSentences(std::queue<char> & sentences, std::condition_variable & c
                 //printw("\n<Key not implemented> Need to Exit ? Press '*'.\n");
             }
           }
+          */
     }while((ch = getch()) != '*');
     
     
