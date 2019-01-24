@@ -10,6 +10,14 @@ set(CMAKE_CXX_FLAGS "-O2 -std=c++11")
 ###
 include_directories("1_include")
 
+include_directories("/usr/local/boost_1_69_0")
+include_directories("/usr/local/boost_1_69_0/stage/lib")
+
+include_directories("/usr/local/lib")
+include_directories("/usr/local/include")
+include_directories("/usr/local/boost_1_69_0/boost")
+include_directories("/usr/local/boost_1_69_0/boost/filesystem")
+
 
 ### EXTERNAL LIBRARIES ###
 # Static Libraries

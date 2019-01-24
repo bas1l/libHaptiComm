@@ -194,7 +194,10 @@ throw (HaptiCommConfigurationException)
             
             wf->insertMotion(m);
         }
-        printf("[WAVEFORM::configuration] %d motions added\n", len);
+        if (len==1)
+            printf("[WAVEFORM::configuration] %d motion added\n", len);
+        else
+            printf("[WAVEFORM::configuration] %d motions added\n", len);
     }
     catch(const ConfigurationException & ex) {
             throw HaptiCommConfigurationException("configure_waveform");//ex.c_str());

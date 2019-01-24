@@ -16,31 +16,60 @@
 using namespace std;
 
 bool setOpt(int *argc, char *argv[], map<string, string> *options);
+
+
+
 /*
  * Argument 1 = Name of the participant
- *
- *
  */
 int main(int argc, char *argv[])
 {   
+	// Options
 	map<string, string> options;
 	setOpt(&argc, argv, &options);
-	
 	string firstname(options.find("firstname")->second);
 	string lastname(options.find("lastname")->second);
 	string expDirectory(options.find("expdir")->second);
-	Candidat c(expDirectory, firstname, lastname);
+	string cfgSource(options.find("cfg")->second);
 	
+	// create candidat
+	Candidat c(expDirectory, firstname, lastname);
 	if(!c.exist()) 
 		c.create();
+	else
+		c.loadFromDB();
 	
-	//c.launchNextExp();
+	// check if the current user has another experiment to do
+	if (c.isNextExp() == false) { return -1; }
+	
+	// create experiment
+	Experiment exp(cfgSource.c_str(), c.getSequence(), c.nextExp());
+	exp.create();
+	exp.execute();// launch experiment
+	
+	// get the results
+	auto timers = exp.getTimer();
+    auto answers = exp.getAnswer();
+    
+	
+	// push the results into the corresponding files
+	c.saveResults(&timers, &answers);
 	
     return 1;
 }
 
 
-/* getopt_long() refers to '-' hyphen for a single alphanumeric symbol option, '--' for a long option 
+
+
+
+
+
+
+
+
+
+/* 
+ * getopt_long() refers to '-' hyphen for a single alphanumeric symbol option, '--' for a long option 
  * getopt_long_only() check '-' for long option first, if not found check a single alphanumeric symbol option
  */
 bool setOpt(int *argc, char *argv[], map<string, string> * options)

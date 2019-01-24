@@ -47,9 +47,7 @@ static void usage();
 
 int main(int argc, char *argv[])
 {   
-    /* CREATE VARIABLES
-     * 
-     */
+    /* CREATE VARIABLES */
     HaptiCommConfiguration * cfg = new HaptiCommConfiguration();
     DEVICE * dev = new DEVICE();
     WAVEFORM * wf  = new WAVEFORM();
@@ -63,7 +61,6 @@ int main(int argc, char *argv[])
      * printw and timer
      *
     */
-    
     struct timespec t;
     struct sched_param param;
     param.sched_priority = sched_get_priority_max(SCHED_FIFO);
@@ -152,12 +149,12 @@ void generateSentences(std::queue<char> & sentences, std::condition_variable & c
             if (str_alph.find(ch) != std::string::npos)
             {
                 printw("%c", ch);
-                
+
                 std::unique_lock<std::mutex> lk(m);
-                sentences.push(ch);
                 
-                cv.notify_one();
                 cv.wait(lk);
+                sentences.push(ch);
+                cv.notify_one();
             }// if part of the ponctuation
             else if (str_ponc.find(ch) != std::string::npos)
             {
@@ -165,13 +162,14 @@ void generateSentences(std::queue<char> & sentences, std::condition_variable & c
             }
             else if (ch == '0')
             {
-                std::unique_lock<std::mutex> lk(m);
                // printw("%s. ", s);
                 for(int i=0; i<s.length();++i)
                 {
+                    std::unique_lock<std::mutex> lk(m);
+                    cv.wait(lk);
+                    printw("%c", s[i]);
                     sentences.push(s[i]);//s[i].c_str());
                     cv.notify_one();
-                    cv.wait(lk);
                 }
             }
             else
