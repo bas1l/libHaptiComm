@@ -1,0 +1,6 @@
+Fichier de configuration
+.
+..
+...
+
+candidats:
