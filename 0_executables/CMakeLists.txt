@@ -8,11 +8,11 @@ add_subdirectory("neutral")
 add_subdirectory("daemonPowerSupply")
 add_subdirectory("daemonEMOMNeutral")
 
-add_subdirectory("experiment/apparentMotion201811")
+#add_subdirectory("experiment/apparentMotion201811")
 add_subdirectory("experiment/subitation")
 
-add_subdirectory("tests/determine-up")
-add_subdirectory("tests/blinkgpio")
+#add_subdirectory("tests/determine-up")
+#add_subdirectory("tests/blinkgpio")
 add_subdirectory("tests/microphone")
 
 #add_subdirectory("caracterise2018")

@@ -36,9 +36,9 @@ bool Experiment::create()
 
 bool Experiment::execute()
 {
-	// init drive electronics
-    //this->ad->spi_open();
-    //this->ad->configure();
+    // init drive electronics
+    this->ad->spi_open();
+    this->ad->configure();
     
     double durationRefresh_ms = 1/(double) alph->getFreqRefresh_mHz();
     int durationRefresh_ns  = durationRefresh_ms * ms2ns; // * ns
@@ -90,9 +90,9 @@ bool Experiment::executeBuz(int * durationRefresh_ns){
 
 
 bool Experiment::executeActuator(char letter, int * durationRefresh_ns){
-	cout << "[experiment][executeActuator] start..." << endl;
-	// environmental variables
-	int i;
+    cout << "[experiment][executeActuator] start..." << endl;
+    // environmental variables
+    int i;
     int overruns=0;
     td_highresclock c_start;
     // input variables
@@ -103,22 +103,22 @@ bool Experiment::executeActuator(char letter, int * durationRefresh_ns){
     
 	for(i=0; i<this->seq.size(); i++) // for the sequence i
 	{
-		// https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
-		c_start = chrono::high_resolution_clock::now();
-		overruns += executeSequence(&i, values, durationRefresh_ns, &c_start, &vhrc); // copy of values is important (erase)
+	    // https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
+	    c_start = chrono::high_resolution_clock::now();
+	    overruns += executeSequence(&i, values, durationRefresh_ns, &c_start, &vhrc); // copy of values is important (erase)
 	    cout << "write the answer:";
-		answer = "1";//cin >> answer;
+	    answer = "1";//cin >> answer;
 		
-		vhrc[2] = chrono::duration<double, milli>(chrono::high_resolution_clock::now()-c_start);
+	    vhrc[2] = chrono::duration<double, milli>(chrono::high_resolution_clock::now()-c_start);
 	    std::cout << "t1: " << vhrc[0].count() 
-				  << "ms, t2: " << vhrc[1].count() 
-				  << "ms, t3: " << vhrc[2].count() << "ms" << endl;
+			<< "ms, t2: " << vhrc[1].count() 
+			<< "ms, t3: " << vhrc[2].count() << "ms" << endl;
 	    
 	    // save the result
 	    vvtimer.push_back(vhrc);
 	    vanswer.push_back(stoi(answer));
 	}
-
+	
 	cout << "[experiment][executeActuator] ...end" << endl;
 	return true;
 }
