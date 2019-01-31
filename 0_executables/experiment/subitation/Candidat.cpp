@@ -7,12 +7,14 @@
 
 #include "Candidat.h"
 
-Candidat::Candidat(string _pathDirectory, string _firstname, string _lastname)
+Candidat::Candidat(string _pathDict, string _pathDirectory, 
+				   string _firstname, string _lastname)
 	: nextit(0), nba(6), nbr(10), 
 	  infoFile("info.txt"), 
 	  candidatsListFile("candidatsList.txt")
 {
 	cout << "[candidat] new" << endl;
+	setPathDict(_pathDict);
 	setPathDirectory(_pathDirectory);
 	setName(_firstname, _lastname);
 }
@@ -81,13 +83,14 @@ bool Candidat::exist()
 
 bool Candidat::create()
 {
+	bool err=false;
 	/* get the next id for the candidat */
 	struct dirent * dirp;
 	int idMax = 0;
 	DIR * dp;
 	if((dp  = opendir(this->pathDirectory.c_str())) == NULL) {
 		cout << "[candidat] Error(" << errno << ") opening " << this->pathDirectory << endl;
-		return errno;
+		err=true;
 	}
 	// looping over all candidate files in the main directory
 	while ((dirp = readdir(dp)) != NULL) 
@@ -122,30 +125,33 @@ bool Candidat::create()
 	this->copyDir(boost::filesystem::path(model), boost::filesystem::path(candidatFolder));
 	//this->copyDir(boost::filesystem::path("/home/basil/haptiComm/results/subitation/modelDir"),
 	//		boost::filesystem::path("/home/basil/haptiComm/results/subitation/15"));
-	cout << "[candidat] [SUCCESS] Candidate('" << this->firstname << ' ' << this->lastname 
-		 << "') has been created with its current folder named '" 
-		 << to_string(this->id) << "'." << endl;
-	
-	
+
 	/* initialize the sequence vector  */
 	this->initexpVariables();
 	
 	/* save all the informations into the infoFile */
 	this->saveInfo();
 	
-	return true;
+	cout << "[candidat] [SUCCESS] Candidate('" << this->firstname << ' ' << this->lastname 
+	 << "') has been created with its current folder named '" 
+	 << to_string(this->id) << "'." << endl;
+	 
+	return err;
 }
 
 
 
 bool Candidat::loadFromDB(){
+	bool err = false;
 	cout << "[candidat][loadFromDB] Start..." << endl;
 	
 	/* condition variables */
 	string flname = "firstname,lastname";
+	string lang   = "langage";
 	string expord = "expEnum order";
 	string expseq = "experimental sequences";
 	bool nextis_name = false;
+	bool nextis_lang = false;
 	bool nextis_eord = false;
 	bool nextis_eseq = false;
 	
@@ -153,7 +159,11 @@ bool Candidat::loadFromDB(){
 	string line;
 	string fileinstr(this->pathDirectory+to_string(this->id)+"/"+this->infoFile); // info.txt
 	std::ifstream filein(fileinstr); //File to read from
-	if (!filein)  { cerr << "[candidat][saveResults] " << fileinstr  << ": Error opening file" << endl; }
+	if (!filein)  
+	{ 
+		cerr << "[candidat][loadFromDB] " << fileinstr  << ": Error opening file" << endl;
+		err = true;
+	}
 	
 	/* tmp output variables */
 	string bstr;
@@ -166,9 +176,10 @@ bool Candidat::loadFromDB(){
 		if ( line.find_first_not_of(' ') == std::string::npos )// if empty line, going to another parameter
 		{
 			nextis_name = false;
+			nextis_lang = false;
 			nextis_eord = false;
 			nextis_eseq = false;
-			cout << "empty,";
+			cout << "empty line";
 		}
 		else if(nextis_eseq)
 		{
@@ -187,6 +198,11 @@ bool Candidat::loadFromDB(){
 			cout << "firstname=" << firstname << " and lastname=" << lastname << endl;
 					
 		}
+		else if(nextis_lang)
+		{
+			this->langage = line;
+			cout << "langage=" << langage << endl;
+		}
 		else if(nextis_eord)
 		{
 			bstr  = line.substr(0, line.find(","));
@@ -197,8 +213,9 @@ bool Candidat::loadFromDB(){
 			cout << "bool=" << bstr << " and expEnum=" << eestr << endl;
 		}
 		else if (line.find(flname) != string::npos) { nextis_name = true; cout << "TRUE1" <<endl; }
-		else if (line.find(expord) != string::npos) { nextis_eord = true; cout << "TRUE2" <<endl; }
-		else if (line.find(expseq) != string::npos) { nextis_eseq = true; cout << "TRUE3" <<endl; }
+		else if (line.find(lang)   != string::npos) { nextis_lang = true; cout << "TRUE2" <<endl; }
+		else if (line.find(expord) != string::npos) { nextis_eord = true; cout << "TRUE3" <<endl; }
+		else if (line.find(expseq) != string::npos) { nextis_eseq = true; cout << "TRUE4" <<endl; }
 		
 		//cout << line << endl;
 	}
@@ -206,12 +223,11 @@ bool Candidat::loadFromDB(){
 	
 	cout << "[candidat][loadFromDB] \t...End" << endl;
 	
-	return true;
+	return err;
 }
 
 
-
-// return the next experiment to execute
+// Return true if there is another exp to do
 bool Candidat::isNextExp()
 {
 	bool found = false;
@@ -227,7 +243,7 @@ bool Candidat::isNextExp()
 	return found; 
 }
 
-
+// return the next experiment to execute
 expEnum Candidat::nextExp(){
 	expEnum ee;
 	bool found = false;
@@ -281,8 +297,8 @@ bool Candidat::saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> *
 	string fileoutstr(this->pathDirectory+to_string(this->id)+"/"+this->infoFile+".tmp");
 	std::ifstream filein(fileinstr); //File to read from
 	std::ofstream fileout(fileoutstr); //Temporary file
-	if (!filein)  { cerr << "[candidat][saveResults] " << fileinstr  << ": Error opening file" << endl; }
-	if (!fileout) { cerr << "[candidat][saveResults] " << fileoutstr << ": Error opening file" << endl; }
+	if (!filein)  { cerr << "[candidat][saveResults] " << fileinstr  << ": Error opening file" << endl; return true;}
+	if (!fileout) { cerr << "[candidat][saveResults] " << fileoutstr << ": Error opening file" << endl; return true;}
 	
 	while(getline(filein, line)) { // fill the tmp file
 		if (line.find(expstr) != string::npos) // if the line of the current exp has been found
@@ -298,7 +314,7 @@ bool Candidat::saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> *
 	if (rename(fileoutstr.c_str(), fileinstr.c_str()) != 0) { cerr << "[candidat][saveResults] " << fileinstr << ": Error renaming file" << endl; }
 	
 	
-	return true;
+	return false;
 }
 
 
@@ -330,6 +346,13 @@ vector<vector<int>> Candidat::getSequence(){
 string Candidat::getPathDirectory(){
 	return this->pathDirectory;
 }
+string Candidat::getPathDict(){
+	return this->pathDict;
+}
+string Candidat::getLangage(){
+	return this->langage;
+}
+	
 
 
 
@@ -346,12 +369,37 @@ bool Candidat::setName(string fn, string ln){
 	this->lastname = ln;
 	return true;
 }
+
+bool Candidat::setlangage(string l){
+	bool ret = true;
+	if (l.compare("fr-fr") == 0)
+	{
+		this->langage = l;
+	}
+	else if (l.compare("en-us") == 0)
+	{
+		this->langage = l;
+	}
+	else
+	{
+		ret = false;
+		cerr << "The langage <" << l << "> is not supported." << endl;
+		cerr << "Try with 'fr-fr' or 'en-us'." << endl;
+	}
+	
+	return ret;
+}
+
 bool Candidat::setExpeOrder(){
 
 	return true;
 }
 bool Candidat::setSequence(){
 
+	return true;
+}
+bool Candidat::setPathDict(string p){
+	this->pathDict = p;
 	return true;
 }
 bool Candidat::setPathDirectory(string p){
@@ -366,6 +414,7 @@ bool Candidat::setPathDirectory(string p){
  * INITIALISATION
  *************/
 bool Candidat::initexpVariables(){
+	this->initlangage();
 	this->initapc();
 	this->initseq();
 	this->initexpeOrder();
@@ -386,6 +435,16 @@ bool Candidat::initexpVariables(){
 }
 
 
+
+/* Initialise all the possible combinaisons of actuators */
+bool Candidat::initlangage(){
+	string tmpL;
+	
+	cout << "Candidat is going to be created. Which is the langage to use? ('en-us' or 'fr-fr')" << endl;
+	cin >> tmpL;
+	
+	return setlangage(tmpL);
+}
 
 /* Initialise all the possible combinaisons of actuators */
 bool Candidat::initapc(){
@@ -455,7 +514,7 @@ bool Candidat::initseq(){
 
 bool Candidat::initexpeOrder(){
 	expeOrder.push_back( std::make_pair(false,BrailleDev) );
-	expeOrder.push_back( std::make_pair(false,Fingers) );
+	expeOrder.push_back( std::make_pair(true, Fingers) );
 	expeOrder.push_back( std::make_pair(false,Buzzer) );
 	std::random_shuffle(expeOrder.begin(), expeOrder.end());
 	
@@ -471,11 +530,16 @@ bool Candidat::saveInfo(){
 	cout << "[candidat][saveInfo] writing " << file << "...";
 
 	std::ofstream mf;
-	
 	mf.open(file);
+	
 	mf << "firstname,lastname:" << endl;
 	mf << this->firstname << "," << this->lastname << endl;
 	mf << endl;
+	
+	mf << "langage:" << endl;
+	mf << this->langage << endl;
+	mf << endl;
+	
 	mf << "expEnum order:" << endl;
 	for (vector<pair<bool, expEnum>>::iterator it=this->expeOrder.begin(); it!=this->expeOrder.end(); ++it)
 	{

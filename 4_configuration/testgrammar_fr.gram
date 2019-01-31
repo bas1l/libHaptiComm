@@ -1,0 +1,11 @@
+#JSGF V1.0;
+
+grammar nombre;
+public <1> = un;
+public <2> = deux;
+public <3> = trois;
+public <4> = quatre;
+public <5> = cinq;
+public <6> = six;
+public <7> = sept;
+public <8> = huit;

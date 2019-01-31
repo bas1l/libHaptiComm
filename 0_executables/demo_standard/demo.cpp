@@ -152,9 +152,9 @@ void generateSentences(std::queue<char> & sentences, std::condition_variable & c
 
                 std::unique_lock<std::mutex> lk(m);
                 
-                cv.wait(lk);
                 sentences.push(ch);
                 cv.notify_one();
+                cv.wait(lk);
             }// if part of the ponctuation
             else if (str_ponc.find(ch) != std::string::npos)
             {
@@ -166,10 +166,10 @@ void generateSentences(std::queue<char> & sentences, std::condition_variable & c
                 for(int i=0; i<s.length();++i)
                 {
                     std::unique_lock<std::mutex> lk(m);
-                    cv.wait(lk);
                     printw("%c", s[i]);
                     sentences.push(s[i]);//s[i].c_str());
                     cv.notify_one();
+                    cv.wait(lk);
                 }
             }
             else

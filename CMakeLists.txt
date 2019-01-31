@@ -9,6 +9,9 @@ set(CMAKE_CXX_FLAGS "-O2 -std=c++11")
 # Include directory
 ###
 include_directories("1_include")
+include_directories("/usr/local/include")
+include_directories("/usr/local/include/sphinxbase")
+include_directories("/usr/local/include/pocketsphinx")
 
 
 ### EXTERNAL LIBRARIES ###
