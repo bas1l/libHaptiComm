@@ -22,3 +22,6 @@
 .metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
 .metadata/version.ini
 3_external_lib/libconfig4cpp.a
+.metadata/.plugins/com.genuitec.eclipse.devstyle/recent.json
+*.json
+*.json
