@@ -1,0 +1,243 @@
+<?xml version="1.0" standalone="no" ?>
+<!DOCTYPE project PUBLIC "-//audacityproject-1.3.0//DTD//EN" "http://audacity.sourceforge.net/xml/audacityproject-1.3.0.dtd" >
+<project xmlns="http://audacity.sourceforge.net/xml/" projname="TapBuzMulti_data" version="1.3.0" audacityversion="2.2.2" sel0="0.0000000000" sel1="0.2096825397" vpos="704" h="0.0000000000" zoom="1755.0000000000" rate="44100.0" snapto="off" selectionformat="hh:mm:ss + millisecondes" frequencyformat="Hz" bandwidthformat="octaves">
+	<tags>
+		<tag name="TITLE" value="Shorter tap for AsiaHaptics2018 and neutral value at the end"/>
+		<tag name="YEAR" value="2018"/>
+		<tag name="ALBUM" value="HaptiComm 2018"/>
+		<tag name="ARTIST" value="basil duvernoy"/>
+		<tag name="TRACKNUMBER" value="1"/>
+		<tag name="GENRE" value="Tactile"/>
+	</tags>
+	<wavetrack name="TapAsiaMulti 1" channel="0" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="9247">
+				<waveblock start="0">
+					<simpleblockfile filename="e08083d6.au" len="8820" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+				<waveblock start="8820">
+					<simpleblockfile filename="e0808183.au" len="427" min="-1.0" max="-1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 2" channel="1" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e08089ae.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e080853d.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 3" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808769.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e080872a.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 4" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="9247">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808d51.au" len="9247" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 5" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="9247">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808e09.au" len="9247" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 6" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e08084cc.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808ef8.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 7" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e08084dc.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808b3c.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 8" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808825.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e08080c4.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 9" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808278.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e08085d3.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 10" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e08085b5.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e08088c9.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 11" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e08081c6.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e08088e9.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 12" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808ca1.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808d96.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 13" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="0" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e08086e1.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808023.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+	<wavetrack name="TapAsiaMulti 14" channel="2" linked="0" mute="0" solo="0" height="150" minimized="0" isSelected="1" rate="44100" gain="1.0" pan="0.0" colorindex="0">
+		<waveclip offset="0.00000000" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="1113">
+				<waveblock start="0">
+					<simpleblockfile filename="e08088f2.au" len="1113" min="1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+		<waveclip offset="0.02523810" colorindex="0">
+			<sequence maxsamples="262144" sampleformat="262159" numsamples="8134">
+				<waveblock start="0">
+					<simpleblockfile filename="e0808c56.au" len="8134" min="-1.0" max="1.0" rms="1.0"/>
+				</waveblock>
+			</sequence>
+			<envelope numpoints="0"/>
+		</waveclip>
+	</wavetrack>
+</project>
