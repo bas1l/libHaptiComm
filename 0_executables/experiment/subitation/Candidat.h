@@ -40,10 +40,10 @@ typedef std::chrono::duration<double, milli> td_msec;
 class Candidat {
 public:
 	// Create the structure of the candidat
-	Candidat(string _pathDirectory, string _firstname, string _lastname);
+	Candidat(string _pathDict, string _pathDirectory, string _firstname, string _lastname);
 	// Destroy the candidat object
 	virtual ~Candidat();
-
+	
 	// check if the candidat already exist
 	bool exist();
 	// create the candidat
@@ -62,45 +62,62 @@ public:
 	int 					getId();
 	string 					getFirstname();
 	string 					getLastname();
+	
 	vector<pair<bool, expEnum>> getExpeOrder();
+	
 	vector<vector<int>> 	getSequence();
 	string 					getPathDirectory();
 
+	string 					getPathDict();
+	string 					getLangage();
 
 
 
 
 
 private:
+	/* Common variables of the candidat */
 	int id; // id of the candidat
 	string firstname; // firstname of the candidat
 	string lastname; // lastname of the candidat
 	
+	/* General variables for making the use of some functions easier */
 	int a,i,j,r,s; // classic iteration variables
-	int nextit; // iteration variable of (???)
+	int nextit; // iteration variable of (??? more precisions needed)
+	vector<vector<int>> apc; // sequence of All the Possible Combinaisons for the expEnums	
+	
+	/* experiment variables */
 	int nba; // NumBer of Actuators
 	int nbr; // NumBer of Repetition by subgroup of stimuli
-	vector<pair<bool, expEnum>> expeOrder; // the ordered expEnums and the bool statement aknowleding if it has been done already	
-	vector<vector<int>> apc; // sequence of All the Possible Combinaisons for the expEnums	
+	vector<pair<bool, expEnum>> expeOrder; // the ordered expEnums and the bool statement aknowleding if it has been done already
 	vector<vector<int>> seq; // SEQuence of the stimuli for the expEnums	
-		
+	
+	/* File information paths */
 	string pathDirectory; // path of the main directory of candidat
 	string candidatsListFile;
 	string infoFile;
 	
-	// setters
+	/* Dictionary related variables */
+	string langage; // langage used by the candidat
+	string pathDict; // path of the main dictionary directory
+	
+	
+	/* setters */
 	bool setId(int _id);
 	bool setName(string fn, string ln);
+	bool setlangage(string l);
 	bool setExpeOrder();
 	bool setSequence();
+	bool setPathDict(string p);
 	bool setPathDirectory(string p);
-	// initialisation
+	/* initialisation */
 	bool initexpVariables();
+	bool initlangage();
 	bool initapc();
 	bool initseq();
 	bool initexpeOrder();
-	bool saveInfo();
-	// tools
+	bool saveInfo(); // save all initalised informations
+	/* tools */
 	string expstring(expEnum ee);
 	expEnum str2expEnum(string eestr);
 	bool copyDir(boost::filesystem::path const & source, boost::filesystem::path const & destination);

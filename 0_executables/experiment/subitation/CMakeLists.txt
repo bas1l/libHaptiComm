@@ -9,4 +9,4 @@ add_library(experiment "Experiment.cpp")
 
 add_executable(${PROJECT_NAME} "subitation.cpp")
 link_directories(${CMAKE_BINARY_DIR})
-target_link_libraries (${PROJECT_NAME} LINK_PUBLIC pthread ncurses config4HaptiComm libad5383 libutils libwaveform libdevice libalphabet candidat experiment ${Boost_SYSTEM_LIBRARY} boost_filesystem)
+target_link_libraries (${PROJECT_NAME} LINK_PUBLIC pthread ncurses config4HaptiComm libad5383 libutils libwaveform libdevice libalphabet candidat experiment ${Boost_SYSTEM_LIBRARY} boost_filesystem pocketsphinx sphinxbase sphinxad)

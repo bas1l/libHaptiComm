@@ -94,50 +94,6 @@ static const arg_t cont_args_def[] = {
 
 static ps_decoder_t *ps;
 static cmd_ln_t *config;
-static FILE *rawfd;
-
-static void
-print_word_times()
-{
-    int frame_rate = cmd_ln_int32_r(config, "-frate");
-    ps_seg_t *iter = ps_seg_iter(ps);
-    while (iter != NULL) {
-        int32 sf, ef, pprob;
-        float conf;
-
-        ps_seg_frames(iter, &sf, &ef);
-        pprob = ps_seg_prob(iter, NULL, NULL, NULL);
-        conf = logmath_exp(ps_get_logmath(ps), pprob);
-        printf("%s %.3f %.3f %f\n", ps_seg_word(iter), ((float)sf / frame_rate),
-               ((float) ef / frame_rate), conf);
-        iter = ps_seg_next(iter);
-    }
-}
-
-static int
-check_wav_header(char *header, int expected_sr)
-{
-    int sr;
-
-    if (header[34] != 0x10) {
-        E_ERROR("Input audio file has [%d] bits per sample instead of 16\n", header[34]);
-        return 0;
-    }
-    if (header[20] != 0x1) {
-        E_ERROR("Input audio file has compression [%d] and not required PCM\n", header[20]);
-        return 0;
-    }
-    if (header[22] != 0x1) {
-        E_ERROR("Input audio file has [%d] channels, expected single channel mono\n", header[22]);
-        return 0;
-    }
-    sr = ((header[24] & 0xFF) | ((header[25] & 0xFF) << 8) | ((header[26] & 0xFF) << 16) | ((header[27] & 0xFF) << 24));
-    if (sr != expected_sr) {
-        E_ERROR("Input audio file has sample rate [%d], but decoder expects [%d]\n", sr, expected_sr);
-        return 0;
-    }
-    return 1;
-}
 
 
 /* Sleep for specified msec */
@@ -220,7 +176,7 @@ main(int argc, char *argv[])
     char const *cfg;
 
     config = cmd_ln_parse_r(NULL, cont_args_def, argc, argv, TRUE);
-
+    
     /* Handle argument file as -argfile. */
     if (config && (cfg = cmd_ln_str_r(config, "-argfile")) != NULL) {
         config = cmd_ln_parse_file_r(config, cont_args_def, cfg, FALSE);
@@ -231,7 +187,7 @@ main(int argc, char *argv[])
         cmd_ln_free_r(config);
 	return 1;
     }
-
+    
     ps_default_search_args(config);
     ps = ps_init(config);
     if (ps == NULL) {
