@@ -19,6 +19,7 @@ Candidat::Candidat(string _pathDict, string _pathDirectory,
 	setName(_firstname, _lastname);
 }
 
+
 Candidat::~Candidat() {
 	// TODO Auto-generated destructor stub
 }
@@ -79,8 +80,6 @@ bool Candidat::exist()
 }
 
 
-
-
 bool Candidat::create()
 {
 	bool err=false;
@@ -105,6 +104,8 @@ bool Candidat::create()
 	this->setId(idMax+1);
 	closedir(dp);
 	
+	/* initialize the sequence vector  */
+	this->initexpVariables();
 	
 	/* add a line in the candidatList.txt for the new candidate */
 	string clFile(this->pathDirectory + this->candidatsListFile);
@@ -126,8 +127,6 @@ bool Candidat::create()
 	//this->copyDir(boost::filesystem::path("/home/basil/haptiComm/results/subitation/modelDir"),
 	//		boost::filesystem::path("/home/basil/haptiComm/results/subitation/15"));
 
-	/* initialize the sequence vector  */
-	this->initexpVariables();
 	
 	/* save all the informations into the infoFile */
 	this->saveInfo();
@@ -138,7 +137,6 @@ bool Candidat::create()
 	 
 	return err;
 }
-
 
 
 bool Candidat::loadFromDB(){
@@ -243,6 +241,7 @@ bool Candidat::isNextExp()
 	return found; 
 }
 
+
 // return the next experiment to execute
 expEnum Candidat::nextExp(){
 	expEnum ee;
@@ -265,6 +264,7 @@ expEnum Candidat::nextExp(){
 
 
 
+<<<<<<< Updated upstream
 bool Candidat::saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> * answers){
 	/* save the results into the corresponding file (current experiment) */
 	string expstr = this->expstring(this->nextExp()); // current experiment string
@@ -288,31 +288,17 @@ bool Candidat::saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> *
 		mf << endl;
 	}
 	mf.close();
+=======
+bool Candidat::saveResults(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end){
+	/* save the results in a csv file */
+	fillcsvfile(timers, answers, seq_start, seq_end);
+>>>>>>> Stashed changes
 	
-	
-	/* The current experiment becomes true (info.txt), meaning that the experiment has been done */
-	string line;
-	string expnew = "true," + expstr;
-	string fileinstr(this->pathDirectory+to_string(this->id)+"/"+this->infoFile);
-	string fileoutstr(this->pathDirectory+to_string(this->id)+"/"+this->infoFile+".tmp");
-	std::ifstream filein(fileinstr); //File to read from
-	std::ofstream fileout(fileoutstr); //Temporary file
-	if (!filein)  { cerr << "[candidat][saveResults] " << fileinstr  << ": Error opening file" << endl; return true;}
-	if (!fileout) { cerr << "[candidat][saveResults] " << fileoutstr << ": Error opening file" << endl; return true;}
-	
-	while(getline(filein, line)) { // fill the tmp file
-		if (line.find(expstr) != string::npos) // if the line of the current exp has been found
-			fileout << expnew;
-		else
-			fileout << line;
-		fileout << endl;
+	/* if seq_end = max, the experiment has been done */
+	if (this->seq.size() == *seq_end)
+	{
+		return seteoe();
 	}
-	filein.close();
-	fileout.close();
-	
-	if (remove(fileinstr.c_str()) != 0) { cerr << "[candidat][saveResults] " << fileinstr << ": Error deleting file" << endl; }
-	if (rename(fileoutstr.c_str(), fileinstr.c_str()) != 0) { cerr << "[candidat][saveResults] " << fileinstr << ": Error renaming file" << endl; }
-	
 	
 	return false;
 }
@@ -323,38 +309,15 @@ bool Candidat::saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> *
 /*************
  * GETTER
  *************/
-int Candidat::getId(){
-	return this->id;
-}
-
-string Candidat::getFirstname(){
-	return this->firstname;
-}
-
-string Candidat::getLastname(){
-	return this->lastname;
-}
-
-vector<pair<bool, expEnum>> Candidat::getExpeOrder(){
-	return this->expeOrder;
-}
-
-vector<vector<int>> Candidat::getSequence(){
-	return this->seq;
-}
-
-string Candidat::getPathDirectory(){
-	return this->pathDirectory;
-}
-string Candidat::getPathDict(){
-	return this->pathDict;
-}
-string Candidat::getLangage(){
-	return this->langage;
-}
+int 						Candidat::getId(){ 				return this->id; }
+string 						Candidat::getFirstname(){ 		return this->firstname; }
+string 						Candidat::getLastname(){ 		return this->lastname; }
+vector<pair<bool, expEnum>> Candidat::getExpeOrder(){ 		return this->expeOrder; }
+vector<vector<int>> 		Candidat::getSequence(){ 		return this->seq; }
+string 						Candidat::getPathDirectory(){ 	return this->pathDirectory; }
+string 						Candidat::getPathDict(){ 		return this->pathDict; }
+string 						Candidat::getLangage(){ 		return this->langage; }
 	
-
-
 
 /*************
  * SETTER
@@ -390,18 +353,32 @@ bool Candidat::setlangage(string l){
 	return ret;
 }
 
+bool Candidat::setage(int _age){
+	this->age = _age;
+	return true;
+}
+
+bool Candidat::settype(string _t){
+	this->type = _t;
+	return true;
+	
+}
+
 bool Candidat::setExpeOrder(){
 
 	return true;
 }
+
 bool Candidat::setSequence(){
 
 	return true;
 }
+
 bool Candidat::setPathDict(string p){
 	this->pathDict = p;
 	return true;
 }
+
 bool Candidat::setPathDirectory(string p){
 	this->pathDirectory = p;
 	return true;
@@ -414,7 +391,10 @@ bool Candidat::setPathDirectory(string p){
  * INITIALISATION
  *************/
 bool Candidat::initexpVariables(){
+	cout << "More informations is needed to create the candidat:" << endl;
 	this->initlangage();
+	this->initage();
+	this->inittype();
 	this->initapc();
 	this->initseq();
 	this->initexpeOrder();
@@ -434,16 +414,30 @@ bool Candidat::initexpVariables(){
 	return true;
 }
 
-
-
-/* Initialise all the possible combinaisons of actuators */
 bool Candidat::initlangage(){
-	string tmpL;
+	string tmp;
+	cout << "Which is the langage to use? ('en-us' or 'fr-fr')" << endl;
+	cin >> tmp;
 	
-	cout << "Candidat is going to be created. Which is the langage to use? ('en-us' or 'fr-fr')" << endl;
-	cin >> tmpL;
+	return setlangage(tmp);
+}
+
+bool Candidat::initage(){
+	string tmp;
 	
-	return setlangage(tmpL);
+	cout << "How old are you?" << endl;
+	cin >> tmp;
+	
+	return setage(atoi(tmp.c_str()));
+}
+
+bool Candidat::inittype(){
+	string tmp;
+	
+	cout << "Are you a man, a woman? ('h','m' or 'f', 'w')" << endl;
+	cin >> tmp;
+	
+	return settype(tmp);
 }
 
 /* Initialise all the possible combinaisons of actuators */
@@ -463,7 +457,6 @@ bool Candidat::initapc(){
 	
 	return true;
 }
-
 
 /* Initialise the sequences that will be used for the expEnums */
 bool Candidat::initseq(){
@@ -507,21 +500,17 @@ bool Candidat::initseq(){
 	return true;
 }
 
-
-
-
-
-
 bool Candidat::initexpeOrder(){
-	expeOrder.push_back( std::make_pair(false,BrailleDev) );
-	expeOrder.push_back( std::make_pair(true, Fingers) );
-	expeOrder.push_back( std::make_pair(false,Buzzer) );
+	expeOrder.push_back( std::make_pair(false,BrailleDevSpace) );
+	expeOrder.push_back( std::make_pair(false,BrailleDevTemp) );
+	expeOrder.push_back( std::make_pair(true, FingersSpace) );
+	expeOrder.push_back( std::make_pair(true, FingersTemp) );
+	expeOrder.push_back( std::make_pair(false,BuzzerSpace) );
+	expeOrder.push_back( std::make_pair(true,BuzzerTemp) );
 	std::random_shuffle(expeOrder.begin(), expeOrder.end());
 	
 	return true;
 }
-
-
 
 bool Candidat::saveInfo(){
 	//for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
@@ -534,6 +523,14 @@ bool Candidat::saveInfo(){
 	
 	mf << "firstname,lastname:" << endl;
 	mf << this->firstname << "," << this->lastname << endl;
+	mf << endl;
+	
+	mf << "age:" << endl;
+	mf << this->age << endl;
+	mf << endl;
+	
+	mf << "type:" << endl;
+	mf << this->type << endl;
 	mf << endl;
 	
 	mf << "langage:" << endl;
@@ -573,16 +570,148 @@ bool Candidat::saveInfo(){
  * TOOLS
  *************/
 
+bool Candidat::seteoe()
+{
+	string expname( this->expstring(this->nextExp()) ); // current experiment string
+	string line;
+	string expnew = "true," + expname;
+	string filein(this->pathDirectory+to_string(this->id)+"/"+this->infoFile);
+	string fileout(this->pathDirectory+to_string(this->id)+"/"+this->infoFile+".tmp");
+	std::ifstream fin(filein); //File to read from
+	std::ofstream fout(fileout); //Temporary file
+	if (!fin)  { cerr << "[candidat][saveResults] " << filein  << ": Error opening file" << endl; return true;}
+	if (!fout) { cerr << "[candidat][saveResults] " << fileout << ": Error opening file" << endl; return true;}
+	
+	while(getline(fin, line)) { // fill the tmp file
+		if (line.find(expname) != string::npos) // if the line of the current exp has been found
+			fout << expnew;
+		else
+			fout << line;
+		fout << endl;
+	}
+	fin.close();
+	fout.close();
+	
+	if (remove(filein.c_str()) != 0) { cerr << "[candidat][saveResults] " << filein << ": Error deleting file" << endl; }
+	if (rename(fileout.c_str(), filein.c_str()) != 0) { cerr << "[candidat][saveResults] " << fileout << ": Error renaming file" << endl; }
+	
+	return false;
+}
+
+bool Candidat::fillcsvfile(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end){
+	string expname( this->expstring(this->nextExp()) ); // current experiment string
+	string fname(   this->pathDirectory+to_string(this->id)+"/"+expname+".csv" );
+		
+	
+	/* if new file */
+	if (0 == *seq_start) {
+		std::ofstream mf(fname);	
+		if(!mf) { cerr << "[candidat][saveResults] " << fname << ": Error opening file" << endl; }
+		else {    cout << "[candidat][saveResults] writing results into: " << fname << endl;}
+		
+		// header
+		mf << "id_seq,actuator1,actuator2,actuator3,actuator4,actuator5,actuator6,";
+		mf << "before_stimuli(ms),after_stimuli(ms),time_answer(ms),";
+		mf << "value_answer(0:6)";
+		mf << endl;
+		
+		// for each sequence
+		for (int i=*seq_start; i!=*seq_end; ++i) {
+			// id of the sequence
+			mf << to_string(i) << ",";
+			// value of the sequence
+			for (int j=0; j<this->seq[i].size(); ++j) {
+				mf << to_string(this->seq[i][j]) << ",";
+			}
+			// timers
+			for (int k=0; k<(*timers)[i].size(); ++k) {
+				mf << to_string((*timers)[i][k].count()) << ",";
+			}
+			// answer
+			mf << to_string((*answers)[i]);
+			// eol
+			mf << endl;
+		}
+		mf.close();
+		
+	}
+	/* else already exists */
+	else {
+		int ans_idx;
+		string line;
+		string tmpname( this->pathDirectory+to_string(this->id)+"/"+expname+".csv.tmp" );
+		
+		std::ifstream fin(fname); //File to read from
+		std::ofstream fout(tmpname); //Temporary file
+		if (!fin) { cerr << "[candidat][saveResults] " << fname  << ": Error opening file" << endl; return true;}
+		else      { cout << "[candidat][saveResults] writing results into: " << fname << endl;}
+		if (!fout) { cerr << "[candidat][saveResults] " << tmpname << ": Error opening file" << endl; return true;}
+		
+		int cptline=-1; // remove the header's count, start to -1
+		bool job_done = false;
+		while(getline(fin, line) && !job_done) { // fill the tmp file until seq_start
+			if (cptline == *seq_start)
+				job_done = true;
+			else
+				fout << line << endl;
+				cout << "cptline=" << cptline << ", line=" << line << endl;
+			
+			cptline++;
+		}
+		fin.close();
+		
+		if (!job_done) // if gap between previous_number_sequences and seq_start
+		{
+			for (int i=cptline; i!=*seq_start; ++i) {
+				fout << to_string(i) << "-1,-1,-1,-1,-1,-1, -1,-1,-1, -1" << endl;
+			}
+		}
+		
+		for (int i=*seq_start; i!=*seq_end; ++i) { // for each sequence
+			ans_idx = i - *seq_start;
+			// id of the sequence
+			fout << to_string(i) << ",";
+			// value of the sequence
+			for (int j=0; j<this->seq[i].size(); ++j) {
+				fout << to_string(this->seq[i][j]) << ",";
+			}
+			// timers
+			for (int k=0; k<(*timers)[ans_idx].size(); ++k) {
+				fout << to_string((*timers)[ans_idx][k].count()) << ",";
+			}
+			// answer
+			fout << to_string((*answers)[ans_idx]);
+			// eol
+			fout << endl;
+		}
+		fout.close();
+		
+		if (remove(fname.c_str()) != 0) { cerr << "[candidat][saveResults] " << fname << ": Error deleting file" << endl; }
+		if (rename(tmpname.c_str(), fname.c_str()) != 0) { cerr << "[candidat][saveResults] " << tmpname << ": Error renaming file" << endl; }
+	}
+		
+	cout << "[SUCCES]...written" << endl;
+	
+	return false;
+}
+
+
 string Candidat::expstring(expEnum ee)
 {
 	string ret;
 
-	if(ee == BrailleDev)
-		ret = "BrailleDev";
-	else if(ee == Fingers)
-		ret = "Finger";
-	else if(ee == Buzzer)
-		ret = "Buzzer";
+	if(ee == BrailleDevSpace)
+		ret = "BrailleDevSpace";
+	else if(ee == BrailleDevTemp)
+		ret = "BrailleDevTemp";
+	else if(ee == FingersSpace)
+		ret = "FingersSpace";
+	else if(ee == FingersTemp)
+		ret = "FingersTemp";
+	else if(ee == BuzzerSpace)
+		ret = "BuzzerSpace";
+	else if(ee == BuzzerTemp)
+		ret = "BuzzerTemp";
 	else
 		ret = "";
 	
@@ -594,17 +723,29 @@ expEnum Candidat::str2expEnum(string eestr)
 {
 	expEnum ee;
 
-	if (eestr.compare("BrailleDev") == 0)
+	if (eestr.compare("BrailleDevSpace") == 0)
 	{
-		ee = BrailleDev;
+		ee = BrailleDevSpace;
 	}
-	else if (eestr.compare("Finger") == 0)
+	else if (eestr.compare("BrailleDevTemp") == 0)
 	{
-		ee = Fingers;
+		ee = BrailleDevTemp;
 	}
-	else if (eestr.compare("Buzzer") == 0)
+	else if (eestr.compare("FingersSpace") == 0)
 	{
-		ee = Buzzer;
+		ee = FingersSpace;
+	}
+	else if (eestr.compare("FingersTemp") == 0)
+	{
+		ee = FingersTemp;
+	}
+	else if (eestr.compare("BuzzerSpace") == 0)
+	{
+		ee = BuzzerSpace;
+	}
+	else if (eestr.compare("BuzzerTemp") == 0)
+	{
+		ee = BuzzerTemp;
 	}
 	else
 	{

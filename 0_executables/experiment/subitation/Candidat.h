@@ -33,9 +33,18 @@ using namespace boost::filesystem;
 #ifndef CANDIDAT_H_
 #define CANDIDAT_H_
 
+<<<<<<< Updated upstream
+=======
+#define SIZE_ARRAY_TIMERS 3
+>>>>>>> Stashed changes
 
-enum expEnum {BrailleDev=10, Fingers=20, Buzzer=30};
+enum expEnum {BrailleDevSpace=10, BrailleDevTemp=11,
+			  FingersSpace=20, FingersTemp=21, 
+			  BuzzerSpace=30, BuzzerTemp=31};
+
+typedef std::chrono::time_point<std::chrono::high_resolution_clock> td_highresclock;
 typedef std::chrono::duration<double, milli> td_msec;
+typedef array<td_msec, SIZE_ARRAY_TIMERS> td_msecarray;
 
 class Candidat {
 public:
@@ -55,10 +64,16 @@ public:
 	// return the next experiment to execute
 	expEnum nextExp();
 	// return the next experiment to execute
+<<<<<<< Updated upstream
 	bool saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> * answers);
+=======
+	bool saveResults(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end);
+>>>>>>> Stashed changes
 	
+	// get string of an expEnum 
+	string expstring(expEnum ee);
 	
-	// getters:
+	/* getters */
 	int 					getId();
 	string 					getFirstname();
 	string 					getLastname();
@@ -80,6 +95,8 @@ private:
 	int id; // id of the candidat
 	string firstname; // firstname of the candidat
 	string lastname; // lastname of the candidat
+	int    age; // age of the candidat
+	string type; // man or woman candidat
 	
 	/* General variables for making the use of some functions easier */
 	int a,i,j,r,s; // classic iteration variables
@@ -106,6 +123,8 @@ private:
 	bool setId(int _id);
 	bool setName(string fn, string ln);
 	bool setlangage(string l);
+	bool setage(int _age);
+	bool settype(string _t);
 	bool setExpeOrder();
 	bool setSequence();
 	bool setPathDict(string p);
@@ -113,22 +132,19 @@ private:
 	/* initialisation */
 	bool initexpVariables();
 	bool initlangage();
+	bool initage();
+	bool inittype();
 	bool initapc();
 	bool initseq();
 	bool initexpeOrder();
 	bool saveInfo(); // save all initalised informations
-	/* tools */
-	string expstring(expEnum ee);
+	/* tools, files and directories modifiers */
+	bool seteoe();
+	bool fillcsvfile(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end);
 	expEnum str2expEnum(string eestr);
 	bool copyDir(boost::filesystem::path const & source, boost::filesystem::path const & destination);
-	
-
-
 
 };
-
-
-
 
 
 

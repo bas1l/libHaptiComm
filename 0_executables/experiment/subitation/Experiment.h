@@ -7,7 +7,9 @@
 
 #include <array> // std::array
 #include <chrono> // std::clock, std::chrono::high_resolution_clock::now
+#include <numeric> // accumulate
 #include <stdlib.h> // srand, rand
+#include <string.h> // strncmp
 #include <sys/mman.h>
 #include <time.h> // time
 #include <unistd.h> // sleep, usleep
@@ -33,8 +35,6 @@ using namespace std;
 #ifndef EXPERIMENT_H_
 #define EXPERIMENT_H_
 
-typedef std::chrono::time_point<std::chrono::high_resolution_clock> td_highresclock;
-typedef std::chrono::duration<double, milli> td_msec;
 
 
 
@@ -59,12 +59,12 @@ static const arg_t cont_args_def[] = {
  ************************************************/
 class Experiment {
 public:
-	Experiment(const char * _cfgSource, Candidat * _c)// Create the structure of the Experiment
+	Experiment(const char * _cfgSource, Candidat * _c, int _seq_start)// Create the structure of the Experiment
 	{
 		cout << "[experiment] new::start..." << endl;
 		this->cfgSource = _cfgSource;
 		this->c = _c;
-		
+		this->seq_start = _seq_start;
 		/* HaptiComm variables
 		 * (1) If not in the .h -> CANNOT COMPILE (?)
 		 * (2) Same for the destructor 
@@ -97,8 +97,14 @@ public:
 	bool execute();
 
 	/* Getters */
+<<<<<<< Updated upstream
     vector<std::array<td_msec, 3>> getTimer();
+=======
+    vector<td_msecarray> getTimer();
+>>>>>>> Stashed changes
     vector<int> getAnswer();
+    int getSeq_start();
+    int getSeq_end();
 	
 	
 private:
@@ -112,6 +118,9 @@ private:
 	const char * cfgSource;
 	const char * scope;
 	
+	int seq_start;
+	int seq_end;
+	
 	// voice recognition variables (sphinx)
 	ps_decoder_t * vr_ps; // decoder for voice recognition
 	cmd_ln_t * vr_cfg; // config for voice recognition
@@ -120,28 +129,50 @@ private:
 	// Candidat variables
 	Candidat * c;
 	vector<vector<int>> seq;
+	vector<int> actchannelID;
 	expEnum expToExec;
 	
 	// output/result variables
+<<<<<<< Updated upstream
     vector<std::array<td_msec, 3>> vvtimer;
+=======
+	td_highresclock c_start;
+    vector<td_msecarray> vvtimer;
+>>>>>>> Stashed changes
     vector<int> vanswer;
 	
 	/* function to execute depending on expToExec */
 	bool executeF(int * durationRefresh_ns);
+<<<<<<< Updated upstream
 	bool executeBD(int * durationRefresh_ns);
 	bool executeBuz(int * durationRefresh_ns);
 	bool executeActuator(char letter, int * durationRefresh_ns);
 	int executeSequence(int * i, waveformLetter values, int * dr_ns, td_highresclock * c_start, array<td_msec, 3> * vhrc);
+=======
+	bool executeActuator(int * durationRefresh_ns);
+	int  executeSequence(int * currSeq, waveformLetter values_copy, int * dr_ns, td_msecarray * vhrc);
+	int executeSequenceSpace(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc);
+	int  executeSequenceTemp(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc);
 	
-    
+	int recognize_from_microphone(ad_rec_t *ad, td_msecarray * vhrc, td_msecarray * timerDebug);
+>>>>>>> Stashed changes
 	
+	
+<<<<<<< Updated upstream
 	int recognize_from_microphone(ps_decoder_t * vr_ps, ad_rec_t *ad,
 								int16_t * adbuf, char const *hyp,
 								bool * utt_started, int32_t * k,
 								array<td_msec, 3> * vhrc);
+=======
+	td_msec nowSeq();
+	bool rectifyAnswer(int * answeri);
+	void pasteTimers(int numSeq, int answeri, td_msecarray vhrc, td_msecarray timerDebug);
+>>>>>>> Stashed changes
 	bool wordtonumb(const char * hyp, int * answer);
 	void recognize_from_microphoneBckpup();
 	
+	/* SETTERS */
+	void initactid4temp(); 
 	
 
 };
