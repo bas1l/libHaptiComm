@@ -2128,6 +2128,7 @@ IEclipsePreferences#org-eclipse-ui-workbench {
 		'org.eclipse.egit.ui.DiffRemoveBackgroundColor=97,45,45'
 		'org.eclipse.egit.ui.DiffRemoveForegroundColor=238,240,241'
 		'org.eclipse.egit.ui.IgnoredResourceForegroundColor=157,167,175'
+		'org.eclipse.egit.ui.UncommittedChangeBackgroundColor=25,29,31'
 		'org.eclipse.egit.ui.UncommittedChangeForegroundColor=216,220,223'
 		'org.eclipse.mylyn.tasks.ui.colors.category.gradient.end=28,31,34'
 		'org.eclipse.mylyn.tasks.ui.colors.category.gradient.start=11,13,14'

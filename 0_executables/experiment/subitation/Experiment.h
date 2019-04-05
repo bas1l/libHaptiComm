@@ -97,14 +97,11 @@ public:
 	bool execute();
 
 	/* Getters */
-<<<<<<< Updated upstream
-    vector<std::array<td_msec, 3>> getTimer();
-=======
-    vector<td_msecarray> getTimer();
->>>>>>> Stashed changes
-    vector<int> getAnswer();
-    int getSeq_start();
-    int getSeq_end();
+	//vector<std::array<td_msec, 3>> getTimer();
+	vector<td_msecarray> getTimer();
+	vector<int> getAnswer();
+	int getSeq_start();
+	int getSeq_end();
 	
 	
 private:
@@ -113,7 +110,7 @@ private:
 	DEVICE * dev;
 	WAVEFORM * wf;
 	ALPHABET * alph;
-    AD5383 * ad;
+	AD5383 * ad;
 	int exitStatus;
 	const char * cfgSource;
 	const char * scope;
@@ -133,41 +130,32 @@ private:
 	expEnum expToExec;
 	
 	// output/result variables
-<<<<<<< Updated upstream
-    vector<std::array<td_msec, 3>> vvtimer;
-=======
+	  //    vector<std::array<td_msec, 3>> vvtimer;
 	td_highresclock c_start;
-    vector<td_msecarray> vvtimer;
->>>>>>> Stashed changes
-    vector<int> vanswer;
+	vector<td_msecarray> vvtimer;
+	vector<int> vanswer;
 	
 	/* function to execute depending on expToExec */
 	bool executeF(int * durationRefresh_ns);
-<<<<<<< Updated upstream
-	bool executeBD(int * durationRefresh_ns);
-	bool executeBuz(int * durationRefresh_ns);
-	bool executeActuator(char letter, int * durationRefresh_ns);
-	int executeSequence(int * i, waveformLetter values, int * dr_ns, td_highresclock * c_start, array<td_msec, 3> * vhrc);
-=======
+	//bool executeBD(int * durationRefresh_ns);
+	//bool executeBuz(int * durationRefresh_ns);
+	//bool executeActuator(char letter, int * durationRefresh_ns);
+	//int executeSequence(int * i, waveformLetter values, int * dr_ns, td_highresclock * c_start, array<td_msec, 3> * vhrc);
 	bool executeActuator(int * durationRefresh_ns);
 	int  executeSequence(int * currSeq, waveformLetter values_copy, int * dr_ns, td_msecarray * vhrc);
 	int executeSequenceSpace(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc);
 	int  executeSequenceTemp(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc);
-	
 	int recognize_from_microphone(ad_rec_t *ad, td_msecarray * vhrc, td_msecarray * timerDebug);
->>>>>>> Stashed changes
 	
 	
-<<<<<<< Updated upstream
-	int recognize_from_microphone(ps_decoder_t * vr_ps, ad_rec_t *ad,
-								int16_t * adbuf, char const *hyp,
-								bool * utt_started, int32_t * k,
-								array<td_msec, 3> * vhrc);
-=======
+	//int recognize_from_microphone(ps_decoder_t * vr_ps, ad_rec_t *ad,
+	//							int16_t * adbuf, char const *hyp,
+	//							bool * utt_started, int32_t * k,
+	//							array<td_msec, 3> * vhrc);
 	td_msec nowSeq();
 	bool rectifyAnswer(int * answeri);
 	void pasteTimers(int numSeq, int answeri, td_msecarray vhrc, td_msecarray timerDebug);
->>>>>>> Stashed changes
+
 	bool wordtonumb(const char * hyp, int * answer);
 	void recognize_from_microphoneBckpup();
 	

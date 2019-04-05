@@ -288,7 +288,10 @@ bool Experiment::executeActuator(int * durationRefresh_ns){
 
 
 
-
+<<<<<<< Updated upstream
+int Experiment::executeSequence(int * i, waveformLetter values, int * dr_ns, td_highresclock * c_start, array<td_msec, 3> * vhrc){
+    /* Transforms the values vector corresponding to the sequence */
+=======
 // values has to be a non-pointer because modified inside the function (erase)
 int Experiment::executeSequence(int * currSeq, waveformLetter values_copy, int * dr_ns, td_msecarray * vhrc){
     int ovr=0;
@@ -309,6 +312,7 @@ int Experiment::executeSequence(int * currSeq, waveformLetter values_copy, int *
 
 int Experiment::executeSequenceSpace(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc)
 {
+>>>>>>> Stashed changes
     int j=0, ovr=0, timeleft=0; // ready to check each actuator availability of the sequence
     int nbAct = values->size();
     waveformLetter::iterator it;
@@ -345,6 +349,54 @@ int Experiment::executeSequenceSpace(int * currSeq, waveformLetter *values, int 
 }
 
 
+<<<<<<< Updated upstream
+
+vector<std::array<td_msec, 3>> Experiment::getTimer()
+{
+    return this->vvtimer;
+}
+
+vector<int> Experiment::getAnswer()
+{
+    return this->vanswer;
+}
+
+
+int Experiment::recognize_from_microphone(
+    ps_decoder_t * vr_ps, ad_rec_t * ad, int16_t * adbuf,// intput (1)
+    char const *hyp, bool * utt_started, int32_t * k,    // intput (2)
+    array<td_msec, 3> * vhrc) // output
+{
+    bool in_speech, listen = true;
+    int answer;
+    
+    while (listen) {
+        if ((*k = ad_read(ad, adbuf, 2048)) < 0)
+            E_FATAL("Failed to read audio\n");
+        ps_process_raw(vr_ps, adbuf, *k, FALSE, FALSE);
+        in_speech = ps_get_in_speech(vr_ps);
+        if (in_speech && !*utt_started) {
+            *utt_started = true;
+            E_INFO("Listening...\n");
+        }
+	
+        if (!in_speech && *utt_started) {
+            // speech -> silence transition, time to start new utterance
+            ps_end_utt(vr_ps);
+            hyp = ps_get_hyp(vr_ps, NULL );
+            if (hyp != NULL) {
+                printf("%s\n", hyp);
+                fflush(stdout);
+		if (!wordtonumb(hyp, &answer))
+		{
+		    listen = false;
+		}
+            }
+
+            if (ps_start_utt(vr_ps) < 0)
+                E_FATAL("Failed to start utterance\n");
+            *utt_started = false;
+=======
 int Experiment::executeSequenceTemp(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc)
 {
     int j=0, ovr=0, timeleft=0; // ready to check each actuator availability of the sequence
@@ -469,9 +521,11 @@ int Experiment::recognize_from_microphone(ad_rec_t *ad, td_msecarray * vhrc, td_
                     E_FATAL("Failed to start utterance\n");
                 utt_started = false;
             }
+>>>>>>> Stashed changes
         }
     }
-
+<<<<<<< Updated upstream
+=======
     
     
     k = ad_read(ad, adbuf, INT_MAX);
@@ -480,7 +534,7 @@ int Experiment::recognize_from_microphone(ad_rec_t *ad, td_msecarray * vhrc, td_
     k = ad_read(ad, adbuf, INT_MAX);
     //while (k>0) { k = ad_read(ad, adbuf, INT_MAX); }
     (*timerDebug)[2] = nowSeq();
-
+>>>>>>> Stashed changes
     
     return answer;
 }
@@ -537,44 +591,70 @@ bool Experiment::wordtonumb(const char * hyp, int * hypint)
 {
     int ret= false;
     
-
+<<<<<<< Updated upstream
+    if (strcmp(hyp, "ONE")==0 || strcmp(hyp, "un")==0)
+=======
     if (strncmp(hyp, "one", 3)==0 || strncmp(hyp, "ONE", 3)==0 || strncmp(hyp, "un", 2)==0)
+>>>>>>> Stashed changes
     {
         *hypint = 1;
     }
+<<<<<<< Updated upstream
+    else if (strcmp(hyp, "TWO")==0 || strcmp(hyp, "deux")==0)
+=======
     else if (strncmp(hyp, "two", 3)==0 || strncmp(hyp, "TWO", 3)==0 || strncmp(hyp, "deux", 4)==0)
+>>>>>>> Stashed changes
     {
         *hypint = 2;
     }
+<<<<<<< Updated upstream
+    else if (strcmp(hyp, "THREE")==0 || strcmp(hyp, "trois")==0)
+=======
     else if (strncmp(hyp, "three", 5)==0 || strncmp(hyp, "THREE", 5)==0 || strncmp(hyp, "trois", 5)==0)
+>>>>>>> Stashed changes
     {
         *hypint = 3;
     }
+<<<<<<< Updated upstream
+    else if (strcmp(hyp, "FOUR")==0 || strcmp(hyp, "quatre")==0)
+=======
     else if (strncmp(hyp, "four", 4)==0 || strncmp(hyp, "FOUR", 4)==0 || strncmp(hyp, "quatre", 6)==0)
-
+>>>>>>> Stashed changes
     {
         *hypint = 4;
     }
+<<<<<<< Updated upstream
+    else if (strcmp(hyp, "FIVE")==0 || strcmp(hyp, "cinq")==0)
+=======
     else if (strncmp(hyp, "five", 4)==0 || strncmp(hyp, "FIVE", 4)==0 || strncmp(hyp, "cinq", 4)==0)
-
+>>>>>>> Stashed changes
     {
         *hypint = 5;
     }
+<<<<<<< Updated upstream
+    else if (strcmp(hyp, "SIX")==0 || strcmp(hyp, "six")==0)
+=======
     else if (strncmp(hyp, "six", 3)==0 || strncmp(hyp, "SIX", 3)==0 || strncmp(hyp, "six", 3)==0)
-
+>>>>>>> Stashed changes
     {
         *hypint = 6;
     }
     else
     {
+<<<<<<< Updated upstream
+	*hypint = -1;
+	ret = true;
+=======
         *hypint = -1;
         ret = true;
-
+>>>>>>> Stashed changes
     }
     
     return ret;
 }
 
+<<<<<<< Updated upstream
+=======
 
 
 
@@ -597,7 +677,7 @@ int                Experiment::getSeq_end(){ return this->seq_end; }
 
 
 
-
+>>>>>>> Stashed changes
 void Experiment::recognize_from_microphoneBckpup()
 {
     ad_rec_t *ad;
@@ -620,7 +700,7 @@ void Experiment::recognize_from_microphoneBckpup()
         E_FATAL("Failed to start utterance\n");
     utt_started = FALSE;
     E_INFO("Ready....\n");
-    
+
     for (;;) {
         if ((k = ad_read(ad, adbuf, 2048)) < 0)
             E_FATAL("Failed to read audio\n");
