@@ -79,7 +79,7 @@ int main(int argc, char *argv[])
 	Experiment exp(cfgSource.c_str(), &c, seqnumb);
 	if (exp.create()) 
 	{ 
-		cerr << "issue during the creation of the encoder" << endl; 
+		cerr << "Issue during the creation of the experiment" << endl; 
 		cerr << "The program is ending..." << endl; 
 		return 1;
 	}

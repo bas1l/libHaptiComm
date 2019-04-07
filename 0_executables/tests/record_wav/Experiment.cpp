@@ -39,10 +39,12 @@ bool Experiment::create()
 		exit(-2);
     }
     setlocale(LC_ALL, "");
-    
+
+    cout << "cfg->configure>>" << endl;
     this->cfg->configure(cfgSource, dev, wf, alph);	// hapticomm configuration file
     
     // preparing the command line arguments 'argv' variable for CMU Sphinx VR
+    cout << "fakeargs>>" << endl;
     string fdd(c->getPathDict()+c->getLangage()+"/"+c->getLangage()); // folder of the CMU Sphinx database
     if (c->getLangage().compare("en-us") ==0) // english VR
     {
@@ -116,15 +118,16 @@ bool Experiment::create()
     }*/
     
     // thread and shared memory's variables initialisation for voice recording
+    cout << "thread>>" << endl;
     this->workdone = false; 													// check if the experiment is done
     this->is_recording = false; 												// allow t_record to start or stop the recording
 	this->t_record = std::thread(&Experiment::record_from_microphone, this); 	// link the thread to its function
 	this->t_record.join(); 														// start the thread
 
 	// init wav writer (AudioFile library)
+    cout << "AudioFile" << endl;
     this->af = new AudioFile<double>();
     int sampleRate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate");
-    
     this->af_i = 0;										// iterator for audioFile
     this->af_max = sampleRate * 10;						// size of audioFile buffer
     this->af->setAudioBufferSize(1, this->af_max);		// init audioFile buffer
