@@ -2,7 +2,6 @@
 3_external_lib/libconfig4cpp.a
 *.hpp
 *.ipp
-*.h
 *.html
 .metadata/.log
 .metadata/.plugins/com.genuitec.eclipse.devstyle/recent.json
