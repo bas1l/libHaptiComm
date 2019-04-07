@@ -107,12 +107,13 @@ bool Experiment::create()
         fakeargv[9] = eInfoval;
         this->vr_cfg = cmd_ln_parse_r(NULL, cont_args_def, fakeargc, fakeargv, TRUE);
     }
+    /*
     ps_default_search_args(this->vr_cfg);			// fill non-defined variables with default values
     this->vr_ps = ps_init(this->vr_cfg);			// initialise voice recognition variables
     if (this->vr_ps == NULL) {						// if failed, exit
         cmd_ln_free_r(this->vr_cfg);				// free memory
         return 1;									// exit
-    }
+    }*/
     
     // thread and shared memory's variables initialisation for voice recording
     this->workdone = false; 													// check if the experiment is done
