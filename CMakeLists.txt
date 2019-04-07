@@ -4,6 +4,7 @@ project(libtacom)
 
 set(CMAKE_CXX_FLAGS "-O2 -std=c++11")
 
+message("${CMAKE_SYSTEM_NAME}")
 
 # A. Include directory
 include_directories("1_include")
@@ -13,8 +14,7 @@ include_directories("/usr/local/include/pocketsphinx")
 
 # B. External libraries
 ## B.1  Dynamic libraries
-add_library(wavFileReader 	"2_src/wav_file.cpp")
-add_library(audioFile 		"3_external_lib/AudioFile-master/AudioFile.cpp")
+add_library(audioFile "3_external_lib/AudioFile-master/AudioFile.cpp")
 ## B.2  Static libraries
 add_library(config4cpp STATIC IMPORTED)
 set_target_properties(config4cpp PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/3_external_lib/libconfig4cpp.a)

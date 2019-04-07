@@ -1,20 +1,20 @@
-#include <iostream>
-#include <sys/mman.h>
 #include <algorithm>
-#include <thread>
+#include <atomic>
 #include <condition_variable>
-#include <queue>
-#include <cstdlib>
 #include <chrono>
 #include <ctime>
-#include <random>
-#include <atomic>
-#include <sys/ioctl.h>
-#include <ncurses.h>
+#include <cstdlib>
+#include <iostream>
 #include <math.h>
+#include <ncurses.h>
+#include <queue>
+#include <random>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <thread>
 #include <unistd.h>
 
-
+// hapticomm headers
 #include "HaptiCommConfiguration.h"
 #include "waveform.h"
 #include "ad5383.h"
@@ -22,10 +22,6 @@
 #include "alphabet.h"
 
 using namespace std;
-
-
-
-
 
 
 void        generateSentences(  std::queue<char> & sentences, 
