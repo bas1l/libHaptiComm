@@ -211,10 +211,7 @@ bool Experiment::executeActuator(int * durationRefresh_ns){
         vvtimer.push_back(vhrc);
         vanswer.push_back(answeri);
     }
-    
     this->seq_end = i;
-    
-    
     
     cout << "[experiment][executeActuator] ...end" << endl;
     return false;
@@ -435,6 +432,7 @@ void Experiment::record_from_microphone()
 	
 	cout << "while1" << endl;
 	while(!this->workdone.load()){ 										// while experiment is not done
+		/*
 		cout << "[while1] in." << endl;
 		this->cv.wait(lk); 												// wait for a new sequence (WF notify_one in the current 'execute' function)
 		cout << "[while1] this->cv.wait(lk)." << endl;
@@ -466,6 +464,7 @@ void Experiment::record_from_microphone()
 		lk.unlock();													// return the access for is_recording
 	    if (ad_stop_rec(adrec) < 0) 									// answer has been given, stop recording
 	    	E_FATAL("Failed to stop recording\n");
+		*/
 	}
 	
 	// experiment is done, close microphone
