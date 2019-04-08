@@ -86,18 +86,20 @@ bool Experiment::create()
     }
     
     ps_default_search_args(this->vr_cfg);			// fill non-defined variables with default values
+    /*
     this->vr_ps = ps_init(this->vr_cfg);			// initialise voice recognition variables
     if (this->vr_ps == NULL) {						// if failed, exit
         cmd_ln_free_r(this->vr_cfg);				// free memory
         return 1;									// exit
     }
+    */
     
     // thread and shared memory's variables initialisation for voice recording
     cout << "thread>>" << endl;
     this->workdone = false; 													// check if the experiment is done
     this->is_recording = false; 												// allow t_record to start or stop the recording
 	this->t_record = std::thread(&Experiment::record_from_microphone, this); 	// link the thread to its function
-	this->t_record.join(); 														// start the thread
+	//this->t_record.join(); 														// start the thread
 
 	// init wav writer (AudioFile library)
     cout << "AudioFile" << endl;
