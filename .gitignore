@@ -1355,3 +1355,4 @@ install/pocketsphinx-5prealpha/swig/python/pocketsphinx_wrap.c
 install/pocketsphinx-5prealpha/swig/python/pocketsphinx_wrap.lo
 install/pocketsphinx-5prealpha/swig/python/pocketsphinx_wrap.o
 install/wiringPi/
+.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
