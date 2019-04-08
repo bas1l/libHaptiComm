@@ -432,16 +432,16 @@ void Experiment::record_from_microphone()
 	int16_t adbuf[2048];												// audio buffer of the audio device 
     int32_t k;															// returned value of reading microphone
 	
-	cout << "while1" << endl;
+	//cout << "while1" << endl;
 	int workdone_local 		= false;
 	int is_recording_local 	= false;
 	
 	while(true){ 										// while experiment is not done
 		{ 	// wait to be notified before starting
 			std::unique_lock<std::mutex> lg(this->m);							// locker to access shared variables
-			cout << "[while1] in." << endl;
+			//cout << "[while1] in." << endl;
 			this->cv.wait(lg); 												// wait for a new sequence (WF notify_one in the current 'execute' function)
-			cout << "[while1] this->cv.wait(lk)." << endl;
+			//cout << "[while1] this->cv.wait(lk)." << endl;
 			workdone_local 		= this->workdone.load();
 			is_recording_local 	= this->is_recording.load();
 		}
@@ -450,19 +450,19 @@ void Experiment::record_from_microphone()
 			break;
 		}
 		else if(!is_recording_local){								// not a new sequence, go back to wait
-			cout << "[while1] if (!this->is_recording.load())." << endl;
+			//cout << "[while1] if (!this->is_recording.load())." << endl;
 			continue;													// go to wait
 		}
 		
-		cout << "[while1] continue." << endl;
+		//cout << "[while1] continue." << endl;
 		if (ad_start_rec(adrec) < 0) 									// start recording
 			E_FATAL("Failed to start recording\n");
-		cout << "after ad_start_rec." << endl;
+		//cout << "after ad_start_rec." << endl;
 		do { k = ad_read(adrec, adbuf, INT_MAX); } while (k>0); 		// empty the microphone buffer from mic before recording -- previously[k = ad_read(ad, adbuf, INT_MAX);]
-		cout << "after ad_read. emptier" << endl;
+		//cout << "after ad_read. emptier" << endl;
 		
 		while(is_recording_local){ 								// while the answer is not given
-	        cout << "start while2" << endl;
+	        //cout << "start while2" << endl;
 	        if ((k = ad_read(adrec, adbuf, 10)) < 0)					// record...
 	        	E_FATAL("Failed to read audio\n");
 	        for(int i=0; i<10; i++,this->af_i++)						// store the records into audioFile object
@@ -472,17 +472,18 @@ void Experiment::record_from_microphone()
 
 	        {	// locker for is_recording access
 				std::lock_guard<std::mutex> lg(this->m);							// locker to access shared variables
-				cout << "[while2] lock_guard." << endl;
+				//cout << "[while2] lock_guard." << endl;
 				is_recording_local = this->is_recording.load();
 			}
 		}
-		cout << "after while2." << endl;
+		//cout << "after while2." << endl;
 		
 	    if (ad_stop_rec(adrec) < 0) 									// answer has been given, stop recording
 	    	E_FATAL("Failed to stop recording\n");
 		
 	}
 	
+	cout << "[thread] end of the function.." << endl;
 	// experiment is done, close microphone
     if (ad_close(adrec) < 0) E_FATAL("Failed to close the device\n");
 }
