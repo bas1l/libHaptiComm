@@ -57,7 +57,7 @@ bool Experiment::create()
     	this->vr_cfg = cmd_ln_init(NULL, ps_args(), TRUE,   	// Load the configuration structure - ps_args() passes the default values
 					"-logfn", 	eInfoval,                   	// suppress log info from being sent to screen
 					"-jsgf", 	jsgfval,
-					"-adcdev", 	adcdevval,
+					//"-adcdev", 	adcdevval,
 					 NULL);
     } 
     else // french VR
@@ -81,7 +81,7 @@ bool Experiment::create()
 					"-dict", 	dictval,                   		// custom dictionary (file must be present)
 					"-logfn", 	eInfoval,                   	// suppress log info from being sent to screen
 					"-jsgf", 	jsgfval,
-					"-adcdev", 	adcdevval,
+					//"-adcdev", 	adcdevval,
 					 NULL);
     }
     
@@ -423,7 +423,7 @@ void Experiment::record_from_microphone()
     ad_rec_t *adrec;													// audio device
     const char *adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev"); 		// audio device informations for 'ad'
     int samprate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 	// sampling rate for 'ad'
-    if ((adrec = ad_open_dev(adcdev, samprate)) == NULL) 				// open the audio device (microphone)
+    if ((adrec = ad_open_dev("plughw:1,0", samprate)) == NULL) 				// open the audio device (microphone)
     	E_FATAL("Failed to open audio device\n"); 
 	int16_t adbuf[2048];												// audio buffer of the audio device 
     int32_t k;															// returned value of reading microphone
