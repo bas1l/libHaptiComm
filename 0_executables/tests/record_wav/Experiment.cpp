@@ -100,7 +100,6 @@ bool Experiment::create()
     this->is_recording = false; 												// allow t_record to start or stop the recording
     // This will start the thread. Notice move semantics!
 	this->t_record = std::thread(&Experiment::record_from_microphone, this); 	// link the thread to its function
-	//this->t_record.join(); 														// start the thread
 
 	// init wav writer (AudioFile library)
     cout << "AudioFile" << endl;
@@ -448,11 +447,11 @@ void Experiment::record_from_microphone()
 		do { k = ad_read(adrec, adbuf, INT_MAX); } while (k>0); 		// empty the microphone buffer from mic before recording -- previously[k = ad_read(ad, adbuf, INT_MAX);]
 		cout << "after ad_read. emptier" << endl;
 		while(this->is_recording.load()){ 								// while the answer is not given
+	        cout << "start while2" << endl;
 	        lk.unlock();												// return the access for is_recording
 	        this->cv.notify_one(); 										// waiting thread is notified 
 	        if ((k = ad_read(adrec, adbuf, 10)) < 0)					// record...
 	        	E_FATAL("Failed to read audio\n");
-	        cout << "after ad_read." << endl;
 	        for(int i=0; i<10; i++,this->af_i++)						// store the records into audioFile object
 	        {
 	        	this->af->samples[0][this->af_i] = adbuf[i];
@@ -496,11 +495,15 @@ void Experiment::save_recording(int id_seq)
 	name += c->getId() + "_";								// id of the candidate
 	name += c->expstring(this->expToExec) + "_";			// current experiment's name
 	name += std::to_string(id_seq) + ".wav";				// id of the sequence
-	af->save(name);											// save wav file of the sequence's answer
-	this->af_i = 0;											// reset iterator
-	for(int i=0; i<this->af_max; i++){						// clean the entire buffer
-		this->af->samples[0][i] = 0;						// clean 
+	{
+		std::lock_guard<std::mutex> lk(this->m);			// locker to access shared variables
+		af->save(name);										// save wav file of the sequence's answer
+		this->af_i = 0;										// reset iterator
+		for(int i=0; i<this->af_max; i++){					// clean the entire buffer
+			this->af->samples[0][i] = 0;					// clean 
+		}
 	}
+	this->cv.notify_one(); 									// waiting thread is notified
 }
 
 /********************************/
