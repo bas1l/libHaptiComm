@@ -213,6 +213,9 @@ bool Experiment::executeActuator(int * durationRefresh_ns){
     }
     this->seq_end = i;
     
+    this->workdone = true;
+    this->cv.notify_all(); 						// waiting threads are notified 
+    	
     cout << "[experiment][executeActuator] ...end" << endl;
     return false;
 }
@@ -428,44 +431,56 @@ void Experiment::record_from_microphone()
     	E_FATAL("Failed to open audio device\n"); 
 	int16_t adbuf[2048];												// audio buffer of the audio device 
     int32_t k;															// returned value of reading microphone
-	std::unique_lock<std::mutex> lk(this->m);							// locker to access shared variables
 	
 	cout << "while1" << endl;
-	while(!this->workdone.load()){ 										// while experiment is not done
-		
-		cout << "[while1] in." << endl;
-		this->cv.wait(lk); 												// wait for a new sequence (WF notify_one in the current 'execute' function)
-		cout << "[while1] this->cv.wait(lk)." << endl;
-		if (!this->is_recording.load()){								// not a new sequence, go back to wait
+	int workdone_local 		= false;
+	int is_recording_local 	= false;
+	
+	while(true){ 										// while experiment is not done
+		{ 	// wait to be notified before starting
+			std::lock_guard<std::mutex> lg(this->m);							// locker to access shared variables
+			cout << "[while1] in." << endl;
+			this->cv.wait(lg); 												// wait for a new sequence (WF notify_one in the current 'execute' function)
+			cout << "[while1] this->cv.wait(lk)." << endl;
+			workdone_local 		= this->workdone.load();
+			is_recording_local 	= this->is_recording.load();
+		}
+		if (workdone_local)
+		{
+			break;
+		}
+		else if(!is_recording_local){								// not a new sequence, go back to wait
 			cout << "[while1] if (!this->is_recording.load())." << endl;
-			lk.unlock();												// unlock mutex before waiting
-			cout << "[while1] lk.unlock()." << endl;
 			continue;													// go to wait
 		}
-		/*
+		
 		cout << "[while1] continue." << endl;
 		if (ad_start_rec(adrec) < 0) 									// start recording
 			E_FATAL("Failed to start recording\n");
 		cout << "after ad_start_rec." << endl;
 		do { k = ad_read(adrec, adbuf, INT_MAX); } while (k>0); 		// empty the microphone buffer from mic before recording -- previously[k = ad_read(ad, adbuf, INT_MAX);]
 		cout << "after ad_read. emptier" << endl;
-		while(this->is_recording.load()){ 								// while the answer is not given
+		
+		while(is_recording_local){ 								// while the answer is not given
 	        cout << "start while2" << endl;
-	        lk.unlock();												// return the access for is_recording
-	        this->cv.notify_one(); 										// waiting thread is notified 
 	        if ((k = ad_read(adrec, adbuf, 10)) < 0)					// record...
 	        	E_FATAL("Failed to read audio\n");
 	        for(int i=0; i<10; i++,this->af_i++)						// store the records into audioFile object
 	        {
 	        	this->af->samples[0][this->af_i] = adbuf[i];
 	        }
-	        lk.lock();													// locker for is_recording access
+
+	        {	// locker for is_recording access
+				std::lock_guard<std::mutex> lg(this->m);							// locker to access shared variables
+				cout << "[while2] lock_guard." << endl;
+				is_recording_local = this->is_recording.load();
+			}
 		}
 		cout << "after while2." << endl;
-		lk.unlock();													// return the access for is_recording
+		
 	    if (ad_stop_rec(adrec) < 0) 									// answer has been given, stop recording
 	    	E_FATAL("Failed to stop recording\n");
-		*/
+		
 	}
 	
 	// experiment is done, close microphone
@@ -478,10 +493,8 @@ void Experiment::record_from_microphone()
 void Experiment::start_recording()
 {	
 	cout << "[start_recording] in." << endl;
-	{
-		std::lock_guard<std::mutex> lk(this->m);			// locker to access shared variables
-		this->is_recording = true;							// start of the microphone recording boolean
-	}
+	std::lock_guard<std::mutex> lk(this->m);				// locker to access shared variables
+	this->is_recording = true;								// start of the microphone recording boolean
 	this->cv.notify_one(); 									// waiting thread is notified 
 	cout << "[start_recording] out." << endl;
 }
@@ -489,11 +502,8 @@ void Experiment::start_recording()
 void Experiment::stop_recording()
 {
 	cout << "[stop_recording] in." << endl;
-	{
-		std::lock_guard<std::mutex> lk(this->m);			// locker to access shared variables
-		this->is_recording = false;							// stop of the microphone recording boolean
-	}
-	this->cv.notify_one(); 									// waiting thread is notified
+	std::lock_guard<std::mutex> lk(this->m);				// locker to access shared variables
+	this->is_recording = false;								// stop of the microphone recording boolean
 	cout << "[stop_recording] out." << endl;
 }
 
@@ -504,18 +514,19 @@ void Experiment::save_recording(int id_seq)
 	name += c->getId() + "_";								// id of the candidate
 	name += c->expstring(this->expToExec) + "_";			// current experiment's name
 	name += std::to_string(id_seq) + ".wav";				// id of the sequence
-	{
-		std::lock_guard<std::mutex> lk(this->m);			// locker to access shared variables
-		af->save(name);										// save wav file of the sequence's answer
-		this->af_i = 0;										// reset iterator
-		cout << "[save_recording] before for." << endl;
-		for(int i=0; i<this->af_max; i++){					// clean the entire buffer
-			this->af->samples[0][i] = 0;					// clean 
-		}
+	std::lock_guard<std::mutex> lk(this->m);				// locker to access shared variables
+	af->save(name);											// save wav file of the sequence's answer
+	this->af_i = 0;											// reset iterator
+	cout << "[save_recording] before for." << endl;
+	for(int i=0; i<this->af_max; i++){						// clean the entire buffer
+		this->af->samples[0][i] = 0;						// clean 
 	}
-	this->cv.notify_one(); 									// waiting thread is notified
 	cout << "[save_recording] out." << endl;
 }
+
+
+
+
 
 /********************************/
 /*           Tools 				*/
