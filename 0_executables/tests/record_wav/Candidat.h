@@ -58,8 +58,8 @@ public:
 	bool saveResults(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end);
 
 
-	// get string of an expEnum
-	string expstring(expEnum ee);
+	
+	string expstring(expEnum ee);					// get string of an expEnum
 
 	/* getters */
 	int 					getId();

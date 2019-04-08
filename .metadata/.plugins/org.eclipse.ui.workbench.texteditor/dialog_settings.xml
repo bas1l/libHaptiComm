@@ -2,22 +2,24 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="" key="selection"/>
+		<item value="return" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stashed changes"/>
-			<item value="err"/>
-			<item value="this-&gt;"/>
-			<item value="experiment"/>
-			<item value="Candidat"/>
-			<item value="aval"/>
-			<item value="nba"/>
-			<item value="pair"/>
+			<item value="return"/>
+			<item value="create"/>
+			<item value="encoder"/>
+			<item value="expstring"/>
+			<item value="save_recording"/>
+			<item value="ad_read"/>
+			<item value="ad_start_rec"/>
+			<item value="recognize_from_microphone"/>
 		</list>
 		<list key="replacehistory">
+			<item value="dispTimers"/>
+			<item value="str2num"/>
 			<item value=""/>
 			<item value="Experiment"/>
 		</list>
