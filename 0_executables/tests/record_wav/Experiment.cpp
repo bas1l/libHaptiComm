@@ -99,7 +99,7 @@ bool Experiment::create()
     this->workdone = false; 													// check if the experiment is done
     this->is_recording = false; 												// allow t_record to start or stop the recording
     // This will start the thread. Notice move semantics!
-	this->t_record = std::thread(&Experiment::record_from_microphone, this); 	// link the thread to its function
+	//this->t_record = std::thread(&Experiment::record_from_microphone, this); 	// link the thread to its function
 	//this->t_record.join(); 														// start the thread
 
 	// init wav writer (AudioFile library)
