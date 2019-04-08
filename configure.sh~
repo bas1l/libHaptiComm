@@ -1,5 +1,6 @@
 #!/bin/bash
 
+
 tmppath="$(pwd)/install"
 buildpath="$(pwd)/../build"
 
@@ -18,11 +19,7 @@ sudo apt-get install -y libboost-all-dev
 sudo apt-get install -y libboost1.62-all-dev
 
 # CMU Sphinx (pocket+base)
-sudo apt-get remove pulseaudio -y
-sudo aptitude purge pulseaudio -y
-sudo mv /usr/include/pulse/pulseaudio.h /usr/include/pulse/pulseaudio.h.old
-sudo apt-get install -y alsa-utils bison libasound2-dev
-sudo apt-get install -y gcc automake autoconf libtool swig python3.5-dev
+sudo apt-get install -y gcc automake autoconf libtool bison swig pulseaudio python3.5-dev
 [ ! -f "$sphinxbase.tar.gz" ] && wget --no-check-certificate "https://sourceforge.net/projects/cmusphinx/files/sphinxbase/5prealpha/$sphinxbase.tar.gz" && tar -zxvf "$sphinxbase.tar.gz"
 [ ! -f "$sphinxpocket.tar.gz" ] && wget --no-check-certificate "https://sourceforge.net/projects/cmusphinx/files/pocketsphinx/5prealpha/$sphinxpocket.tar.gz" && tar -zxvf "$sphinxpocket.tar.gz"
 cd "$tmppath/$sphinxbase"
@@ -51,8 +48,12 @@ git pull origin
 sudo ./build
 
 
+
 # Create binary files
 [ ! -d $buildpath ] && mkdir "$buildpath"
 cd "$buildpath"
 cmake ../libHaptiComm
 #make
+
+
+

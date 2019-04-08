@@ -1679,3 +1679,239 @@ This warning can be switched off on the Team > Git > Confirmations and Warnings 
 
 !ENTRY org.eclipse.equinox.p2.repository 2 0 2019-04-06 17:24:10.872
 !MESSAGE Server returned lastModified <= 0 for https://raw.githubusercontent.com/15knots/cmake4eclipse/master/releng/comp-update/compositeContent.xml
+!SESSION 2019-04-08 18:19:26.999 -----------------------------------------------
+eclipse.buildId=4.7.2.M20171130-0510
+java.version=1.8.0_144
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.testing.product D:\Owncloud\_These-2016-2019\Programmation\libtacom_github\libHaptiComm\2_src\HaptiCommConfiguration.cpp
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.testing.product D:\Owncloud\_These-2016-2019\Programmation\libtacom_github\libHaptiComm\2_src\HaptiCommConfiguration.cpp
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2019-04-08 18:19:40.758
+!MESSAGE Unable to create class 'org.eclipse.jubula.rc.rcp.e4.swt.starter.SwtProcessor' from bundle '774'
+!STACK 0
+org.eclipse.e4.core.di.InjectionException: java.lang.NoClassDefFoundError: org/eclipse/e4/ui/model/application/ui/MUIElement
+	at org.eclipse.e4.core.internal.di.InjectorImpl.internalMake(InjectorImpl.java:410)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.make(InjectorImpl.java:332)
+	at org.eclipse.e4.core.contexts.ContextInjectionFactory.make(ContextInjectionFactory.java:186)
+	at org.eclipse.e4.ui.internal.workbench.ReflectionContributionFactory.createFromBundle(ReflectionContributionFactory.java:108)
+	at org.eclipse.e4.ui.internal.workbench.ReflectionContributionFactory.doCreate(ReflectionContributionFactory.java:74)
+	at org.eclipse.e4.ui.internal.workbench.ReflectionContributionFactory.create(ReflectionContributionFactory.java:51)
+	at org.eclipse.e4.ui.internal.workbench.ModelAssembler.runProcessor(ModelAssembler.java:356)
+	at org.eclipse.e4.ui.internal.workbench.ModelAssembler.runProcessors(ModelAssembler.java:324)
+	at org.eclipse.e4.ui.internal.workbench.ModelAssembler.processModel(ModelAssembler.java:97)
+	at org.eclipse.e4.ui.internal.workbench.ResourceHandler.loadMostRecentModel(ResourceHandler.java:197)
+	at org.eclipse.e4.ui.internal.workbench.swt.E4Application.loadApplicationModel(E4Application.java:378)
+	at org.eclipse.e4.ui.internal.workbench.swt.E4Application.createE4Workbench(E4Application.java:253)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:614)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:336)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:594)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:148)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:151)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:388)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:243)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:653)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:590)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1499)
+Caused by: java.lang.NoClassDefFoundError: org/eclipse/e4/ui/model/application/ui/MUIElement
+	at org.eclipse.jubula.rc.rcp.e4.swt.starter.SwtProcessor.<init>(SwtProcessor.java:26)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.eclipse.e4.core.internal.di.ConstructorRequestor.execute(ConstructorRequestor.java:40)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.internalMake(InjectorImpl.java:397)
+	... 28 more
+Caused by: java.lang.ClassNotFoundException: org.eclipse.e4.ui.model.application.ui.MUIElement cannot be found by org.eclipse.jubula.rc.rcp.e4.swt_5.0.0.201705050842
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:484)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:395)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:387)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.loadClass(ModuleClassLoader.java:150)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	... 35 more
+
+!ENTRY org.eclipse.e4.ui.workbench 2 0 2019-04-08 18:19:40.768
+!MESSAGE Unable to create processor org.eclipse.jubula.rc.rcp.e4.swt.starter.SwtProcessor from org.eclipse.jubula.rc.rcp.e4.swt
+
+!ENTRY org.eclipse.jface 2 0 2019-04-08 18:19:44.226
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2019-04-08 18:19:44.226
+!MESSAGE A conflict occurred for SHIFT+F9:
+Binding(SHIFT+F9,
+	ParameterizedCommand(Command(org.eclipse.jubula.client.ui.rcp.commands.ShowFromClipboard,Open Element from Clipboard,
+		,
+		Category(org.eclipse.jubula.client.ui.rcp.commands,Functional Test,null,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@726e29d,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(SHIFT+F9,
+	ParameterizedCommand(Command(org.eclipse.cdt.make.ui.targetBuildCommand,Build Target Build,
+		Invoke a make target build for the selected container.,
+		Category(org.eclipse.ui.category.project,Project,null,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@a1e578f,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2019-04-08 18:19:44.226
+!MESSAGE A conflict occurred for F9:
+Binding(F9,
+	ParameterizedCommand(Command(org.eclipse.jubula.client.ui.rcp.commands.togglePauseOnErrorCommand,Pause on Test Execution Errors,
+		,
+		Category(org.eclipse.jubula.client.ui.rcp.commands,Functional Test,null,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@707b38a1,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(F9,
+	ParameterizedCommand(Command(org.eclipse.cdt.make.ui.targetBuildLastCommand,Rebuild Last Target,
+		Rebuild the last make target for the selected container or project.,
+		Category(org.eclipse.ui.category.project,Project,null,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@3f267e1b,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+
+!ENTRY org.eclipse.launchbar.core 2 0 2019-04-08 18:19:48.476
+!MESSAGE Enablement expression is missing for descriptor type org.eclipse.cdt.debug.core.coreBuildDescriptorType
+
+!ENTRY org.eclipse.launchbar.core 2 0 2019-04-08 18:19:48.476
+!MESSAGE Enablement expression is missing for config provider for org.eclipse.cdt.debug.core.coreBuildDescriptorType
+
+!ENTRY org.eclipse.launchbar.core 2 0 2019-04-08 18:19:48.476
+!MESSAGE Enablement expression is missing for config provider for org.eclipse.cdt.debug.core.coreBuildDescriptorType
+
+!ENTRY org.eclipse.egit.ui 2 0 2019-04-08 18:19:49.463
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\Basil'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2019-04-08 18:39:23.615
+!MESSAGE Server returned lastModified <= 0 for https://raw.githubusercontent.com/15knots/cmake4eclipse/master/releng/comp-update/compositeContent.xml
+!SESSION 2019-04-08 21:15:01.223 -----------------------------------------------
+eclipse.buildId=4.7.2.M20171130-0510
+java.version=1.8.0_144
+java.vendor=Oracle Corporation
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=fr_FR
+Framework arguments:  -product org.eclipse.epp.package.testing.product D:\Owncloud\_These-2016-2019\Programmation\libtacom_github\libHaptiComm\0_executables\tests\record_wav\main.cpp
+Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.testing.product D:\Owncloud\_These-2016-2019\Programmation\libtacom_github\libHaptiComm\0_executables\tests\record_wav\main.cpp
+
+!ENTRY org.eclipse.e4.ui.workbench 4 0 2019-04-08 21:15:15.500
+!MESSAGE Unable to create class 'org.eclipse.jubula.rc.rcp.e4.swt.starter.SwtProcessor' from bundle '778'
+!STACK 0
+org.eclipse.e4.core.di.InjectionException: java.lang.NoClassDefFoundError: org/eclipse/e4/ui/model/application/ui/MUIElement
+	at org.eclipse.e4.core.internal.di.InjectorImpl.internalMake(InjectorImpl.java:410)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.make(InjectorImpl.java:332)
+	at org.eclipse.e4.core.contexts.ContextInjectionFactory.make(ContextInjectionFactory.java:186)
+	at org.eclipse.e4.ui.internal.workbench.ReflectionContributionFactory.createFromBundle(ReflectionContributionFactory.java:108)
+	at org.eclipse.e4.ui.internal.workbench.ReflectionContributionFactory.doCreate(ReflectionContributionFactory.java:74)
+	at org.eclipse.e4.ui.internal.workbench.ReflectionContributionFactory.create(ReflectionContributionFactory.java:51)
+	at org.eclipse.e4.ui.internal.workbench.ModelAssembler.runProcessor(ModelAssembler.java:356)
+	at org.eclipse.e4.ui.internal.workbench.ModelAssembler.runProcessors(ModelAssembler.java:324)
+	at org.eclipse.e4.ui.internal.workbench.ModelAssembler.processModel(ModelAssembler.java:97)
+	at org.eclipse.e4.ui.internal.workbench.ResourceHandler.loadMostRecentModel(ResourceHandler.java:197)
+	at org.eclipse.e4.ui.internal.workbench.swt.E4Application.loadApplicationModel(E4Application.java:378)
+	at org.eclipse.e4.ui.internal.workbench.swt.E4Application.createE4Workbench(E4Application.java:253)
+	at org.eclipse.ui.internal.Workbench.lambda$3(Workbench.java:614)
+	at org.eclipse.core.databinding.observable.Realm.runWithDefault(Realm.java:336)
+	at org.eclipse.ui.internal.Workbench.createAndRunWorkbench(Workbench.java:594)
+	at org.eclipse.ui.PlatformUI.createAndRunWorkbench(PlatformUI.java:148)
+	at org.eclipse.ui.internal.ide.application.IDEApplication.start(IDEApplication.java:151)
+	at org.eclipse.equinox.internal.app.EclipseAppHandle.run(EclipseAppHandle.java:196)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.runApplication(EclipseAppLauncher.java:134)
+	at org.eclipse.core.runtime.internal.adaptor.EclipseAppLauncher.start(EclipseAppLauncher.java:104)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:388)
+	at org.eclipse.core.runtime.adaptor.EclipseStarter.run(EclipseStarter.java:243)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(Unknown Source)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(Unknown Source)
+	at java.lang.reflect.Method.invoke(Unknown Source)
+	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:653)
+	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:590)
+	at org.eclipse.equinox.launcher.Main.run(Main.java:1499)
+Caused by: java.lang.NoClassDefFoundError: org/eclipse/e4/ui/model/application/ui/MUIElement
+	at org.eclipse.jubula.rc.rcp.e4.swt.starter.SwtProcessor.<init>(SwtProcessor.java:26)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
+	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
+	at java.lang.reflect.Constructor.newInstance(Unknown Source)
+	at org.eclipse.e4.core.internal.di.ConstructorRequestor.execute(ConstructorRequestor.java:40)
+	at org.eclipse.e4.core.internal.di.InjectorImpl.internalMake(InjectorImpl.java:397)
+	... 28 more
+Caused by: java.lang.ClassNotFoundException: org.eclipse.e4.ui.model.application.ui.MUIElement cannot be found by org.eclipse.jubula.rc.rcp.e4.swt_5.0.0.201705050842
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClassInternal(BundleLoader.java:484)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:395)
+	at org.eclipse.osgi.internal.loader.BundleLoader.findClass(BundleLoader.java:387)
+	at org.eclipse.osgi.internal.loader.ModuleClassLoader.loadClass(ModuleClassLoader.java:150)
+	at java.lang.ClassLoader.loadClass(Unknown Source)
+	... 35 more
+
+!ENTRY org.eclipse.e4.ui.workbench 2 0 2019-04-08 21:15:15.504
+!MESSAGE Unable to create processor org.eclipse.jubula.rc.rcp.e4.swt.starter.SwtProcessor from org.eclipse.jubula.rc.rcp.e4.swt
+
+!ENTRY org.eclipse.jface 2 0 2019-04-08 21:15:18.453
+!MESSAGE Keybinding conflicts occurred.  They may interfere with normal accelerator operation.
+!SUBENTRY 1 org.eclipse.jface 2 0 2019-04-08 21:15:18.453
+!MESSAGE A conflict occurred for SHIFT+F9:
+Binding(SHIFT+F9,
+	ParameterizedCommand(Command(org.eclipse.jubula.client.ui.rcp.commands.ShowFromClipboard,Open Element from Clipboard,
+		,
+		Category(org.eclipse.jubula.client.ui.rcp.commands,Functional Test,null,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@f245168,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(SHIFT+F9,
+	ParameterizedCommand(Command(org.eclipse.cdt.make.ui.targetBuildCommand,Build Target Build,
+		Invoke a make target build for the selected container.,
+		Category(org.eclipse.ui.category.project,Project,null,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@77fecd2c,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+!SUBENTRY 1 org.eclipse.jface 2 0 2019-04-08 21:15:18.453
+!MESSAGE A conflict occurred for F9:
+Binding(F9,
+	ParameterizedCommand(Command(org.eclipse.jubula.client.ui.rcp.commands.togglePauseOnErrorCommand,Pause on Test Execution Errors,
+		,
+		Category(org.eclipse.jubula.client.ui.rcp.commands,Functional Test,null,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@5ee95d42,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+Binding(F9,
+	ParameterizedCommand(Command(org.eclipse.cdt.make.ui.targetBuildLastCommand,Rebuild Last Target,
+		Rebuild the last make target for the selected container or project.,
+		Category(org.eclipse.ui.category.project,Project,null,true),
+		org.eclipse.ui.internal.WorkbenchHandlerServiceHandler@52b32622,
+		,,true),null),
+	org.eclipse.ui.defaultAcceleratorConfiguration,
+	org.eclipse.ui.contexts.window,,,system)
+
+!ENTRY org.eclipse.launchbar.core 2 0 2019-04-08 21:15:22.263
+!MESSAGE Enablement expression is missing for descriptor type org.eclipse.cdt.debug.core.coreBuildDescriptorType
+
+!ENTRY org.eclipse.launchbar.core 2 0 2019-04-08 21:15:22.265
+!MESSAGE Enablement expression is missing for config provider for org.eclipse.cdt.debug.core.coreBuildDescriptorType
+
+!ENTRY org.eclipse.launchbar.core 2 0 2019-04-08 21:15:22.266
+!MESSAGE Enablement expression is missing for config provider for org.eclipse.cdt.debug.core.coreBuildDescriptorType
+
+!ENTRY org.eclipse.egit.ui 2 0 2019-04-08 21:15:23.018
+!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
+user global configuration and to define the default location to store repositories: 'C:\Users\Basil'. If this is
+not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
+EGit might behave differently since they see different configuration options.
+This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2019-04-08 21:27:58.433
+!MESSAGE Server returned lastModified <= 0 for https://raw.githubusercontent.com/15knots/cmake4eclipse/master/releng/comp-update/compositeContent.xml

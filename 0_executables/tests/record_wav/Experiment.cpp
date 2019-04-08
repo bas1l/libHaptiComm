@@ -48,75 +48,49 @@ bool Experiment::create()
     string fdd(c->getPathDict()+c->getLangage()+"/"+c->getLangage()); // folder of the CMU Sphinx database
     if (c->getLangage().compare("en-us") ==0) // english VR
     {
-        int fakeargc = 4;
-        char jsgf[8], jsgfval[128];
-        strcpy(jsgf, "-jsgf");
+        char jsgfval[128], eInfoval[128], adcdevval[128];
         strcpy(jsgfval, fdd.c_str());
         strcat(jsgfval, ".gram");
-        char eInfo[8], eInfoval[128];
-        strcpy(eInfo, "-logfn");
-        strcpy(eInfoval, "/dev/null");
-
-        char *fakeargv[fakeargc];
-        fakeargv[0] = jsgf;
-        fakeargv[1] = jsgfval;
-        fakeargv[2] = eInfo;
-        fakeargv[3] = eInfoval; 
-        this->vr_cfg = cmd_ln_parse_r(NULL, cont_args_def, fakeargc, fakeargv, TRUE);
+        strcpy(eInfoval, 	"/dev/null");
+        strcpy(adcdevval, 	"plughw:1,0");
+        
+    	this->vr_cfg = cmd_ln_init(NULL, ps_args(), TRUE,   	// Load the configuration structure - ps_args() passes the default values
+					"-logfn", 	eInfoval,                   	// suppress log info from being sent to screen
+					"-jsgf", 	jsgfval,
+					"-adcdev", 	adcdevval,
+					 NULL);
     } 
     else // french VR
     {
-    	/*
-	    config = cmd_ln_init(NULL, ps_args(), TRUE,                   // Load the configuration structure - ps_args() passes the default values
-			"-hmm", "/usr/local/share/pocketsphinx/model/en-us/en-us",  // path to the standard english language model
-			"-lm", "custom.lm",                                         // custom language model (file must be present)
-			"-dict", "custom.dic",                                      // custom dictionary (file must be present)
-			"-logfn", "/dev/null",                                      // suppress log info from being sent to screen
-			 NULL);
-    	*/
-        int fakeargc = 10;
-        char lm[8], lmval[128];
-        strcpy(lm, "-lm");
-        strcpy(lmval, fdd.c_str());
-        strcat(lmval, ".lm.bin");
-        char dict[8], dictval[128];
-        strcpy(dict, "-dict");
+        char lmval[128], dictval[128], hmmval[128], jsgfval[128], eInfoval[128], adcdevval[128];
+        strcpy(lmval, 	fdd.c_str());
+        strcat(lmval, 	".lm.bin");
         strcpy(dictval, fdd.c_str());
         strcat(dictval, ".dic");
-        char hmm[8], hmmval[128];
-        strcpy(hmm, "-hmm");
-        strcpy(hmmval, fdd.c_str());
-        strcat(hmmval, "/");
-        strcpy(hmmval, fdd.c_str());
-        char jsgf[8], jsgfval[128];
-        strcpy(jsgf, "-jsgf");
+        strcpy(hmmval, 	fdd.c_str());
+        strcat(hmmval, 	"/");
+        strcpy(hmmval, 	fdd.c_str());
         strcpy(jsgfval, fdd.c_str());
         strcat(jsgfval, ".gram");
-        char eInfo[8], eInfoval[128];
-        strcpy(eInfo, "-logfn");
-        strcpy(eInfoval, "/dev/null");
+        strcpy(eInfoval, 	"/dev/null");
+        strcpy(adcdevval, 	"plughw:1,0");
         
-        char *fakeargv[fakeargc];
-        fakeargv[0] = lm;
-        fakeargv[1] = lmval;
-        fakeargv[2] = dict;
-        fakeargv[3] = dictval;
-        fakeargv[4] = hmm;
-        fakeargv[5] = hmmval;
-        fakeargv[6] = jsgf;
-        fakeargv[7] = jsgfval;
-        fakeargv[8] = eInfo;
-        fakeargv[9] = eInfoval;
-        this->vr_cfg = cmd_ln_parse_r(NULL, cont_args_def, fakeargc, fakeargv, TRUE);
+    	this->vr_cfg = cmd_ln_init(NULL, ps_args(), TRUE,   	// Load the configuration structure - ps_args() passes the default values
+					"-hmm", 	lmval,  						// path to the standard english language model
+					"-lm", 		lmval,                  		// custom language model (file must be present)
+					"-dict", 	dictval,                   		// custom dictionary (file must be present)
+					"-logfn", 	eInfoval,                   	// suppress log info from being sent to screen
+					"-jsgf", 	jsgfval,
+					"-adcdev", 	adcdevval,
+					 NULL);
     }
     
     ps_default_search_args(this->vr_cfg);			// fill non-defined variables with default values
-    /*
     this->vr_ps = ps_init(this->vr_cfg);			// initialise voice recognition variables
     if (this->vr_ps == NULL) {						// if failed, exit
         cmd_ln_free_r(this->vr_cfg);				// free memory
         return 1;									// exit
-    }*/
+    }
     
     // thread and shared memory's variables initialisation for voice recording
     cout << "thread>>" << endl;
