@@ -473,24 +473,29 @@ void Experiment::record_from_microphone()
 
 void Experiment::start_recording()
 {	
+	cout << "[start_recording] in." << endl;
 	{
 		std::lock_guard<std::mutex> lk(this->m);			// locker to access shared variables
 		this->is_recording = true;							// start of the microphone recording boolean
 	}
 	this->cv.notify_one(); 									// waiting thread is notified 
+	cout << "[start_recording] out." << endl;
 }
 
 void Experiment::stop_recording()
 {
+	cout << "[stop_recording] in." << endl;
 	{
 		std::lock_guard<std::mutex> lk(this->m);			// locker to access shared variables
 		this->is_recording = false;							// stop of the microphone recording boolean
 	}
 	this->cv.notify_one(); 									// waiting thread is notified
+	cout << "[stop_recording] out." << endl;
 }
 
 void Experiment::save_recording(int id_seq)
 {
+	cout << "[save_recording] in." << endl;
 	string name(c->getPathDirectory());  					// create the name of the .wav with full path
 	name += c->getId() + "_";								// id of the candidate
 	name += c->expstring(this->expToExec) + "_";			// current experiment's name
@@ -499,11 +504,13 @@ void Experiment::save_recording(int id_seq)
 		std::lock_guard<std::mutex> lk(this->m);			// locker to access shared variables
 		af->save(name);										// save wav file of the sequence's answer
 		this->af_i = 0;										// reset iterator
+		cout << "[save_recording] before for." << endl;
 		for(int i=0; i<this->af_max; i++){					// clean the entire buffer
 			this->af->samples[0][i] = 0;					// clean 
 		}
 	}
 	this->cv.notify_one(); 									// waiting thread is notified
+	cout << "[save_recording] out." << endl;
 }
 
 /********************************/
