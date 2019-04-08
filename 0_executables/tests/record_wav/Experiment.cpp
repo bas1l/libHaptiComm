@@ -423,7 +423,7 @@ void Experiment::record_from_microphone()
 	
     /* voice recognition variables */
     ad_rec_t *adrec;													// audio device
-    const char *adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev"); 		// audio device informations for 'ad'
+    //const char *adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev"); 		// audio device informations for 'ad'
     int samprate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 	// sampling rate for 'ad'
     if ((adrec = ad_open_dev("plughw:1,0", samprate)) == NULL) 				// open the audio device (microphone)
     	E_FATAL("Failed to open audio device\n"); 
