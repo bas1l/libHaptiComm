@@ -1,57 +1,59 @@
 #!/bin/bash
 
-abspath=$(pwd)
-tmp="tmp"
-abstmp="$(pwd)/$tmp"
+
+tmppath="$(pwd)/install"
+buildpath="$(pwd)/../build"
+
 sphinxbase="sphinxbase-5prealpha"
 sphinxpocket="pocketsphinx-5prealpha"
 
-apt-get update
-apt-get upgrade
 
-[ ! -d "$dtmp" ] && mkdir "$dtmp"
-cd "$abstmp"
+sudo apt-get update
+sudo apt-get upgrade
+
+[ ! -d "$tmppath" ] && mkdir "$tmppath"
+cd "$tmppath"
 
 # Boost libraries
-apt-get install -y libboost-all-dev
-apt-get install -y libboost1.62-all-dev
+sudo apt-get install -y libboost-all-dev
+sudo apt-get install -y libboost1.62-all-dev
 
 # CMU Sphinx (pocket+base)
-apt-get install -y gcc automake autoconf libtool bison swig pulseaudio python3.5-dev
-[ ! -f "$sphinxbase.tar.gz" ] && wget "https://sourceforge.net/projects/cmusphinx/files/sphinxbase/5prealpha/$sphinxbase.tar.gz" && tar -zxvf "$sphinxbase.tar.gz"
-[ ! -f "$sphinxpocket.tar.gz" ] && wget "https://sourceforge.net/projects/cmusphinx/files/pocketsphinx/5prealpha/$sphinxpocket.tar.gz" && tar -zxvf "$sphinxpocket.tar.gz"
-cd "$abstmp/$sphinxbase"
-./autogen.sh
-./configure
-make
+sudo apt-get install -y gcc automake autoconf libtool bison swig pulseaudio python3.5-dev
+[ ! -f "$sphinxbase.tar.gz" ] && wget --no-check-certificate "https://sourceforge.net/projects/cmusphinx/files/sphinxbase/5prealpha/$sphinxbase.tar.gz" && tar -zxvf "$sphinxbase.tar.gz"
+[ ! -f "$sphinxpocket.tar.gz" ] && wget --no-check-certificate "https://sourceforge.net/projects/cmusphinx/files/pocketsphinx/5prealpha/$sphinxpocket.tar.gz" && tar -zxvf "$sphinxpocket.tar.gz"
+cd "$tmppath/$sphinxbase"
+sudo ./autogen.sh
+sudo ./configure
+sudo make
 sudo make install
 export LD_LIBRARY_PATH="/usr/local/lib"
 export PKG_CONFIG_PATH="/usr/local/lib/pkgconfig"
-cd "$abstmp/$sphinxpocket"
-./autogen.sh
-./configure
-make
+cd "$tmppath/$sphinxpocket"
+sudo ./autogen.sh
+sudo ./configure
+sudo make
 sudo make install
 
 # WiringPi Library
-cd "$abstmp"
-apt-get purge wiringpi
+cd "$tmppath"
+sudo apt-get purge wiringpi
 hash -r
-apt-get install -y git-core
-apt-get update
-apt-get upgrade
+sudo apt-get install -y git-core
+sudo apt-get update
+sudo apt-get upgrade
 git clone git://git.drogon.net/wiringPi
-cd "$abstmp/wiringPi"
+cd "$tmppath/wiringPi"
 git pull origin
-./build
+sudo ./build
 
 
 
 # Create binary files
-mkdir "$abspath/../build"
-cd "$abspath/../build"
+[ ! -d $buildpath ] && mkdir "$buildpath"
+cd "$buildpath"
 cmake ../libHaptiComm
-make
+#make
 
 
 
