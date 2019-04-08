@@ -432,7 +432,7 @@ void Experiment::record_from_microphone()
 	
 	cout << "while1" << endl;
 	while(!this->workdone.load()){ 										// while experiment is not done
-		/*
+		
 		cout << "[while1] in." << endl;
 		this->cv.wait(lk); 												// wait for a new sequence (WF notify_one in the current 'execute' function)
 		cout << "[while1] this->cv.wait(lk)." << endl;
@@ -442,6 +442,7 @@ void Experiment::record_from_microphone()
 			cout << "[while1] lk.unlock()." << endl;
 			continue;													// go to wait
 		}
+		/*
 		cout << "[while1] continue." << endl;
 		if (ad_start_rec(adrec) < 0) 									// start recording
 			E_FATAL("Failed to start recording\n");
