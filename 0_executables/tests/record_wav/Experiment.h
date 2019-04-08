@@ -97,6 +97,7 @@ public:
 	    
 		ps_free(vr_ps);
 		cmd_ln_free_r(vr_cfg);
+		if(this->t_record.joinable()) this->t_record.join();
 	}
 	
 	/* Classic functions */

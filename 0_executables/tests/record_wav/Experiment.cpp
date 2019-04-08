@@ -98,6 +98,7 @@ bool Experiment::create()
     cout << "thread>>" << endl;
     this->workdone = false; 													// check if the experiment is done
     this->is_recording = false; 												// allow t_record to start or stop the recording
+    // This will start the thread. Notice move semantics!
 	this->t_record = std::thread(&Experiment::record_from_microphone, this); 	// link the thread to its function
 	//this->t_record.join(); 														// start the thread
 
@@ -323,6 +324,9 @@ int Experiment::executeSequenceTemp(int * currSeq, waveformLetter *values, int *
     return ovr;
 }
 
+
+
+
 int Experiment::recognize_from_microphone(ad_rec_t *ad, td_msecarray * vhrc, td_msecarray * timerDebug)
 {
     bool job_done, utt_started, in_speech, noHypothesis;
@@ -420,7 +424,6 @@ int Experiment::recognize_from_microphone(ad_rec_t *ad, td_msecarray * vhrc, td_
 // record function for the thread
 void Experiment::record_from_microphone()
 {
-	
     /* voice recognition variables */
     ad_rec_t *adrec;													// audio device
     //const char *adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev"); 		// audio device informations for 'ad'
@@ -437,7 +440,6 @@ void Experiment::record_from_microphone()
 			lk.unlock();												// unlock mutex before waiting
 			continue;													// go to wait
 		}
-
 		
 		if (ad_start_rec(adrec) < 0) 									// start recording
 			E_FATAL("Failed to start recording\n");
@@ -445,9 +447,9 @@ void Experiment::record_from_microphone()
 		while(this->is_recording.load()){ 								// while the answer is not given
 	        lk.unlock();												// return the access for is_recording
 	        this->cv.notify_one(); 										// waiting thread is notified 
-	        if ((k = ad_read(adrec, adbuf, 2048)) < 0)					// record...
+	        if ((k = ad_read(adrec, adbuf, 10)) < 0)					// record...
 	        	E_FATAL("Failed to read audio\n");
-	        for(int i=0; i<2048; i++,this->af_i++)						// store the records into audioFile object
+	        for(int i=0; i<10; i++,this->af_i++)						// store the records into audioFile object
 	        {
 	        	this->af->samples[0][this->af_i] = adbuf[i];
 	        }
@@ -492,7 +494,7 @@ void Experiment::save_recording(int id_seq)
 	af->save(name);											// save wav file of the sequence's answer
 	this->af_i = 0;											// reset iterator
 	for(int i=0; i<this->af_max; i++){						// clean the entire buffer
-		this->af->samples[0][i] = 0;							// clean 
+		this->af->samples[0][i] = 0;						// clean 
 	}
 }
 
