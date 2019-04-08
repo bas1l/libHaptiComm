@@ -438,7 +438,7 @@ void Experiment::record_from_microphone()
 	
 	while(true){ 										// while experiment is not done
 		{ 	// wait to be notified before starting
-			std::lock_guard<std::mutex> lg(this->m);							// locker to access shared variables
+			std::unique_lock<std::mutex> lg(this->m);							// locker to access shared variables
 			cout << "[while1] in." << endl;
 			this->cv.wait(lg); 												// wait for a new sequence (WF notify_one in the current 'execute' function)
 			cout << "[while1] this->cv.wait(lk)." << endl;
