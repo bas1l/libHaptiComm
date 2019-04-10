@@ -118,7 +118,7 @@ bool setOpt(int *argc, char *argv[], map<string, string> * options)
 		{direxp.c_str(),  	required_argument, NULL, 'e'},
 		{firstname.c_str(), required_argument, NULL, 'f'},
 		{lastname.c_str(),  required_argument, NULL, 'l'},
-		{seqnumb.c_str(),  required_argument, NULL, 's'},
+		{seqnumb.c_str(),  	required_argument, NULL, 's'},
 		{NULL, 0, NULL, 0}
 	};
 

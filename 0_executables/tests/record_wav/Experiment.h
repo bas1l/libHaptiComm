@@ -57,13 +57,28 @@
 static const arg_t cont_args_def[] = {
     POCKETSPHINX_OPTIONS,
     /* Argument file. */
-    {"-adcdev", // about the microphone device (has to be default)
+    {"-argfile",
      ARG_STRING,
      NULL,
+     "Argument file giving extra arguments."},
+    {"-adcdev",
+     ARG_STRING,
+     "default",
      "Name of audio device to use for input."},
+    {"-infile",
+     ARG_STRING,
+     NULL,
+     "Audio file to transcribe."},
+    {"-inmic",
+     ARG_BOOLEAN,
+     "no",
+     "Transcribe audio from microphone."},
+    {"-time",
+     ARG_BOOLEAN,
+     "no",
+     "Print word times in file transcription."},
     CMDLN_EMPTY_OPTION
 };
-
 /************************************************ 
  * 
  *                 CLASS EXPERIMENT

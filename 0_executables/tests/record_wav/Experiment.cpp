@@ -78,7 +78,11 @@ bool Experiment::create()
 	// preparing the command line arguments 'argv' variable for CMU Sphinx VR
 	std::cout<<"fakeargs>>"<<std::endl;
 	string fdd(c->getPathDict()+c->getLangage()+"/"+c->getLangage()); // folder of the CMU Sphinx database
-	if (c->getLangage().compare("en-us") ==0) // english VR
+	if(1)
+	{
+		std::cout<<"fakeargs>>"<<std::endl;
+	}
+	else if(c->getLangage().compare("en-us") ==0) // english VR
 	{
 		char jsgfval[128], eInfoval[128], adcdevval[128];
 		strcpy(jsgfval, fdd.c_str());
@@ -117,6 +121,12 @@ bool Experiment::create()
 					 NULL);
 	}
 	
+	int argc = 3;
+	char** argv = (char**)malloc(20 * sizeof(char)); // chars
+	argv[1] = const_cast<char*>("-inmic");
+	argv[2] = const_cast<char*>("yes");
+		
+	this->vr_cfg = cmd_ln_parse_r(NULL, cont_args_def, argc, argv, TRUE);
 	ps_default_search_args(this->vr_cfg);			// fill non-defined variables with default values
   
 	// init wav writer (AudioFile library)
@@ -187,23 +197,30 @@ void * Experiment::static_executeStimuli(void * c)
 void Experiment::record_from_microphone()
 {
 	ad_rec_t *adrec;
-	int16_t * adBuf, * fullBuf;
+	AudioFile<double>::AudioBuffer buffer;
+	int16_t * micBuf;
 	int32_t k;	
 	int samprate, sizeBuff, sizefullBuff, sizeRead;
 	bool disp, dispLoop, is_recording_local;
-	
-	samprate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 		// sampling rate for 'ad'
-	sizeBuff 		= 2048;
-	sizeRead 		= 128;
-	sizefullBuff 	= 10*samprate;
-	adBuf 	= new int16_t[sizeBuff];									// audio buffer of the audio device 
-	fullBuf = new int16_t[sizefullBuff];								// full audio buffer of the audio device for 10 seconds 
 
+	samprate 	= (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 		// sampling rate for 'ad'
+	const char * adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev");
+	sizeBuff 		= 2048;
+	sizeRead 		= 2048;
+	sizefullBuff 	= 10*samprate;
+	std::cout<<"samprate="<<std::to_string(samprate)<<", "<<std::flush;
+	std::cout<<"sizefullBuff="<<std::to_string(sizefullBuff)<<", "<<std::flush;
+	//std::cout<<"adcdev="<<adcdev<<std::endl;
+	micBuf 	= new int16_t[sizeBuff];									// audio buffer of the audio device  
+	
+	buffer.resize (1);
+	buffer[0].resize (10*samprate);
+	
 	disp 				= true;
 	dispLoop 			= false;
 	is_recording_local 	= false;
 	
-	if ((adrec = ad_open_dev("plughw:1,0", samprate)) == NULL) 			// open the audio device (microphone)
+	if ((adrec = ad_open_dev(adcdev, samprate)) == NULL) 			// open the audio device (microphone)
 			E_FATAL("Failed to open audio device\n"); 
 	
 	std::cout<<"[thread] READY..."<<std::endl;
@@ -217,19 +234,21 @@ void Experiment::record_from_microphone()
 		std::cout<<"[thread] Open microphone buffer..."<<std::endl;
 		if (ad_start_rec(adrec) < 0) 								// start recording
 			E_FATAL("Failed to start recording\n");
-		do { k = ad_read(adrec, adBuf, INT_MAX); } while(k>0);		// empty the microphone buffer from mic before recording -- previously[k = ad_read(ad, adBuf, INT_MAX);]
+		do { k = ad_read(adrec, micBuf, INT_MAX); } while(k>0);		// empty the microphone buffer from mic before recording -- previously[k = ad_read(ad, micBuf, INT_MAX);]
 
 		
 		std::cout<<">>>>>>>>>>>>>>>>>>>>>>"<<std::endl;
 		while(true)
 		{
-			std::lock_guard<std::mutex> lk(this->m_mutex);// locker to access shared variables
-			if (!isrecording()) break;
-			if ((k = ad_read(adrec, adBuf, sizeRead)) < 0)				// record...
+			{
+				std::lock_guard<std::mutex> lk(this->m_mutex);// locker to access shared variables
+				if (!isrecording()) break;
+			}
+			if ((k = ad_read(adrec, micBuf, sizeRead)) < 0)				// record...
 				E_FATAL("Failed to read audio\n");
 			for(int i=0; i<k && this->af_i<sizefullBuff; i++)			// store the records into the big buffer object
 			{
-				fullBuf[this->af_i++] = adBuf[i];
+				buffer[0][this->af_i++] = micBuf[i];
 			}
 		}
 		std::cout<<"<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
@@ -238,17 +257,12 @@ void Experiment::record_from_microphone()
 
 		std::lock_guard<std::mutex> mlock(this->m_mutex);
 		std::cout<<"Do Processing On loaded Data"<<std::endl;
-		this->af->setAudioBufferSize(1, this->af_i);
-		for(int i=0; i<this->af_i; i++)									// store the records into the big buffer object
-		{
-			this->af->samples[0][i] = fullBuf[i];
-		}
+		this->af->setAudioBuffer (buffer);
 	}
 	
 	if (ad_close(adrec) < 0) 											// experiment is done, close microphone
 		E_FATAL("Failed to close the device\n");
-	delete [] adBuf;
-	delete [] fullBuf;
+	delete [] micBuf;
 	std::cout<<"[thread] end of the function.."<<std::endl;
 }
 
@@ -546,22 +560,21 @@ bool Experiment::writeAnswer(int * answeri)
 
 void Experiment::save_audio(int id_seq)
 {
-	std::cout<<"[main][save_audio] in...["<<std::flush;
 	string path(c->getPathDirectory());  					// create the name of the .wav with full path
 	path += std::to_string(c->getId()) + "/wav/";			// id of the candidate
 	
 	string name(std::to_string(c->getId()) + "_");  		// create the name of the .wav with full path
 	name += c->expstring(this->expToExec) + "_";			// current experiment's name
 	name += std::to_string(id_seq) + ".wav";				// id of the sequence
-	
-	std::cout<<path+name<<"]..."<<std::flush;
+
+	std::cout<<"[main][save_audio] in...["<<path+name<<"]...af_realsize="<<std::to_string(this->af_i)<<std::endl;
 	std::lock_guard<std::mutex> lk(this->m_mutex);			// locker to access shared variables
-	af->save(path+name);									// save wav file of the sequence's answer
+	this->af->printSummary();
+	this->af->save(path+name);								// save wav file of the sequence's answer
 	this->af_i = 0;											// reset iterator
 	for(int i=0; i<this->af_max; i++){						// clean the entire buffer
 		this->af->samples[0][i] = 0;						// clean 
 	}
-	std::cout<<"out."<<std::endl;
 }
 
 /*------------------------------------------*/
