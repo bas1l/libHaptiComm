@@ -5,6 +5,7 @@
  *      Author: Basil Duvernoy
  */
 
+// C++ program to create a directory in Linux
 #include <iostream>
 #include <getopt.h>
 #include <map>
@@ -12,11 +13,15 @@
 
 #include "Candidat.h"
 #include "Experiment.h"
-
+using namespace std;
 
 bool setOpt(int *argc, char *argv[], map<string, string> *options);
 
 
+
+/*
+ * Argument 1 = Name of the participant
+ */
 int main(int argc, char *argv[])
 {   
 	// Options
@@ -67,34 +72,52 @@ int main(int argc, char *argv[])
 		cerr << "The program is ending..." << endl; 
 		return 1;
 	}
-		
+	
+	
+	
 	// create experiment
 	Experiment exp(cfgSource.c_str(), &c, seqnumb);
-	
 	if (exp.create()) 
 	{ 
 		cerr << "Issue during the creation of the experiment" << endl; 
 		cerr << "The program is ending..." << endl; 
 		return 1;
 	}
-	if (exp.execute()) 
+	
+	// launch experiment
+	int ns = 100000;
+	std::thread t_tap(&Experiment::executeActuator, &exp, &ns); 					// link the thread to its function
+	std::thread t_rec(&Experiment::record_from_microphone, &exp); 	// link the thread to its function
+		
+	
+	t_rec.join();
+	t_tap.join();
+	/*
+	if (exp.launchExp()) 
 	{
 		cerr << "The program is ending..." << endl; 
 		return 1;
 	}
-	
-	/* get the results *
-	auto timers 	= exp.getTimer();
-	auto answers 	= exp.getAnswer();
-	int start 		= exp.getSeq_start();
-	int end 		= exp.getSeq_end();
 	*/
-	/* push the results into the corresponding files */
-	//c.saveResults(&timers, &answers, &start, &end);
-	
+	// get the results
+	auto timers 	= exp.getTimer();
+    auto answers 	= exp.getAnswer();
+    int start 		= exp.getSeq_start();
+    int end 		= exp.getSeq_end();
+    
+	// push the results into the corresponding files
+	c.saveResults(&timers, &answers, &start, &end);
 	
     return 0;
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -181,6 +204,9 @@ bool setOpt(int *argc, char *argv[], map<string, string> * options)
 	
 	return true;
 }
+
+
+
 
 
 

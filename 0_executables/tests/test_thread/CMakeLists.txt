@@ -5,4 +5,4 @@ project(test_thread)
 add_executable(${PROJECT_NAME} "main.cpp")
 
 link_directories(${CMAKE_BINARY_DIR})
-target_link_libraries (${PROJECT_NAME} LINK_PUBLIC pthread libtacom)
+target_link_libraries (${PROJECT_NAME} LINK_PUBLIC pthread)

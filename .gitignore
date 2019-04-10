@@ -1358,3 +1358,16 @@ install/wiringPi/
 .metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
 .metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
 .metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
+.metadata/.plugins/com.genuitec.eclipse.devstyle/recent.json
+.metadata/.plugins/com.genuitec.eclipse.monitor/myeclipse-usage.properties
+.metadata/.plugins/org.eclipse.cdt.core/.log
+.metadata/.plugins/org.eclipse.core.resources/.safetable/org.eclipse.core.resources
+.metadata/.plugins/org.eclipse.core.runtime/.settings/com.genuitec.eclipse.theming.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.cdt.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.debug.ui.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.editors.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.ide.prefs
+.metadata/.plugins/org.eclipse.core.runtime/.settings/org.eclipse.ui.workbench.prefs
+.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
+.metadata/.plugins/org.eclipse.ui.workbench.texteditor/dialog_settings.xml
+.metadata/version.ini

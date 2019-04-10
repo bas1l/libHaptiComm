@@ -65,12 +65,9 @@ public:
 	int 					getId();
 	string 					getFirstname();
 	string 					getLastname();
-
 	vector<pair<bool, expEnum>> getExpeOrder();
-
 	vector<vector<int>> 	getSequence();
 	string 					getPathDirectory();
-
 	string 					getPathDict();
 	string 					getLangage();
 

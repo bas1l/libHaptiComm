@@ -2,22 +2,24 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="return" key="selection"/>
+		<item value="signal4recording" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
-			<item value="return"/>
-			<item value="create"/>
-			<item value="encoder"/>
-			<item value="expstring"/>
+			<item value="signal4recording"/>
+			<item value="save_audio"/>
 			<item value="save_recording"/>
-			<item value="ad_read"/>
-			<item value="ad_start_rec"/>
-			<item value="recognize_from_microphone"/>
+			<item value="is record"/>
+			<item value="rectifyAnswer"/>
+			<item value="wait"/>
+			<item value="start_recording"/>
+			<item value="[record_from_microphone]"/>
 		</list>
 		<list key="replacehistory">
+			<item value="[thread]"/>
+			<item value="adBuf"/>
 			<item value="dispTimers"/>
 			<item value="str2num"/>
 			<item value=""/>
