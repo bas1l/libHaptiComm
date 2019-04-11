@@ -124,9 +124,10 @@ bool Experiment::create()
 	std::cout<<"cmd_ln_parse_r"<<std::endl;
 	int argc = 0;
 	char** argv = (char**)malloc(32 * sizeof(char)); // chars
-	this->vr_cfg = cmd_ln_parse_r(NULL, cont_args_def, argc, argv, TRUE);
+	this->vr_cfg = cmd_ln_parse_r(NULL, cont_args_def, argc, argv, TRUE);	// default values for cfg
+	free(argv);
 	//ps_default_search_args(this->vr_cfg);			// fill non-defined variables with default values
-  
+		
 	// init wav writer (AudioFile library)
 	std::cout<<"AudioFile"<<std::endl;
 	this->af = new AudioFile<double>();
@@ -201,8 +202,8 @@ void Experiment::record_from_microphone()
 	int samprate, sizeBuff, sizefullBuff, sizeRead;
 	bool disp, dispLoop, is_recording_local;
 
-	samprate 	= (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 		// sampling rate for 'ad'
 	const char * adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev");
+	samprate 	= (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 		// sampling rate for 'ad'
 	sizeBuff 		= 2048;
 	sizeRead 		= 2048;
 	sizefullBuff 	= 10*samprate;
@@ -218,6 +219,11 @@ void Experiment::record_from_microphone()
 	dispLoop 			= false;
 	is_recording_local 	= false;
 	
+	
+	if (adcdev == NULL)
+	{
+		cout<<"adcdev is NULL"<<std::endl;
+	}
 	if ((adrec = ad_open_dev(adcdev, samprate)) == NULL) 			// open the audio device (microphone)
 			E_FATAL("Failed to open audio device\n"); 
 	
