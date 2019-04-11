@@ -16,6 +16,7 @@ add_subdirectory("experiment/subitation")
 add_subdirectory("tests/microphone")
 add_subdirectory("tests/record_wav")
 add_subdirectory("tests/test_thread2")
+add_subdirectory("tests/cmu_sphinx")
 
 #add_subdirectory("caracterise2018")
 #add_subdirectory("sinefunction_generator")

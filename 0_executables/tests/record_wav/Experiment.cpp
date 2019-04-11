@@ -195,9 +195,10 @@ void * Experiment::static_executeStimuli(void * c)
 
 void Experiment::record_from_microphone()
 {
-	ad_rec_t *adrec;
+	ad_rec_t * adrec;
 	AudioFile<double>::AudioBuffer buffer;
-	int16_t * micBuf;
+	//int16_t * micBuf;
+    int16 micBuf[2048];
 	int32_t k;	
 	int samprate, sizeBuff, sizefullBuff, sizeRead;
 	bool disp, dispLoop, is_recording_local;
@@ -209,8 +210,6 @@ void Experiment::record_from_microphone()
 	sizefullBuff 	= 10*samprate;
 	std::cout<<"samprate="<<std::to_string(samprate)<<", "<<std::flush;
 	std::cout<<"sizefullBuff="<<std::to_string(sizefullBuff)<<", "<<std::flush;
-	//std::cout<<"adcdev="<<adcdev<<std::endl;
-	micBuf 	= new int16_t[sizeBuff];									// audio buffer of the audio device  
 	
 	buffer.resize (1);
 	buffer[0].resize (10*samprate);
@@ -219,7 +218,7 @@ void Experiment::record_from_microphone()
 	dispLoop 			= false;
 	is_recording_local 	= false;
 	
-	
+	int cpt=0;
 	if (adcdev == NULL)
 	{
 		std::cout<<"adcdev is NULL"<<std::endl;
@@ -235,6 +234,7 @@ void Experiment::record_from_microphone()
 	
 	while(true)
 	{
+		cpt=0;
 		// Acquire the lock
 		if(!signal4recording()) 
 		{
@@ -249,12 +249,15 @@ void Experiment::record_from_microphone()
 		std::cout<<">>>>>>>>>>>>>>>>>>>>>>"<<std::endl;
 		while(true)
 		{
+			
 			{
 				std::lock_guard<std::mutex> lk(this->m_mutex);// locker to access shared variables
 				if (!isrecording()) break;
 			}
 			if ((k = ad_read(adrec, micBuf, sizeRead)) < 0)				// record...
 				E_FATAL("Failed to read audio\n");
+			cpt +=k;
+			std::cout<<"[NB K ITERATIVE="<<std::to_string(cpt)<<std::endl;
 			for(int i=0; i<k && this->af_i<sizefullBuff; i++)			// store the records into the big buffer object
 			{
 				buffer[0][this->af_i++] = micBuf[i];
@@ -271,7 +274,7 @@ void Experiment::record_from_microphone()
 	
 	if (ad_close(adrec) < 0) 											// experiment is done, close microphone
 		E_FATAL("Failed to close the device\n");
-	delete [] micBuf;
+	//delete [] micBuf;
 	std::cout<<"[thread] end of the function.."<<std::endl;
 }
 
@@ -549,21 +552,18 @@ bool Experiment::writeAnswer(int * answeri)
 {
     bool ret=false;
 	string ans;
-    if (1)
-    {
-    	std::lock_guard<std::mutex> lk(this->m_mutex);				// locker to access shared variables
-        std::cout<<"Rectify the answer? [type 's' to save and quit]"<<std::endl;
-        cin >> ans;
-        if (isdigit(ans[0]))
-        {
-            std::cout<<"'"<<ans<<"' is a digit -> '"<<atoi(ans.c_str())<<"'"<<std::endl;
-            *answeri = atoi(ans.c_str());
-        }
-        else if (0 == ans.compare("s") || 0 == ans.compare("\x18")|| 0 == ans.compare("\x18s")) // if has to stop/pause the experiment
-        {
-            ret = true;
-        }
-    }
+	std::cout<<"Rectify the answer? [type 's' to save and quit]"<<std::endl;
+	cin >> ans;
+	if (isdigit(ans[0]))
+	{
+		std::cout<<"'"<<ans<<"' is a digit -> '"<<atoi(ans.c_str())<<"'"<<std::endl;
+		*answeri = atoi(ans.c_str());
+	}
+	else if (0 == ans.compare("s") || 0 == ans.compare("\x18")|| 0 == ans.compare("\x18s")) // if has to stop/pause the experiment
+	{
+		ret = true;
+	}
+    
     std::cout<<"The new answer is='"<<ans<<"'"<<std::endl;
     return ret;
 }
