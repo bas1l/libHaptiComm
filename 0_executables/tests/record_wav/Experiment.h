@@ -185,6 +185,7 @@ private:
 	
 	/* b. threads related */
 	bool signal4recording();
+	bool signal4stop_recording();
 	void start_recording();
 	void stop_recording();
 	void stop_experiment();

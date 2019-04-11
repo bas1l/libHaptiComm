@@ -255,19 +255,12 @@ recognize_from_microphone()
     E_INFO("Ready....\n");
 
     for (;;) {
+    	
         if ((k = ad_read(ad, adbuf, 2048)) < 0)
             E_FATAL("Failed to read audio\n");
         cpt +=k;
-        std::cout<<"[NB K ITERATIVE="<<std::to_string(cpt)<<std::endl;
+        std::cout<<"[NB K ="<<std::to_string(k)<<std::endl;
 
-    	if (adcdev == NULL)
-    	{
-    		std::cout<<"adcdev is NULL"<<std::endl;
-    	}
-    	else 
-    	{
-    		std::cout<<"adcdev is "<<adcdev<<std::endl;
-    	}
         ps_process_raw(ps, adbuf, k, FALSE, FALSE);
         in_speech = ps_get_in_speech(ps);
         if (in_speech && !utt_started) {

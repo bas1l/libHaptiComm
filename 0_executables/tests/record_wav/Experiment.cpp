@@ -200,13 +200,12 @@ void Experiment::record_from_microphone()
 	//int16_t * micBuf;
     int16 micBuf[2048];
 	int32_t k;	
-	int samprate, sizeBuff, sizefullBuff, sizeRead;
+	int samprate, sizeBuff, sizefullBuff;
 	bool disp, dispLoop, is_recording_local;
 
 	const char * adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev");
 	samprate 	= (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 		// sampling rate for 'ad'
 	sizeBuff 		= 2048;
-	sizeRead 		= 2048;
 	sizefullBuff 	= 10*samprate;
 	std::cout<<"samprate="<<std::to_string(samprate)<<", "<<std::flush;
 	std::cout<<"sizefullBuff="<<std::to_string(sizefullBuff)<<", "<<std::flush;
@@ -232,14 +231,10 @@ void Experiment::record_from_microphone()
 	
 	std::cout<<"[thread] READY..."<<std::endl;
 	
-	while(true)
+	while(signal4recording())
 	{
 		cpt=0;
-		// Acquire the lock
-		if(!signal4recording()) 
-		{
-			break;
-		}
+		
 		std::cout<<"[thread] Open microphone buffer..."<<std::endl;
 		if (ad_start_rec(adrec) < 0) 								// start recording
 			E_FATAL("Failed to start recording\n");
@@ -247,14 +242,10 @@ void Experiment::record_from_microphone()
 
 		
 		std::cout<<">>>>>>>>>>>>>>>>>>>>>>"<<std::endl;
-		while(true)
+		while(!signal4stop_recording())
 		{
-			
-			{
-				std::lock_guard<std::mutex> lk(this->m_mutex);// locker to access shared variables
-				if (!isrecording()) break;
-			}
-			if ((k = ad_read(adrec, micBuf, sizeRead)) < 0)				// record...
+			std::this_thread::sleep_for(std::chrono::milliseconds(50)); 			// let some time for alsa to feed the buffer
+			if ((k = ad_read(adrec, micBuf, sizeBuff)) < 0)				// record...
 				E_FATAL("Failed to read audio\n");
 			cpt +=k;
 			std::cout<<"[NB K ITERATIVE="<<std::to_string(cpt)<<std::endl;
@@ -262,6 +253,7 @@ void Experiment::record_from_microphone()
 			{
 				buffer[0][this->af_i++] = micBuf[i];
 			}
+			
 		}
 		std::cout<<"<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
 		if (ad_stop_rec(adrec) < 0) 									// answer has been given, stop recording
@@ -513,6 +505,13 @@ bool Experiment::signal4recording()
 	this->m_condVar.wait(mlock, std::bind(&Experiment::isrecordingorworkdone, this));
 	if (isworkdone()) {return false;}
 	else return true;
+}
+
+bool Experiment::signal4stop_recording()
+{	
+	//std::cout<<"[stop_recording] in."<<std::endl;
+	std::lock_guard<std::mutex> lk(this->m_mutex);				// locker to access shared variables
+	return !(this->is_recording);
 }
 
 void Experiment::start_recording()
