@@ -63,7 +63,7 @@ static const arg_t cont_args_def[] = {
      "Argument file giving extra arguments."},
     {"-adcdev",
      ARG_STRING,
-     "default",
+     NULL,
      "Name of audio device to use for input."},
     {"-infile",
      ARG_STRING,

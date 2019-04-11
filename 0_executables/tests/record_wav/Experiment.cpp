@@ -80,7 +80,7 @@ bool Experiment::create()
 	string fdd(c->getPathDict()+c->getLangage()+"/"+c->getLangage()); // folder of the CMU Sphinx database
 	if(1)
 	{
-		std::cout<<"fakeargs>>"<<std::endl;
+		std::cout<<"fakeargs>>pass..."<<std::endl;
 	}
 	else if(c->getLangage().compare("en-us") ==0) // english VR
 	{
@@ -120,14 +120,12 @@ bool Experiment::create()
 					//"-adcdev", 	adcdevval,
 					 NULL);
 	}
-	
-	int argc = 3;
-	char** argv = (char**)malloc(20 * sizeof(char)); // chars
-	argv[1] = const_cast<char*>("-inmic");
-	argv[2] = const_cast<char*>("yes");
-		
+
+	std::cout<<"cmd_ln_parse_r"<<std::endl;
+	int argc = 0;
+	char** argv = (char**)malloc(32 * sizeof(char)); // chars
 	this->vr_cfg = cmd_ln_parse_r(NULL, cont_args_def, argc, argv, TRUE);
-	ps_default_search_args(this->vr_cfg);			// fill non-defined variables with default values
+	//ps_default_search_args(this->vr_cfg);			// fill non-defined variables with default values
   
 	// init wav writer (AudioFile library)
 	std::cout<<"AudioFile"<<std::endl;
