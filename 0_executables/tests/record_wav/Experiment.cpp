@@ -222,12 +222,17 @@ void Experiment::record_from_microphone()
 	
 	if (adcdev == NULL)
 	{
-		cout<<"adcdev is NULL"<<std::endl;
+		std::cout<<"adcdev is NULL"<<std::endl;
+	}
+	else 
+	{
+		std::cout<<"adcdev is "<<adcdev<<std::endl;
 	}
 	if ((adrec = ad_open_dev(adcdev, samprate)) == NULL) 			// open the audio device (microphone)
-			E_FATAL("Failed to open audio device\n"); 
+		E_FATAL("Failed to open audio device\n"); 
 	
 	std::cout<<"[thread] READY..."<<std::endl;
+	
 	while(true)
 	{
 		// Acquire the lock
@@ -328,7 +333,8 @@ bool Experiment::executeActuator(int * durationRefresh_ns)
 	rect = false;
 	overruns = 0;
 	i = 0;
-
+	
+	std::this_thread::sleep_for(std::chrono::milliseconds(50)); 			// let some time to open the mic
 	/* work */
 	std::cout<<"+----------------------------------------------+"<<std::endl;
 	std::cout<<"+...                                        ...+"<<std::endl;
@@ -346,7 +352,7 @@ bool Experiment::executeActuator(int * durationRefresh_ns)
 		//overruns += executeSequence(&i, values, durationRefresh_ns, &vhrc); 	// copy of variable[values]  is important (erase)
 		
 		//dispTimers(i, answeri, vhrc, timerDebug);
-		std::this_thread::sleep_for(std::chrono::milliseconds(1)); 			// let some time to open the mic
+		std::this_thread::sleep_for(std::chrono::milliseconds(1)); 			// let some time to record the mic
 		rect = writeAnswer(&answeri);
 		stop_recording(); // change is_recording value to false
 		
