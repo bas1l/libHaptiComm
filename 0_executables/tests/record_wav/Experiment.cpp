@@ -337,8 +337,8 @@ bool Experiment::executeCalibration(int * durationRefresh_ns)
 	std::cout<<"+----------------------------------------------+"<<std::endl;
 	cin.get();
 	
-	//for(i=this->seq_start; i<this->seq.size(); i++) // for the sequence i
-	for(i=this->seq_start; i<10; i++) // for the sequence i
+	for(i=this->seq_start; i<this->seq.size(); i++) // for the sequence i
+	//for(i=this->seq_start; i<10; i++) // for the sequence i
 	{
 		std::cout<<std::endl<<"[main][Calibration] New sequence: ["<<i<<"/"<<this->seq.size()<<"]"<<std::endl;
 		this->c_start = chrono::high_resolution_clock::now(); 							// https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
