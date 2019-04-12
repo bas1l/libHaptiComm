@@ -1,0 +1,10 @@
+Fichier de configuration
+.
+..
+...
+
+candidats:
+
+a b, 1
+b a, 2
+c c, 3
