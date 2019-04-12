@@ -9,4 +9,4 @@ add_library(cand "Candidat.cpp")
 
 add_executable(${PROJECT_NAME} "main.cpp")
 link_directories(${CMAKE_BINARY_DIR})
-target_link_libraries (${PROJECT_NAME} LINK_PUBLIC pthread ncurses config4HaptiComm libad5383 libutils libwaveform libdevice libalphabet cand exp ${Boost_SYSTEM_LIBRARY} boost_filesystem pocketsphinx sphinxbase sphinxad)
+target_link_libraries (${PROJECT_NAME} LINK_PUBLIC pthread ncurses audioFile config4HaptiComm libad5383 libutils libwaveform libdevice libalphabet cand exp ${Boost_SYSTEM_LIBRARY} boost_filesystem pocketsphinx sphinxbase sphinxad)

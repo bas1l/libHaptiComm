@@ -6,12 +6,14 @@
  */
 
 /* STANDARD LIBRARIES */
+#include <algorithm>			// for max_element
 #include <atomic>
 #include <array> 				// std::array
 #include <chrono> 				// std::clock, std::chrono::high_resolution_clock::now
 #include <condition_variable>
+#include <iomanip>				// cout with desired floating precision
 #include <iostream>
-#include <functional>			// std::bind
+#include <functional>			// std::bind and placeholders
 #include <mutex>
 #include <numeric> 				// accumulate
 #include <stdlib.h> 			// srand, rand
@@ -39,9 +41,6 @@
 
 /* Reading and writing wav's library */
 #include "AudioFile.h"
-
-
-
 
 #include <pthread.h>
 #include <sched.h>
@@ -176,7 +175,8 @@ private:
 	static void * static_executeStimuli(void * c);
 	void record_from_microphone();
 	void executeStimuli();
-	
+
+	bool executeCalibration(int * durationRefresh_ns);	
 	bool executeActuator(int * durationRefresh_ns);
 	bool executeF(int * durationRefresh_ns);
 	int  executeSequence(int * 		currSeq, waveformLetter values_copy, int * 	dr_ns, td_msecarray * vhrc);
@@ -206,7 +206,7 @@ private:
 	bool isAudioBufferReady();
 	
 	/* e. tools */
-	td_msec nowSeq();
+	td_msec nowLocal(td_highresclock start);
 	void dispTimers(int numSeq, int answeri, td_msecarray vhrc, td_msecarray timerDebug);
 };
 

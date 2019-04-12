@@ -13,7 +13,7 @@ Candidat::Candidat(string _pathDict, string _pathDirectory,
 	  infoFile("info.txt"), 
 	  candidatsListFile("candidatsList.txt")
 {
-	cout << "[candidat] new" << endl;
+	cout<<"[candidat] new"<<endl;
 	setPathDict(_pathDict);
 	setPathDirectory(_pathDirectory);
 	setName(_firstname, _lastname);
@@ -31,7 +31,7 @@ bool Candidat::exist()
 	string file(this->pathDirectory + this->candidatsListFile);
 	std::ifstream ifs(file.c_str());
 	// if the file is not properly opened
-	if (!ifs.is_open()) cerr << "[candidat] The file" << file << "can't be loaded." << endl;
+	if (!ifs.is_open()) cerr<<"[candidat] The file"<<file<<"can't be loaded."<<endl;
 	string line;
 	int success = -1;
 	// get the line corresponding to the candidats IDs
@@ -40,8 +40,8 @@ bool Candidat::exist()
 		success = line.compare("candidats:");
 	}
 	// if there is no line concerning candidats
-	success == 0 ? cout << "[candidat] Checking if the candidat exists..." :
-		cerr << "[candidat] The file" << file << "do not have \"candidat:\" lines." << endl;
+	success == 0 ? cout<<"[candidat] Checking if the candidat exists..." :
+		cerr<<"[candidat] The file"<<file<<"do not have \"candidat:\" lines."<<endl;
 
 
 	/* check if the participant already exists */
@@ -67,11 +67,11 @@ bool Candidat::exist()
 	if (exist)
 	{
 		this->setId(stoi(_id));
-		cout << "[candidat] Exists in the database: id=" << to_string(this->id) << endl;
+		cout<<"[candidat] Exists in the database: id="<<to_string(this->id)<<endl;
 	}
 	else
 	{
-		cout << "[candidat] Does not exist." << endl;
+		cout<<"[candidat] Does not exist."<<endl;
 	}
 
 
@@ -87,7 +87,7 @@ bool Candidat::create()
 	int idMax = 0;
 	DIR * dp;
 	if((dp  = opendir(this->pathDirectory.c_str())) == NULL) {
-		cout << "[candidat] Error(" << errno << ") opening " << this->pathDirectory << endl;
+		cout<<"[candidat] Error("<<errno<<") opening "<<this->pathDirectory<<endl;
 		err=true;
 	}
 	// looping over all candidate files in the main directory
@@ -96,9 +96,9 @@ bool Candidat::create()
 		// atoi() will automatically put '0' value if the current file is not an integer
 		if (idMax<atoi(dirp->d_name))
 			idMax = atoi(dirp->d_name);
-		//cout << "file: " << string(dirp->d_name) << " and its N value: " << atoi(dirp->d_name) << endl;
+		//cout<<"file: "<<string(dirp->d_name)<<" and its N value: "<<atoi(dirp->d_name)<<endl;
 	}
-	//cout << "idmax= " << idMax << endl; 
+	//cout<<"idmax= "<<idMax<<endl; 
 	// set the id for the new candidate
 	this->setId(idMax+1);
 	closedir(dp);
@@ -114,7 +114,7 @@ bool Candidat::create()
 	clfstream.open(clFile.c_str(), std::ios::app);
 	string lineStr(this->firstname+' '+this->lastname+", "+to_string(this->id));
 	// add the line 
-	clfstream << lineStr << endl;
+	clfstream<<lineStr<<endl;
 	clfstream.close();
 
 
@@ -130,9 +130,9 @@ bool Candidat::create()
 	/* save all the informations into the infoFile */
 	this->saveInfo();
 
-	cout << "[candidat] [SUCCESS] Candidate('" << this->firstname << ' ' << this->lastname 
-	 << "') has been created with its current folder named '" 
-	 << to_string(this->id) << "'." << endl;
+	cout<<"[candidat] [SUCCESS] Candidate('"<<this->firstname<<' '<<this->lastname 
+	<<"') has been created with its current folder named '" 
+	<<to_string(this->id)<<"'."<<endl;
 
 	return err;
 }
@@ -140,7 +140,7 @@ bool Candidat::create()
 
 bool Candidat::loadFromDB(){
 	bool err = false;
-	cout << "[candidat][loadFromDB] Start..." << endl;
+	cout<<"[candidat][loadFromDB] Start..."<<endl;
 
 	/* condition variables */
 	string flname = "firstname,lastname";
@@ -158,7 +158,7 @@ bool Candidat::loadFromDB(){
 	std::ifstream filein(fileinstr); //File to read from
 	if (!filein)
 	{
-		cerr << "[candidat][loadFromDB] " << fileinstr  << ": Error opening file" << endl;
+		cerr<<"[candidat][loadFromDB] "<<fileinstr <<": Error opening file"<<endl;
 		err = true;
 	}
 
@@ -176,7 +176,7 @@ bool Candidat::loadFromDB(){
 			nextis_lang = false;
 			nextis_eord = false;
 			nextis_eseq = false;
-			cout << "empty line";
+			cout<<"empty line";
 		}
 		else if(nextis_eseq)
 		{
@@ -192,13 +192,13 @@ bool Candidat::loadFromDB(){
 		{
 			this->firstname = line.substr(0, line.find(","));
 			this->lastname  = line.substr(line.find(",")+1);
-			cout << "firstname=" << firstname << " and lastname=" << lastname << endl;
+			cout<<"firstname="<<firstname<<" and lastname="<<lastname<<endl;
 
 		}
 		else if(nextis_lang)
 		{
 			this->langage = line;
-			cout << "langage=" << langage << endl;
+			cout<<"langage="<<langage<<endl;
 		}
 		else if(nextis_eord)
 		{
@@ -207,18 +207,18 @@ bool Candidat::loadFromDB(){
 			b=(bstr.compare("false")==0)?false:true;
 			ee = this->str2expEnum(eestr);
 			this->expeOrder.push_back( std::make_pair(b, ee) );
-			cout << "bool=" << bstr << " and expEnum=" << eestr << endl;
+			cout<<"bool="<<bstr<<" and expEnum="<<eestr<<endl;
 		}
-		else if (line.find(flname) != string::npos) { nextis_name = true; cout << "TRUE1" <<endl; }
-		else if (line.find(lang)   != string::npos) { nextis_lang = true; cout << "TRUE2" <<endl; }
-		else if (line.find(expord) != string::npos) { nextis_eord = true; cout << "TRUE3" <<endl; }
-		else if (line.find(expseq) != string::npos) { nextis_eseq = true; cout << "TRUE4" <<endl; }
+		else if (line.find(flname) != string::npos) { nextis_name = true; cout<<"TRUE1" <<endl; }
+		else if (line.find(lang)   != string::npos) { nextis_lang = true; cout<<"TRUE2" <<endl; }
+		else if (line.find(expord) != string::npos) { nextis_eord = true; cout<<"TRUE3" <<endl; }
+		else if (line.find(expseq) != string::npos) { nextis_eseq = true; cout<<"TRUE4" <<endl; }
 
-		//cout << line << endl;
+		//cout<<line<<endl;
 	}
 	filein.close();
 
-	cout << "[candidat][loadFromDB] \t...End" << endl;
+	cout<<"[candidat][loadFromDB] \t...End"<<endl;
 
 	return err;
 }
@@ -234,7 +234,7 @@ bool Candidat::isNextExp()
 		if (it->first == false)
 			found = true;
 	}
-	if (!found) { cerr << "[candidat] No experiment left." << endl; }
+	if (!found) { cerr<<"[candidat] No experiment left."<<endl; }
 	return found; 
 }
 
@@ -253,8 +253,8 @@ expEnum Candidat::nextExp(){
 		}
 	}
 
-	if (found) { cout << "[candidat] Next experiment is " << expstring(ee) << endl; }
-	else { cerr << "[candidat] No experiment left." << endl; }
+	if (found) { cout<<"[candidat] Next experiment is "<<expstring(ee)<<endl; }
+	else { cerr<<"[candidat] No experiment left."<<endl; }
 
 	return ee;
 }
@@ -265,23 +265,23 @@ bool Candidat::saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> *
 	/* save the results into the corresponding file (current experiment) *
 	string expstr = this->expstring(this->nextExp()); // current experiment string
 	string file(this->pathDirectory+to_string(this->id)+"/"+expstr+".csv");
-	cout << "[candidat][saveResults] writing results into: " << file << endl;
+	cout<<"[candidat][saveResults] writing results into: "<<file<<endl;
 	std::ofstream mf(file);
-	if(!mf) { cerr << "[candidat][saveResults] " << file << ": Error opening file" << endl; }
+	if(!mf) { cerr<<"[candidat][saveResults] "<<file<<": Error opening file"<<endl; }
 
-	mf << "actuator1,actuator2,actuator3,actuator4,actuator5,actuator6,";
-	mf << "time1,time2,time3,";
-	mf << "answer";
-	mf << endl;
+	mf<<"actuator1,actuator2,actuator3,actuator4,actuator5,actuator6,";
+	mf<<"time1,time2,time3,";
+	mf<<"answer";
+	mf<<endl;
 	for (int i=0; i<this->seq.size(); ++i)
 	{
 		for (int j=0; j<this->seq[i].size(); ++j)
 		{
-			mf << to_string(this->seq[i][j]) << ",";
+			mf<<to_string(this->seq[i][j])<<",";
 		}
-		mf << to_string((*timers)[i][0].count()) << "," << to_string((*timers)[i][1].count()) << "," << to_string((*timers)[i][2].count()) << ",";
-	mf << to_string((*answers)[i]);
-		mf << endl;
+		mf<<to_string((*timers)[i][0].count())<<","<<to_string((*timers)[i][1].count())<<","<<to_string((*timers)[i][2].count())<<",";
+	mf<<to_string((*answers)[i]);
+		mf<<endl;
 	}
 	mf.close();
 */
@@ -341,8 +341,8 @@ bool Candidat::setlangage(string l){
 	else
 	{
 		ret = false;
-		cerr << "The langage <" << l << "> is not supported." << endl;
-		cerr << "Try with 'fr-fr' or 'en-us'." << endl;
+		cerr<<"The langage <"<<l<<"> is not supported."<<endl;
+		cerr<<"Try with 'fr-fr' or 'en-us'."<<endl;
 	}
 	
 	return ret;
@@ -386,7 +386,7 @@ bool Candidat::setPathDirectory(string p){
  * INITIALISATION
  *************/
 bool Candidat::initexpVariables(){
-	cout << "More informations is needed to create the candidat:" << endl;
+	cout<<"More informations is needed to create the candidat:"<<endl;
 	this->initlangage();
 	this->initage();
 	this->inittype();
@@ -400,18 +400,18 @@ bool Candidat::initexpVariables(){
 	{
 		for (int j=0; j<this->seq[0].size();++j)
 		{
-			cout << this->seq[i][j] ;
+			cout<<this->seq[i][j] ;
 		}
-		cout << "\t";
+		cout<<"\t";
 	}
-	cout << endl;
+	cout<<endl;
 	*/
 	return true;
 }
 
 bool Candidat::initlangage(){
 	string tmp;
-	cout << "Which is the langage to use? ('en-us' or 'fr-fr')" << endl;
+	cout<<"Which is the langage to use? ('en-us' or 'fr-fr')"<<endl;
 	cin >> tmp;
 	
 	return setlangage(tmp);
@@ -420,7 +420,7 @@ bool Candidat::initlangage(){
 bool Candidat::initage(){
 	string tmp;
 	
-	cout << "How old are you?" << endl;
+	cout<<"How old are you?"<<endl;
 	cin >> tmp;
 	
 	return setage(atoi(tmp.c_str()));
@@ -429,7 +429,7 @@ bool Candidat::initage(){
 bool Candidat::inittype(){
 	string tmp;
 	
-	cout << "Are you a man, a woman? ('h','m' or 'f', 'w')" << endl;
+	cout<<"Are you a man, a woman? ('h','m' or 'f', 'w')"<<endl;
 	cin >> tmp;
 	
 	return settype(tmp);
@@ -438,7 +438,7 @@ bool Candidat::inittype(){
 /* Initialise all the possible combinaisons of actuators */
 bool Candidat::initapc(){
 	int nbs = pow(2, this->nba) - 1; // (number of sequences) - (the '000000' sequence)
-	cout << "[candidat] initapc> Number of (sequence, motor) = (" << nbs << ", " << this->nba << ")" << endl;
+	cout<<"[candidat] initapc> Number of (sequence, motor) = ("<<nbs<<", "<<this->nba<<")"<<endl;
 	for(int i=1; i<nbs+1; i++)
 	{
 		std::vector<int> tmp(this->nba); // copy elison
@@ -470,7 +470,7 @@ bool Candidat::initseq(){
 			// for all the actuators inside the current sequence
 			for (j=0; j<this->apc[0].size();++j)
 			{
-				//cout << this->apc[s][j] ;
+				//cout<<this->apc[s][j] ;
 				sum_of_elems += this->apc[s][j];
 			}
 			// if the current sequence equals to the specific number of actuator
@@ -496,68 +496,70 @@ bool Candidat::initseq(){
 }
 
 bool Candidat::initexpeOrder(){
+	expeOrder.push_back( std::make_pair(false,Calibration) );
+	
 	expeOrder.push_back( std::make_pair(false,BrailleDevSpace) );
 	expeOrder.push_back( std::make_pair(false,BrailleDevTemp) );
 	expeOrder.push_back( std::make_pair(true, FingersSpace) );
 	expeOrder.push_back( std::make_pair(true, FingersTemp) );
 	expeOrder.push_back( std::make_pair(false,BuzzerSpace) );
 	expeOrder.push_back( std::make_pair(true,BuzzerTemp) );
-	std::random_shuffle(expeOrder.begin(), expeOrder.end());
+	std::random_shuffle(expeOrder.begin()+1, expeOrder.end());
 	
 	return true;
 }
 
 bool Candidat::saveInfo(){
 	//for (std::map<char,int>::iterator it=mymap.begin(); it!=mymap.end(); ++it)
-	//    std::cout << it->first << " => " << it->second << '\n';
+	//    std::cout<<it->first<<" => "<<it->second<<'\n';
 	string file(this->pathDirectory+to_string(this->id)+"/"+this->infoFile);
-	cout << "[candidat][saveInfo] writing " << file << "...";
+	cout<<"[candidat][saveInfo] writing "<<file<<"...";
 
 	std::ofstream mf;
 	mf.open(file);
 
-	mf << "firstname,lastname:" << endl;
-	mf << this->firstname << "," << this->lastname << endl;
-	mf << endl;
+	mf<<"firstname,lastname:"<<endl;
+	mf<<this->firstname<<","<<this->lastname<<endl;
+	mf<<endl;
 
-	mf << "age:" << endl;
-	mf << this->age << endl;
-	mf << endl;
+	mf<<"age:"<<endl;
+	mf<<this->age<<endl;
+	mf<<endl;
 
-	mf << "type:" << endl;
-	mf << this->type << endl;
-	mf << endl;
+	mf<<"type:"<<endl;
+	mf<<this->type<<endl;
+	mf<<endl;
 
-	mf << "langage:" << endl;
-	mf << this->langage << endl;
-	mf << endl;
+	mf<<"langage:"<<endl;
+	mf<<this->langage<<endl;
+	mf<<endl;
 
-	mf << "expEnum order:" << endl;
+	mf<<"expEnum order:"<<endl;
 	for (vector<pair<bool, expEnum>>::iterator it=this->expeOrder.begin(); it!=this->expeOrder.end(); ++it)
 	{
 		if (it->first == false)
-			mf << "false,";
+			mf<<"false,";
 		else
-			mf << "true,";
+			mf<<"true,";
 
-		mf << expstring(it->second) << endl;
+		mf<<expstring(it->second)<<endl;
 	}
-	mf << endl;
+	mf<<endl;
 
-	mf << "experimental sequences:" << endl;
+	mf<<"experimental sequences:"<<endl;
 	for(i=0; i<this->seq.size(); i++)
 	{
 		for(j=0; j<this->seq[0].size()-1; j++)
 		{
-			mf << this->seq[i][j] << ",";
+			mf<<this->seq[i][j]<<",";
 		}
-		mf << this->seq[i][j] << endl;
+		mf<<this->seq[i][j]<<endl;
 	}
-	mf << endl;
+	mf<<endl;
 
 	mf.close();
 
-	cout << "done." << endl;
+	cout<<"done."<<endl;
 }
 
 
@@ -574,21 +576,21 @@ bool Candidat::seteoe()
 	string fileout(this->pathDirectory+to_string(this->id)+"/"+this->infoFile+".tmp");
 	std::ifstream fin(filein); //File to read from
 	std::ofstream fout(fileout); //Temporary file
-	if (!fin)  { cerr << "[candidat][saveResults] " << filein  << ": Error opening file" << endl; return true;}
-	if (!fout) { cerr << "[candidat][saveResults] " << fileout << ": Error opening file" << endl; return true;}
+	if (!fin)  { cerr<<"[candidat][saveResults] "<<filein <<": Error opening file"<<endl; return true;}
+	if (!fout) { cerr<<"[candidat][saveResults] "<<fileout<<": Error opening file"<<endl; return true;}
 
 	while(getline(fin, line)) { // fill the tmp file
 		if (line.find(expname) != string::npos) // if the line of the current exp has been found
-			fout << expnew;
+			fout<<expnew;
 		else
-			fout << line;
-		fout << endl;
+			fout<<line;
+		fout<<endl;
 	}
 	fin.close();
 	fout.close();
 
-	if (remove(filein.c_str()) != 0) { cerr << "[candidat][saveResults] " << filein << ": Error deleting file" << endl; }
-	if (rename(fileout.c_str(), filein.c_str()) != 0) { cerr << "[candidat][saveResults] " << fileout << ": Error renaming file" << endl; }
+	if (remove(filein.c_str()) != 0) { cerr<<"[candidat][saveResults] "<<filein<<": Error deleting file"<<endl; }
+	if (rename(fileout.c_str(), filein.c_str()) != 0) { cerr<<"[candidat][saveResults] "<<fileout<<": Error renaming file"<<endl; }
 
 	return false;
 }
@@ -600,31 +602,31 @@ bool Candidat::fillcsvfile(vector<td_msecarray>* timers, vector<int> * answers, 
 	/* if new file */
 	if (0 == *seq_start) {
 		std::ofstream mf(fname);
-		if(!mf) { cerr << "[candidat][saveResults] " << fname << ": Error opening file" << endl; }
-		else {    cout << "[candidat][saveResults] writing results into: " << fname << endl;}
+		if(!mf) { cerr<<"[candidat][saveResults] "<<fname<<": Error opening file"<<endl; }
+		else {    cout<<"[candidat][saveResults] writing results into: "<<fname<<endl;}
 
 		// header
-		mf << "id_seq,actuator1,actuator2,actuator3,actuator4,actuator5,actuator6,";
-		mf << "before_stimuli(ms),after_stimuli(ms),time_answer(ms),";
-		mf << "value_answer(0:6)";
-		mf << endl;
+		mf<<"id_seq,actuator1,actuator2,actuator3,actuator4,actuator5,actuator6,";
+		mf<<"before_stimuli(ms),after_stimuli(ms),time_answer(ms),";
+		mf<<"value_answer(0:6)";
+		mf<<endl;
 
 		// for each sequence
 		for (int i=*seq_start; i!=*seq_end; ++i) {
 			// id of the sequence
-			mf << to_string(i) << ",";
+			mf<<to_string(i)<<",";
 			// value of the sequence
 			for (int j=0; j<this->seq[i].size(); ++j) {
-				mf << to_string(this->seq[i][j]) << ",";
+				mf<<to_string(this->seq[i][j])<<",";
 			}
 			// timers
 			for (int k=0; k<(*timers)[i].size(); ++k) {
-				mf << to_string((*timers)[i][k].count()) << ",";
+				mf<<to_string((*timers)[i][k].count())<<",";
 			}
 			// answer
-			mf << to_string((*answers)[i]);
+			mf<<to_string((*answers)[i]);
 			// eol
-			mf << endl;
+			mf<<endl;
 		}
 		mf.close();
 		
@@ -637,9 +639,9 @@ bool Candidat::fillcsvfile(vector<td_msecarray>* timers, vector<int> * answers, 
 		
 		std::ifstream fin(fname); //File to read from
 		std::ofstream fout(tmpname); //Temporary file
-		if (!fin) { cerr << "[candidat][saveResults] " << fname  << ": Error opening file" << endl; return true;}
-		else      { cout << "[candidat][saveResults] writing results into: " << fname << endl;}
-		if (!fout) { cerr << "[candidat][saveResults] " << tmpname << ": Error opening file" << endl; return true;}
+		if (!fin) { cerr<<"[candidat][saveResults] "<<fname <<": Error opening file"<<endl; return true;}
+		else      { cout<<"[candidat][saveResults] writing results into: "<<fname<<endl;}
+		if (!fout) { cerr<<"[candidat][saveResults] "<<tmpname<<": Error opening file"<<endl; return true;}
 		
 		int cptline=-1; // remove the header's count, start to -1
 		bool job_done = false;
@@ -647,8 +649,8 @@ bool Candidat::fillcsvfile(vector<td_msecarray>* timers, vector<int> * answers, 
 			if (cptline == *seq_start)
 				job_done = true;
 			else
-				fout << line << endl;
-				cout << "cptline=" << cptline << ", line=" << line << endl;
+				fout<<line<<endl;
+				cout<<"cptline="<<cptline<<", line="<<line<<endl;
 			
 			cptline++;
 		}
@@ -657,34 +659,34 @@ bool Candidat::fillcsvfile(vector<td_msecarray>* timers, vector<int> * answers, 
 		if (!job_done) // if gap between previous_number_sequences and seq_start
 		{
 			for (int i=cptline; i!=*seq_start; ++i) {
-				fout << to_string(i) << "-1,-1,-1,-1,-1,-1, -1,-1,-1, -1" << endl;
+				fout<<to_string(i)<<"-1,-1,-1,-1,-1,-1, -1,-1,-1, -1"<<endl;
 			}
 		}
 		
 		for (int i=*seq_start; i!=*seq_end; ++i) { // for each sequence
 			ans_idx = i - *seq_start;
 			// id of the sequence
-			fout << to_string(i) << ",";
+			fout<<to_string(i)<<",";
 			// value of the sequence
 			for (int j=0; j<this->seq[i].size(); ++j) {
-				fout << to_string(this->seq[i][j]) << ",";
+				fout<<to_string(this->seq[i][j])<<",";
 			}
 			// timers
 			for (int k=0; k<(*timers)[ans_idx].size(); ++k) {
-				fout << to_string((*timers)[ans_idx][k].count()) << ",";
+				fout<<to_string((*timers)[ans_idx][k].count())<<",";
 			}
 			// answer
-			fout << to_string((*answers)[ans_idx]);
+			fout<<to_string((*answers)[ans_idx]);
 			// eol
-			fout << endl;
+			fout<<endl;
 		}
 		fout.close();
 		
-		if (remove(fname.c_str()) != 0) { cerr << "[candidat][saveResults] " << fname << ": Error deleting file" << endl; }
-		if (rename(tmpname.c_str(), fname.c_str()) != 0) { cerr << "[candidat][saveResults] " << tmpname << ": Error renaming file" << endl; }
+		if (remove(fname.c_str()) != 0) { cerr<<"[candidat][saveResults] "<<fname<<": Error deleting file"<<endl; }
+		if (rename(tmpname.c_str(), fname.c_str()) != 0) { cerr<<"[candidat][saveResults] "<<tmpname<<": Error renaming file"<<endl; }
 	}
 		
-	cout << "[SUCCES]...written" << endl;
+	cout<<"[SUCCES]...written"<<endl;
 	
 	return false;
 }
@@ -706,6 +708,8 @@ string Candidat::expstring(expEnum ee)
 		ret = "BuzzerSpace";
 	else if(ee == BuzzerTemp)
 		ret = "BuzzerTemp";
+	else if(ee == Calibration)
+		ret = "Calibration";
 	else
 		ret = "";
 	
@@ -741,9 +745,13 @@ expEnum Candidat::str2expEnum(string eestr)
 	{
 		ee = BuzzerTemp;
 	}
+	else if (eestr.compare("Calibration") == 0)
+	{
+		ee = Calibration;
+	}
 	else
 	{
-		cerr << "[candidat][str2expEnum] String is not corresponding to a expEnum value." << endl;
+		cerr<<"[candidat][str2expEnum] String is not corresponding to a expEnum value."<<endl;
 	}
 
 	return ee;
@@ -758,27 +766,27 @@ bool Candidat::copyDir(boost::filesystem::path const & source,
         // Check whether the function call is valid
         if(!fs::exists(source) || !fs::is_directory(source))
         {
-            std::cerr << "Source directory " << source.string()
-                      << " does not exist or is not a directory." << endl;
+            std::cerr<<"Source directory "<<source.string()
+                     <<" does not exist or is not a directory."<<endl;
             return false;
         }
         if(fs::exists(destination))
         {
-            std::cerr << "Destination directory " << destination.string()
-                	  << " already exists." << endl;
+            std::cerr<<"Destination directory "<<destination.string()
+                	 <<" already exists."<<endl;
             return false;
         }
         // Create the destination directory
         if(!fs::create_directory(destination))
         {
-            std::cerr << "Unable to create destination directory" 
-            		  << destination.string() << endl;
+            std::cerr<<"Unable to create destination directory" 
+            		 <<destination.string()<<endl;
             return false;
         }
     }
     catch(fs::filesystem_error const & e)
     {
-        std::cerr << e.what() << endl;
+        std::cerr<<e.what()<<endl;
         return false;
     }
     
@@ -815,7 +823,7 @@ bool Candidat::copyDir(boost::filesystem::path const & source,
         }
         catch(fs::filesystem_error const & e)
         {
-            std:: cerr << e.what() << '\n';
+            std::cerr<<e.what()<<std::endl;
         }
     }
     

@@ -29,6 +29,8 @@ Experiment::~Experiment()
 /********************************************/
 bool Experiment::create()
 {
+	std::cout << std::fixed;
+	std::cout << std::setprecision(2);
 	std::cout<<"[experiment] create::start..."<<std::endl;
 	   
 	// input variables
@@ -196,16 +198,17 @@ void * Experiment::static_executeStimuli(void * c)
 
 void Experiment::record_from_microphone()
 {
+	/* create */
 	ad_rec_t * adrec;
-	AudioFile<double>::AudioBuffer buffer;						// intermediate buffer between audioFile buffer and
+	AudioFile<double>::AudioBuffer buffer;								// intermediate buffer between audioFile buffer and
     int16 micBuf[2048];
 	int32_t k;	
 	int i, samprate, sizeBuff, sizefullBuff, ttw, nbS;
 	float nbSperMS;
-	bool disp, dispLoop, is_recording_local;
 
+	/* initialize */
 	const char * adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev");
-	samprate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 			// sampling rate for 'ad'
+	samprate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 		// sampling rate for 'ad'
 	sizeBuff 		= 2048;
 	sizefullBuff 	= 10*samprate;
 	nbSperMS 		= samprate/(float)1000;
@@ -213,109 +216,47 @@ void Experiment::record_from_microphone()
 	nbS 			= nbSperMS*ttw; // nb sample / ttw
 	buffer.resize (1);
 	buffer[0].resize (10*samprate);
-	disp 				= true;
-	dispLoop 			= false;
-	is_recording_local 	= false;
-	
 	if ((adrec = ad_open_dev(adcdev, samprate)) == NULL) 				// open the audio device (microphone)
-		E_FATAL("Failed to open audio device\n"); 
-
-	std::cout<<"samprate="<<std::to_string(samprate)<<", "<<std::flush;
-	std::cout<<"sizefullBuff="<<std::to_string(sizefullBuff)<<", "<<std::endl;
-	std::cout<<"[record_from_microphone] READY..."<<std::endl;
+		E_FATAL("Failed to open audio device\n");
 	
-	while(!signal4stop_experiment())
+	/* work */
+	std::cout<<"[record_from_microphone] READY..."<<std::endl;
+	while(!signal4stop_experiment())									// check if experiment is done
 	{
-		signal4recording();	// wait for messaging the thread to start to record
-		//std::cout<<"[record_from_microphone] Open microphone buffer..."<<std::endl;
-		auto c_open1 = nowSeq();
+		signal4recording();												// wait for messaging the thread to start to record
 		if (ad_start_rec(adrec) < 0) 									// start recording
 			E_FATAL("Failed to start recording\n");
-		auto c_open2 = nowSeq();
-
-//		std::cout<<">>>>>>>>>>>>>>>>>>>>>> ["<<std::to_string((this->af_i/(float)sizefullBuff)*100)<<"%]"<<std::endl;
 				
-		do { k = ad_read(adrec, micBuf, sizeBuff); } while(k<1);	// wait until signal is found
-		
-		auto c_work1 = nowSeq();
-		for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
+		do { k = ad_read(adrec, micBuf, sizeBuff); } while(k<1);		// wait until signal is found
+		for(i=0; i<k && this->af_i<sizefullBuff; i++){					// store the first record into the big buffer object
 			buffer[0][this->af_i++] = micBuf[i];
 		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));// let some time for alsa to feed the buffer
+		std::this_thread::sleep_for(std::chrono::milliseconds(ttw));	// let some time for alsa to feed the buffer
 		while(!signal4stop_recording())
 		{
-			if ((k = ad_read(adrec, micBuf, nbS)) < 0)				// record...
+			if ((k = ad_read(adrec, micBuf, nbS)) < 0)					// record...
 				E_FATAL("Failed to read audio\n");
-			
-			for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
+			for(i=0; i<k && this->af_i<sizefullBuff; i++){				// store the records into the big buffer object
 				buffer[0][this->af_i++] = micBuf[i];
 			}
-			//std::cout<<"[NB K ="<<std::to_string(k)<<"] ["<<"]"<<std::endl;
 			std::this_thread::sleep_for(std::chrono::milliseconds(ttw));// let some time for alsa to feed the buffer
 		}
-		auto c_work2 = nowSeq();
-		auto lenBuff2_ms = this->af_i*1000/(float)samprate;
-		
 		do {
 			if ((k = ad_read(adrec, micBuf, sizeBuff)) < 0)				// record...
 				E_FATAL("Failed to read audio\n");
-			for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
+			for(i=0; i<k && this->af_i<sizefullBuff; i++){				// store the records into the big buffer object
 				buffer[0][this->af_i++] = micBuf[i];
 			}
 		} while(k>0);
-		
-		auto c_close1 = nowSeq();
 		if (ad_stop_rec(adrec) < 0) 									// answer has been given, stop recording
 					E_FATAL("Failed to stop recording\n");
-		auto c_close2 = nowSeq();
 		
-		
-		
-		
-		auto c_diffOpen = c_open2.count() - c_open1.count();
-		auto c_diffClose = c_close2.count() - c_close1.count();
-		auto c_diffWork = c_work2.count() - c_work1.count();
-		auto c_diffWorkmore = c_close1.count() - c_work1.count();
-		auto c_norec = c_work1.count() - c_open1.count();
-
-		auto c_diff2 = c_close2.count() - c_open2.count();
-		auto c_diff3 = c_close1.count() - c_open2.count();
-
-		auto c_bigdiff = c_close2.count() - c_open1.count();
-		auto c_litdiff = c_close1.count() - c_open2.count();
-
-		auto lenBuff_ms = this->af_i*1000/(float)samprate;
-		std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
-		std::cout<<"[c_diffOpen=\t"<<std::to_string(c_diffOpen)<<"], \t"<<std::flush;
-		std::cout<<"[c_diffClose=\t"<<std::to_string(c_diffClose)<<"]"<<std::flush;
-		std::cout<<std::endl;
-		std::cout<<"[Big Diff=\t"<<std::to_string(c_bigdiff)<<"], \t"<<std::flush;
-		std::cout<<"[Little Diff=\t"<<std::to_string(c_litdiff)<<"]"<<std::flush;
-		std::cout<<std::endl;
-		std::cout<<"[close2-start2=\t"<<std::to_string(c_diff2)<<"], \t"<<std::flush;
-		std::cout<<"[close1-start2=\t"<<std::to_string(c_diff3)<<"]"<<std::flush;
-		std::cout<<std::endl<<std::endl;
-		
-		std::cout<<"[Full time=\t"<<std::to_string(c_bigdiff)<<"], \t"<<std::flush;
-		std::cout<<"[while Work=\t"<<std::to_string(c_diffWork)<<"]"<<std::flush;
-		std::cout<<std::endl;
-
-		std::cout<<"[No rec=\t"<<std::to_string(c_norec)<<"], \t"<<std::flush;
-		std::cout<<std::endl;
-
-		std::cout<<"[while Work=\t"<<std::to_string(c_diffWork)<<"], \t"<<std::flush;
-		std::cout<<"[full Work=\t"<<std::to_string(c_diffWorkmore)<<"]"<<std::flush;
-		std::cout<<std::endl;
-		std::cout<<"[Buffer While=\t"<<std::to_string(lenBuff2_ms)<<"], \t"<<std::flush;
-		std::cout<<"[Buffer Full=\t"<<std::to_string(lenBuff_ms)<<"]"<<std::flush;
-		std::cout<<std::endl;
-
-		std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
-//		std::cout<<"<<<<<<<<<<<<<<<<<<<<<< ["<<std::to_string((this->af_i/(float)sizefullBuff)*100)<<"%]"<<std::endl;
-		
-		fillAudioBuffer(buffer);
+		std::transform(buffer[0].begin(), buffer[0].end(), buffer[0].begin(), std::bind(std::divides<double>(), std::placeholders::_1, 
+		            		   SHRT_MAX));								// Normalisation from uint16_t into -1/+1
+		fillAudioBuffer(buffer);										// fill Audiobuffer with tmp buffer 
 	}
 	
+	/* leave */
 	if (ad_close(adrec) < 0) 											// experiment is done, close microphone
 		E_FATAL("Failed to close the device\n");
 	std::cout<<"[record_from_microphone] end of the function..."<<std::endl;
@@ -346,6 +287,10 @@ void Experiment::executeStimuli()
 	{
 		executeF(&durationRefresh_ns);
     }
+	else if (Calibration == this->expToExec)
+	{
+		executeCalibration(&durationRefresh_ns);
+    }
     else
     {
         std::cout<<"[experiment][execute] NO more experiment available: id(expToExec)="<<to_string(expToExec)<<std::endl;
@@ -354,36 +299,104 @@ void Experiment::executeStimuli()
 	std::cout<<"[main][experiment][executeActuator] end of the function..."<<std::endl;
 }
 
+bool Experiment::executeCalibration(int * durationRefresh_ns)
+{
+	std::cout<<"[experiment][executeActuator] start..."<<std::endl;
+	// environmental variables
+	bool 			rect;			// 
+	int 			i, j, nbAct, timeleft, randomttw, overruns;
+
+	/* input variables */
+	waveformLetter 	values;			// vector based on the wav in the config file
+	char 			letter;			// letter to be used (between hapticomm actuator and the ERM actuator
+	/* output variables */
+	td_msecarray 	vhrc;			// vector of high resolution clock
+	td_msecarray 	timerDebug;		// vector of high resolution clock for debugging
+	int 			answeri;
+	
+	/* Initialisation */
+	letter		= (BrailleDevSpace == this->expToExec || BrailleDevTemp == this->expToExec)?'a':'b';
+	values 		= alph->getl('a');
+	rect 		= false;
+	overruns 	= 0;
+	i 			= 0;
+	timeleft	= 0;
+	nbAct 		= values.size();								// nb total of actuator
+	std::vector<uint8_t> rel_id_chan = {10, 9, 11, 14, 18, 19};	// id of the actuators
+    
+	for (int a=1; a!=nbAct; a++)
+	{
+		values.erase(values.find(rel_id_chan[a])); 			// keep only the first actuator to do the stimulus
+	}
+
+	/* work */
+	std::this_thread::sleep_for(std::chrono::milliseconds(50)); 						// let some time to open the mic
+	std::cout<<"+----------------------------------------------+"<<std::endl;
+	std::cout<<"+...                                        ...+"<<std::endl;
+	std::cout<<"     Experiment: \t"<<c->expstring(this->expToExec)<<std::endl;
+	std::cout<<"+    Press [ENTER] to start the Calibration    +"<<std::endl;
+	std::cout<<"+...                                        ...+"<<std::endl;
+	std::cout<<"+----------------------------------------------+"<<std::endl;
+	cin.get();
+	
+	//for(i=this->seq_start; i<this->seq.size(); i++) // for the sequence i
+	for(i=this->seq_start; i<10; i++) // for the sequence i
+	{
+		std::cout<<std::endl<<"[main][Calibration] New sequence: ["<<i<<"/"<<this->seq.size()<<"]"<<std::endl;
+		this->c_start = chrono::high_resolution_clock::now(); 							// https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
+		start_recording(); 																// change is_recording value to true
+		
+		/* Execution of the stimulus */
+		randomttw = 250 + rand()%2750; 													// randomize the time to wait between 1000-3000ms
+		std::this_thread::sleep_for(std::chrono::milliseconds(randomttw));				// sleep for 'x' ms to randomize when it comes to the skin
+		vhrc[0] = nowLocal(this->c_start);												// get timer since beginning of the sequence
+		overruns += this->ad->execute_selective_trajectory(values, *durationRefresh_ns);// execute the trajectories
+		this->ad->execute_trajectory(this->alph->getneutral(), *durationRefresh_ns);	// 
+		vhrc[1] = nowLocal(this->c_start);
+		
+		std::this_thread::sleep_for(std::chrono::milliseconds(1)); 						// let some time to record the mic
+		rect = writeAnswer(&answeri);
+		stop_recording(); 																// change is_recording value to false
+		if (rect) 																		// if 's' answer, exit
+		{
+			std::cout<<"[EXIT] The experiment will be saved to i="<<i-1<<"/"<<this->seq.size()<<std::endl;
+			break; // go to save
+		}
+		
+		// save the result
+		save_audio(i);
+		vvtimer.push_back(vhrc);
+		vanswer.push_back(answeri);
+	}
+	
+	this->seq_end = i;
+	stop_experiment();
+	return false;
+}
+
 bool Experiment::executeActuator(int * durationRefresh_ns)
 {
 	std::cout<<"[experiment][executeActuator] start..."<<std::endl;
 	// environmental variables
-	bool rect;
-	int i, overruns;
+	bool 			rect;
+	int 			i, overruns;
 	/* input variables */
-	char letter;
-	waveformLetter values;
+	waveformLetter 	values;
+	char 			letter;
 	/* output variables */
-	td_msecarray vhrc;
-	td_msecarray timerDebug;
-	int answeri;
+	td_msecarray 	vhrc;
+	td_msecarray 	timerDebug;
+	int 			answeri;
 	
 	/* Initialisation */
-	if (BrailleDevSpace == this->expToExec || BrailleDevTemp == this->expToExec)
-	{
-		letter = 'a'; // change the signal that is used for actuator hapticomm
-	}
-	else
-	{
-		letter = 'b';
-	}
-	values = alph->getl(letter);
-	rect = false;
-	overruns = 0;
-	i = 0;
+	letter		= (BrailleDevSpace == this->expToExec || BrailleDevTemp == this->expToExec)?'a':'b';
+	values 		= alph->getl(letter);
+	rect 		= false;
+	overruns 	= 0;
+	i 			= 0;
 	
-	std::this_thread::sleep_for(std::chrono::milliseconds(50)); 			// let some time to open the mic
 	/* work */
+	std::this_thread::sleep_for(std::chrono::milliseconds(50)); 			// let some time to open the mic
 	std::cout<<"+----------------------------------------------+"<<std::endl;
 	std::cout<<"+...                                        ...+"<<std::endl;
 	std::cout<<"     Experiment: \t"<<c->expstring(this->expToExec)<<std::endl;
@@ -394,10 +407,10 @@ bool Experiment::executeActuator(int * durationRefresh_ns)
 	//for(i=this->seq_start; i<this->seq.size(); i++) // for the sequence i
 	for(i=this->seq_start; i<10; i++) // for the sequence i
 	{
-		std::cout<<std::endl<<"[main] New sequence:"<<std::endl;
-		//this->c_start = chrono::high_resolution_clock::now(); // https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
+		std::cout<<std::endl<<"[main] New sequence: ["<<i<<"/"<<this->seq.size()<<"]"<<std::endl;
+		this->c_start = chrono::high_resolution_clock::now(); // https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
 		start_recording(); // change is_recording value to true
-		//overruns += executeSequence(&i, values, durationRefresh_ns, &vhrc); 	// copy of variable[values]  is important (erase)
+		overruns += executeSequence(&i, values, durationRefresh_ns, &vhrc); 	// copy of variable[values]  is important (erase)
 		
 		//dispTimers(i, answeri, vhrc, timerDebug);
 		std::this_thread::sleep_for(std::chrono::milliseconds(1)); 			// let some time to record the mic
@@ -416,12 +429,13 @@ bool Experiment::executeActuator(int * durationRefresh_ns)
 		vvtimer.push_back(vhrc);
 		vanswer.push_back(answeri);
 	}
+	
 	this->seq_end = i;
-	
 	stop_experiment();
-	
 	return false;
 }
+
+
 
 
 bool Experiment::executeF(int * durationRefresh_ns){
@@ -448,7 +462,7 @@ int Experiment::executeSequence(int * currSeq, waveformLetter values_copy, int *
 
 int Experiment::executeSequenceSpace(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc)
 {
-    int j=0, ovr=0, timeleft=0; 		// ready to check each actuator availability of the sequence
+    int ovr=0, timeleft=0; 		// ready to check each actuator availability of the sequence
     int nbAct = values->size();
     waveformLetter::iterator it;
     int randomttw = 250 + rand()%2750; 	// randomize the time to wait between 1000-3000ms
@@ -467,7 +481,7 @@ int Experiment::executeSequenceSpace(int * currSeq, waveformLetter *values, int 
     }
 	
     /* Time to wait before executing the sequence */
-    auto timespent = nowSeq().count(); // now - (beginning of the loop for this sequence)
+    auto timespent = nowLocal(this->c_start).count(); // now - (beginning of the loop for this sequence)
     timeleft = randomttw-timespent;
     if (timeleft>0)
         usleep(timeleft*1000);
@@ -475,10 +489,10 @@ int Experiment::executeSequenceSpace(int * currSeq, waveformLetter *values, int 
     	ovr -= timeleft;
     
     /* Execution of the sequence */
-    (*vhrc)[0] = nowSeq();
+    (*vhrc)[0] = nowLocal(this->c_start);
     ovr = this->ad->execute_selective_trajectory(*values, *dr_ns); // execute the trajectories
     this->ad->execute_trajectory(this->alph->getneutral(), *dr_ns);
-    (*vhrc)[1] = nowSeq();
+    (*vhrc)[1] = nowLocal(this->c_start);
     
     return ovr;
 }
@@ -507,7 +521,7 @@ int Experiment::executeSequenceTemp(int * currSeq, waveformLetter *values, int *
     std::cout<<"[executeSequenceTemp] number of iteration='"<<nbiteration<<"'"<<std::endl;
     std::cout<<"[executeSequenceTemp] size of values='"<<values->size()<<"'"<<std::endl;
     /* Time to wait before executing the sequence */
-    auto timespent = nowSeq().count(); // now - (beginning of the loop for this sequence)
+    auto timespent = nowLocal(this->c_start).count(); // now - (beginning of the loop for this sequence)
     timeleft = randomttw-timespent;
     if (timeleft>0)
         usleep(timeleft*1000);
@@ -515,7 +529,7 @@ int Experiment::executeSequenceTemp(int * currSeq, waveformLetter *values, int *
     	ovr -= timeleft;
     
     /* Execution of the sequence */
-    (*vhrc)[0] = nowSeq();
+    (*vhrc)[0] = nowLocal(this->c_start);
     for (j=0;j!=nbiteration; j++)
     {
         ovr = this->ad->execute_selective_trajectory(*values, *dr_ns); // execute the trajectories
@@ -523,7 +537,7 @@ int Experiment::executeSequenceTemp(int * currSeq, waveformLetter *values, int *
         this->ad->execute_trajectory(this->alph->getneutral(), *dr_ns);
         //usleep(5*1000);
     }
-    (*vhrc)[1] = nowSeq();
+    (*vhrc)[1] = nowLocal(this->c_start);
     
     return ovr;
 }
@@ -686,9 +700,9 @@ bool Experiment::isAudioBufferReady()		{ return this->audioBufferReady;}
 /* 					     					*/
 /*------------------------------------------*/
 
-td_msec Experiment::nowSeq()
+td_msec Experiment::nowLocal(td_highresclock start)
 {
-    return chrono::duration<double, milli>(chrono::high_resolution_clock::now()-this->c_start);
+    return chrono::duration<double, milli>(chrono::high_resolution_clock::now()-start);
 }
 
 void Experiment::dispTimers(int numSeq, int answeri, td_msecarray vhrc, td_msecarray timerDebug)
@@ -706,5 +720,168 @@ void Experiment::dispTimers(int numSeq, int answeri, td_msecarray vhrc, td_mseca
            <<"aft_detection: "<<(int)timerDebug[1].count()<<" | "
            <<"aft_recognition: "<<(int)timerDebug[2].count()<<"(ms)"<<std::endl;
 }
+
+/*------------------------------------------*/
+/* 				3. VESTIGE					*/
+/* 				a. ALL						*/
+/* 					     					*/
+/*------------------------------------------*
+
+void record_from_microphone_bak()
+{
+	ad_rec_t * adrec;
+	AudioFile<double>::AudioBuffer buffer;						// intermediate buffer between audioFile buffer and
+    int16 micBuf[2048];
+	int32_t k;	
+	int i, samprate, sizeBuff, sizefullBuff, ttw, nbS;
+	float nbSperMS;
+	bool disp, dispLoop, is_recording_local;
+
+	const char * adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev");
+	samprate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 			// sampling rate for 'ad'
+	sizeBuff 		= 2048;
+	sizefullBuff 	= 10*samprate;
+	nbSperMS 		= samprate/(float)1000;
+	ttw 			= 50; // milliseconds
+	nbS 			= nbSperMS*ttw; // nb sample / ttw
+	buffer.resize (1);
+	buffer[0].resize (10*samprate);
+	disp 				= true;
+	dispLoop 			= false;
+	is_recording_local 	= false;
+	
+	if ((adrec = ad_open_dev(adcdev, samprate)) == NULL) 				// open the audio device (microphone)
+		E_FATAL("Failed to open audio device\n");
+
+	std::cout<<"samprate="<<samprate<<", "<<std::flush;
+	std::cout<<"sizefullBuff="<<sizefullBuff<<", "<<std::endl;
+	std::cout<<"[record_from_microphone] READY..."<<std::endl;
+	
+	while(!signal4stop_experiment())
+	{
+		signal4recording();	// wait for messaging the thread to start to record
+		//std::cout<<"[record_from_microphone] Open microphone buffer..."<<std::endl;
+		auto c_open1 = nowLocal(this->c_start);
+		if (ad_start_rec(adrec) < 0) 									// start recording
+			E_FATAL("Failed to start recording\n");
+		auto c_open2 = nowLocal(this->c_start);
+		
+//		std::cout<<">>>>>>>>>>>>>>>>>>>>>> ["<<(this->af_i/(float)sizefullBuff)*100<<"%]"<<std::endl;
+				
+		do { k = ad_read(adrec, micBuf, sizeBuff); } while(k<1);	// wait until signal is found
+		
+		auto c_work1 = nowLocal(this->c_start);
+		for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
+			buffer[0][this->af_i++] = micBuf[i];
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));// let some time for alsa to feed the buffer
+		while(!signal4stop_recording())
+		{
+			if ((k = ad_read(adrec, micBuf, nbS)) < 0)				// record...
+				E_FATAL("Failed to read audio\n");
+			for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
+				buffer[0][this->af_i++] = micBuf[i];
+			}
+			//std::cout<<"[NB K ="<<k)<<"] ["<<"]"<<std::endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(ttw));// let some time for alsa to feed the buffer
+		}
+		auto c_work2 = nowLocal(this->c_start);
+		auto lenBuff2_ms = this->af_i*1000/(float)samprate;
+		
+		do {
+			if ((k = ad_read(adrec, micBuf, sizeBuff)) < 0)				// record...
+				E_FATAL("Failed to read audio\n");
+			for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
+				buffer[0][this->af_i++] = micBuf[i];
+			}
+		} while(k>0);
+		
+		auto c_close1 = nowLocal(this->c_start);
+		if (ad_stop_rec(adrec) < 0) 									// answer has been given, stop recording
+					E_FATAL("Failed to stop recording\n");
+		auto c_close2 = nowLocal(this->c_start);
+		
+		
+		
+		
+		auto c_diffOpen 	= c_open2.count()  - c_open1.count();
+		auto c_diffClose 	= c_close2.count() - c_close1.count();
+		auto c_diffWork 	= c_work2.count()  - c_work1.count();
+		auto c_diffWorkmore = c_close1.count() - c_work1.count();
+		auto c_norec	 	= c_work1.count()  - c_open1.count();
+
+		auto c_diff2 		= c_close2.count() - c_open2.count();
+		auto c_diff3 		= c_close1.count() - c_open2.count();
+
+		auto c_bigdiff 		= c_close2.count() - c_open1.count();
+		auto c_litdiff 		= c_close1.count() - c_open2.count();
+		
+		auto lenBuff_ms		= this->af_i*1000/(float)samprate;
+		std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
+		std::cout<<"[c_diffOpen=\t"<<c_diffOpen<<"], \t"<<std::flush;
+		std::cout<<"[c_diffClose=\t"<<c_diffClose<<"]"<<std::flush;
+		std::cout<<std::endl;
+		std::cout<<"[Big Diff=\t"<<c_bigdiff<<"], \t"<<std::flush;
+		std::cout<<"[Little Diff=\t"<<c_litdiff<<"]"<<std::flush;
+		std::cout<<std::endl;
+		std::cout<<"[close2-start2=\t"<<c_diff2<<"], \t"<<std::flush;
+		std::cout<<"[close1-start2=\t"<<c_diff3<<"]"<<std::flush;
+		std::cout<<std::endl<<std::endl;
+		
+		std::cout<<"[Full time=\t"<<c_bigdiff<<"], \t"<<std::flush;
+		std::cout<<"[while Work=\t"<<c_diffWork<<"]"<<std::flush;
+		std::cout<<std::endl;
+
+		std::cout<<"[No rec=\t"<<c_norec<<"], \t"<<std::flush;
+		std::cout<<std::endl;
+
+		std::cout<<"[while Work=\t"<<c_diffWork<<"], \t"<<std::flush;
+		std::cout<<"[full Work=\t"<<c_diffWorkmore<<"]"<<std::flush;
+		std::cout<<std::endl;
+		std::cout<<"[Buffer While=\t"<<lenBuff2_ms<<"], \t"<<std::flush;
+		std::cout<<"[Buffer Full=\t"<<lenBuff_ms<<"]"<<std::flush;
+		std::cout<<std::endl;
+		std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
+		
+//		std::cout<<"<<<<<<<<<<<<<<<<<<<<<< ["<<(this->af_i/(float)sizefullBuff)*100<<"%]"<<std::endl;
+
+		// Normalisation from uint16_t into -1/+1
+		std::vector<double>::iterator result = std::max_element(buffer[0].begin(), buffer[0].end());
+		std::cout<<"MAX OF VECTOR="<<*result<<std::endl;
+		std::transform(buffer[0].begin(), buffer[0].end(), buffer[0].begin(),
+		               std::bind(std::divides<double>(), std::placeholders::_1, SHRT_MAX));// *result));
+		fillAudioBuffer(buffer);
+	}
+	
+	if (ad_close(adrec) < 0) 						// experiment is done, close microphone
+		E_FATAL("Failed to close the device\n");
+	std::cout<<"[record_from_microphone] end of the function..."<<std::endl;
+}
+*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

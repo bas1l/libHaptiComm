@@ -36,9 +36,10 @@ using namespace boost::filesystem;
 #define SIZE_ARRAY_TIMERS 3
 
 
-enum expEnum {BrailleDevSpace=10, BrailleDevTemp=11,
-			  FingersSpace=20, FingersTemp=21,
-			  BuzzerSpace=30, BuzzerTemp=31};
+enum expEnum {	BrailleDevSpace=10, BrailleDevTemp=11,
+				FingersSpace=20, 	FingersTemp=21,
+				BuzzerSpace=30, 	BuzzerTemp=31,
+				Calibration=40};
 
 typedef std::chrono::time_point<std::chrono::high_resolution_clock> td_highresclock;
 typedef std::chrono::duration<double, milli> td_msec;
@@ -76,34 +77,33 @@ public:
 
 
 private:
-	/* Common variables of the candidat */
+	/* common variables of the candidat */
 	int 	id; 							// id of the candidat
 	string 	firstname; 						// firstname of the candidat
 	string 	lastname; 						// lastname of the candidat
 	int    	age; 							// age of the candidat
 	string 	type; 							// man or woman candidat
-
-	/* General variables for making the use of some functions easier */
+	
+	/* general variables for making the use of some functions easier */
 	int a,i,j,r,s; 							// classic iteration variables
 	int nextit; 							// iteration variable of (??? more precisions needed)
 	vector<vector<int>> apc; 				// sequence of All the Possible Combinaisons for the expEnums
-
+	
 	/* experiment variables */
 	int nba; 								// NumBer of Actuators
 	int nbr; 								// NumBer of Repetition by subgroup of stimuli
 	vector<pair<bool, expEnum>> expeOrder; 	// the ordered expEnums and the bool statement aknowleding if it has been done already
 	vector<vector<int>> seq; 				// SEQuence of the stimuli for the expEnums
-
-	/* File information paths */
+	
+	/* file information paths */
 	string pathDirectory; 					// path of the main directory of candidat
 	string candidatsListFile;
 	string infoFile;
-
-	/* Dictionary related variables */
+	
+	/* dictionary related variables */
 	string langage; 						// langage used by the candidat
 	string pathDict; 						// path of the main dictionary directory
-
-
+	
 	/* setters */
 	bool setId(int _id);
 	bool setName(string fn, string ln);

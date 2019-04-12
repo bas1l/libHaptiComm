@@ -1,4 +1,5 @@
 
+results/*
 3_external_lib/libconfig4cpp.a
 *.hpp
 *.ipp
