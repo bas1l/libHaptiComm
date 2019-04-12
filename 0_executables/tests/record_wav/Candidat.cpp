@@ -496,8 +496,6 @@ bool Candidat::initseq(){
 }
 
 bool Candidat::initexpeOrder(){
-	expeOrder.push_back( std::make_pair(false,Calibration) );
-	
 	expeOrder.push_back( std::make_pair(false,BrailleDevSpace) );
 	expeOrder.push_back( std::make_pair(false,BrailleDevTemp) );
 	expeOrder.push_back( std::make_pair(true, FingersSpace) );
@@ -505,7 +503,8 @@ bool Candidat::initexpeOrder(){
 	expeOrder.push_back( std::make_pair(false,BuzzerSpace) );
 	expeOrder.push_back( std::make_pair(true,BuzzerTemp) );
 	std::random_shuffle(expeOrder.begin()+1, expeOrder.end());
-	
+
+	expeOrder.push_back( std::make_pair(false,Calibration) );	// when writing and reading, will be execute first
 	return true;
 }
 

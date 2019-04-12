@@ -308,14 +308,12 @@ bool Experiment::executeCalibration(int * durationRefresh_ns)
 
 	/* input variables */
 	waveformLetter 	values;			// vector based on the wav in the config file
-	char 			letter;			// letter to be used (between hapticomm actuator and the ERM actuator
 	/* output variables */
 	td_msecarray 	vhrc;			// vector of high resolution clock
 	td_msecarray 	timerDebug;		// vector of high resolution clock for debugging
 	int 			answeri;
 	
 	/* Initialisation */
-	letter		= (BrailleDevSpace == this->expToExec || BrailleDevTemp == this->expToExec)?'a':'b';
 	values 		= alph->getl('a');
 	rect 		= false;
 	overruns 	= 0;
