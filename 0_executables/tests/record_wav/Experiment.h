@@ -147,6 +147,7 @@ private:
 	std::condition_variable m_condVar;
 	bool 					workdone;
 	bool 					is_recording;
+	bool	 				audioBufferReady;
 	pthread_attr_t     		attr;
 	pthread_t  				t_record;
 	pthread_t  				t_tap;
@@ -185,19 +186,24 @@ private:
 	
 	/* b. threads related */
 	bool signal4recording();
+	bool signal4stoprecording();
 	bool signal4stop_recording();
+	bool signal4stop_experiment();
 	void start_recording();
 	void stop_recording();
 	void stop_experiment();
 	
 	/* c. answers related */
 	bool writeAnswer(int * answeri);
+	void fillAudioBuffer(AudioFile<double>::AudioBuffer buffer);
 	void save_audio(int id_seq);
 		
 	/* d. checkers */
 	bool isrecording();
+	bool isstopedrecording();
 	bool isworkdone();
 	bool isrecordingorworkdone();
+	bool isAudioBufferReady();
 	
 	/* e. tools */
 	td_msec nowSeq();

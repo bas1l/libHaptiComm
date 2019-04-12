@@ -141,6 +141,7 @@ bool Experiment::create()
 	// thread and shared memory's variables initialisation for voice recording
 	this->workdone = false; 													// check if the experiment is done
 	this->is_recording = false; 												// allow t_record to start or stop the recording
+	this->audioBufferReady = false;
 	
 	std::cout<<"[experiment] create::...end"<<std::endl;
     return 0;
@@ -196,78 +197,128 @@ void * Experiment::static_executeStimuli(void * c)
 void Experiment::record_from_microphone()
 {
 	ad_rec_t * adrec;
-	AudioFile<double>::AudioBuffer buffer;
-	//int16_t * micBuf;
+	AudioFile<double>::AudioBuffer buffer;						// intermediate buffer between audioFile buffer and
     int16 micBuf[2048];
 	int32_t k;	
-	int samprate, sizeBuff, sizefullBuff;
+	int i, samprate, sizeBuff, sizefullBuff, ttw, nbS;
+	float nbSperMS;
 	bool disp, dispLoop, is_recording_local;
 
 	const char * adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev");
-	samprate 	= (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 		// sampling rate for 'ad'
+	samprate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 			// sampling rate for 'ad'
 	sizeBuff 		= 2048;
 	sizefullBuff 	= 10*samprate;
-	std::cout<<"samprate="<<std::to_string(samprate)<<", "<<std::flush;
-	std::cout<<"sizefullBuff="<<std::to_string(sizefullBuff)<<", "<<std::flush;
-	
+	nbSperMS 		= samprate/(float)1000;
+	ttw 			= 50; // milliseconds
+	nbS 			= nbSperMS*ttw; // nb sample / ttw
 	buffer.resize (1);
 	buffer[0].resize (10*samprate);
-	
 	disp 				= true;
 	dispLoop 			= false;
 	is_recording_local 	= false;
 	
-	int cpt=0;
-	if (adcdev == NULL)
-	{
-		std::cout<<"adcdev is NULL"<<std::endl;
-	}
-	else 
-	{
-		std::cout<<"adcdev is "<<adcdev<<std::endl;
-	}
-	if ((adrec = ad_open_dev(adcdev, samprate)) == NULL) 			// open the audio device (microphone)
+	if ((adrec = ad_open_dev(adcdev, samprate)) == NULL) 				// open the audio device (microphone)
 		E_FATAL("Failed to open audio device\n"); 
-	
-	std::cout<<"[thread] READY..."<<std::endl;
-	
-	while(signal4recording())
-	{
-		cpt=0;
-		
-		std::cout<<"[thread] Open microphone buffer..."<<std::endl;
-		if (ad_start_rec(adrec) < 0) 								// start recording
-			E_FATAL("Failed to start recording\n");
-		do { k = ad_read(adrec, micBuf, INT_MAX); } while(k>0);		// empty the microphone buffer from mic before recording -- previously[k = ad_read(ad, micBuf, INT_MAX);]
 
+	std::cout<<"samprate="<<std::to_string(samprate)<<", "<<std::flush;
+	std::cout<<"sizefullBuff="<<std::to_string(sizefullBuff)<<", "<<std::endl;
+	std::cout<<"[record_from_microphone] READY..."<<std::endl;
+	
+	while(!signal4stop_experiment())
+	{
+		signal4recording();	// wait for messaging the thread to start to record
+		//std::cout<<"[record_from_microphone] Open microphone buffer..."<<std::endl;
+		auto c_open1 = nowSeq();
+		if (ad_start_rec(adrec) < 0) 									// start recording
+			E_FATAL("Failed to start recording\n");
+		auto c_open2 = nowSeq();
+
+//		std::cout<<">>>>>>>>>>>>>>>>>>>>>> ["<<std::to_string((this->af_i/(float)sizefullBuff)*100)<<"%]"<<std::endl;
+				
+		do { k = ad_read(adrec, micBuf, sizeBuff); } while(k<1);	// wait until signal is found
 		
-		std::cout<<">>>>>>>>>>>>>>>>>>>>>>"<<std::endl;
+		auto c_work1 = nowSeq();
+		for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
+			buffer[0][this->af_i++] = micBuf[i];
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));// let some time for alsa to feed the buffer
 		while(!signal4stop_recording())
 		{
-			std::this_thread::sleep_for(std::chrono::milliseconds(50)); 			// let some time for alsa to feed the buffer
-			if ((k = ad_read(adrec, micBuf, sizeBuff)) < 0)				// record...
+			if ((k = ad_read(adrec, micBuf, nbS)) < 0)				// record...
 				E_FATAL("Failed to read audio\n");
-			cpt +=k;
-			std::cout<<"[NB K ITERATIVE="<<std::to_string(cpt)<<std::endl;
-			for(int i=0; i<k && this->af_i<sizefullBuff; i++)			// store the records into the big buffer object
-			{
+			
+			for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
 				buffer[0][this->af_i++] = micBuf[i];
 			}
-			
+			//std::cout<<"[NB K ="<<std::to_string(k)<<"] ["<<"]"<<std::endl;
+			std::this_thread::sleep_for(std::chrono::milliseconds(ttw));// let some time for alsa to feed the buffer
 		}
-		std::cout<<"<<<<<<<<<<<<<<<<<<<<<<"<<std::endl;
+		auto c_work2 = nowSeq();
+		auto lenBuff2_ms = this->af_i*1000/(float)samprate;
+		
+		do {
+			if ((k = ad_read(adrec, micBuf, sizeBuff)) < 0)				// record...
+				E_FATAL("Failed to read audio\n");
+			for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
+				buffer[0][this->af_i++] = micBuf[i];
+			}
+		} while(k>0);
+		
+		auto c_close1 = nowSeq();
 		if (ad_stop_rec(adrec) < 0) 									// answer has been given, stop recording
-			E_FATAL("Failed to stop recording\n");
+					E_FATAL("Failed to stop recording\n");
+		auto c_close2 = nowSeq();
+		
+		
+		
+		
+		auto c_diffOpen = c_open2.count() - c_open1.count();
+		auto c_diffClose = c_close2.count() - c_close1.count();
+		auto c_diffWork = c_work2.count() - c_work1.count();
+		auto c_diffWorkmore = c_close1.count() - c_work1.count();
+		auto c_norec = c_work1.count() - c_open1.count();
 
-		std::lock_guard<std::mutex> mlock(this->m_mutex);
-		std::cout<<"Do Processing On loaded Data"<<std::endl;
-		this->af->setAudioBuffer (buffer);
+		auto c_diff2 = c_close2.count() - c_open2.count();
+		auto c_diff3 = c_close1.count() - c_open2.count();
+
+		auto c_bigdiff = c_close2.count() - c_open1.count();
+		auto c_litdiff = c_close1.count() - c_open2.count();
+
+		auto lenBuff_ms = this->af_i*1000/(float)samprate;
+		std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
+		std::cout<<"[c_diffOpen=\t"<<std::to_string(c_diffOpen)<<"], \t"<<std::flush;
+		std::cout<<"[c_diffClose=\t"<<std::to_string(c_diffClose)<<"]"<<std::flush;
+		std::cout<<std::endl;
+		std::cout<<"[Big Diff=\t"<<std::to_string(c_bigdiff)<<"], \t"<<std::flush;
+		std::cout<<"[Little Diff=\t"<<std::to_string(c_litdiff)<<"]"<<std::flush;
+		std::cout<<std::endl;
+		std::cout<<"[close2-start2=\t"<<std::to_string(c_diff2)<<"], \t"<<std::flush;
+		std::cout<<"[close1-start2=\t"<<std::to_string(c_diff3)<<"]"<<std::flush;
+		std::cout<<std::endl<<std::endl;
+		
+		std::cout<<"[Full time=\t"<<std::to_string(c_bigdiff)<<"], \t"<<std::flush;
+		std::cout<<"[while Work=\t"<<std::to_string(c_diffWork)<<"]"<<std::flush;
+		std::cout<<std::endl;
+
+		std::cout<<"[No rec=\t"<<std::to_string(c_norec)<<"], \t"<<std::flush;
+		std::cout<<std::endl;
+
+		std::cout<<"[while Work=\t"<<std::to_string(c_diffWork)<<"], \t"<<std::flush;
+		std::cout<<"[full Work=\t"<<std::to_string(c_diffWorkmore)<<"]"<<std::flush;
+		std::cout<<std::endl;
+		std::cout<<"[Buffer While=\t"<<std::to_string(lenBuff2_ms)<<"], \t"<<std::flush;
+		std::cout<<"[Buffer Full=\t"<<std::to_string(lenBuff_ms)<<"]"<<std::flush;
+		std::cout<<std::endl;
+
+		std::cout<<"+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"<<std::endl;
+//		std::cout<<"<<<<<<<<<<<<<<<<<<<<<< ["<<std::to_string((this->af_i/(float)sizefullBuff)*100)<<"%]"<<std::endl;
+		
+		fillAudioBuffer(buffer);
 	}
 	
 	if (ad_close(adrec) < 0) 											// experiment is done, close microphone
 		E_FATAL("Failed to close the device\n");
-	//delete [] micBuf;
-	std::cout<<"[thread] end of the function.."<<std::endl;
+	std::cout<<"[record_from_microphone] end of the function..."<<std::endl;
 }
 
 void Experiment::executeStimuli()
@@ -299,6 +350,8 @@ void Experiment::executeStimuli()
     {
         std::cout<<"[experiment][execute] NO more experiment available: id(expToExec)="<<to_string(expToExec)<<std::endl;
     }
+    
+	std::cout<<"[main][experiment][executeActuator] end of the function..."<<std::endl;
 }
 
 bool Experiment::executeActuator(int * durationRefresh_ns)
@@ -339,7 +392,7 @@ bool Experiment::executeActuator(int * durationRefresh_ns)
 	std::cout<<"+----------------------------------------------+"<<std::endl;
 	cin.get();
 	//for(i=this->seq_start; i<this->seq.size(); i++) // for the sequence i
-	for(i=this->seq_start; i<3; i++) // for the sequence i
+	for(i=this->seq_start; i<10; i++) // for the sequence i
 	{
 		std::cout<<std::endl<<"[main] New sequence:"<<std::endl;
 		//this->c_start = chrono::high_resolution_clock::now(); // https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
@@ -356,7 +409,7 @@ bool Experiment::executeActuator(int * durationRefresh_ns)
 			std::cout<<"[EXIT] The experiment will be saved to i="<<i-1<<"/"<<this->seq.size()<<std::endl;
 			break; // go to save
 		}
-		dispTimers(i, answeri, vhrc, timerDebug);
+		//dispTimers(i, answeri, vhrc, timerDebug);
 		
 		// save the result
 		save_audio(i);
@@ -367,7 +420,6 @@ bool Experiment::executeActuator(int * durationRefresh_ns)
 	
 	stop_experiment();
 	
-	std::cout<<"[main][experiment][executeActuator] ...end"<<std::endl;
 	return false;
 }
 
@@ -507,6 +559,18 @@ bool Experiment::signal4recording()
 	else return true;
 }
 
+bool Experiment::signal4stoprecording()
+{
+	std::unique_lock<std::mutex> mlock(this->m_mutex);
+	// Start waiting for the Condition Variable to get signaled
+	// Wait() will internally release the lock and make the thread to block
+	// As soon as condition variable get signaled, resume the thread and
+	// again acquire the lock. Then check if condition is met or not
+	// If condition is met then continue else again go in waithis->t_record.
+	this->m_condVar.wait(mlock, std::bind(&Experiment::isstopedrecording, this));
+	return true;
+}
+
 bool Experiment::signal4stop_recording()
 {	
 	//std::cout<<"[stop_recording] in."<<std::endl;
@@ -514,12 +578,19 @@ bool Experiment::signal4stop_recording()
 	return !(this->is_recording);
 }
 
+bool Experiment::signal4stop_experiment()
+{	
+	//std::cout<<"[stop_recording] in."<<std::endl;
+	std::lock_guard<std::mutex> lk(this->m_mutex);				// locker to access shared variables
+	return this->workdone;
+}
+
 void Experiment::start_recording()
 {	
 	//std::cout<<"[start_recording] in."<<std::endl;
 	std::lock_guard<std::mutex> lk(this->m_mutex);				// locker to access shared variables
 	this->is_recording = true;									// start of the microphone recording boolean
-	this->m_condVar.notify_all(); 								// waiting thread is notified 
+	this->m_condVar.notify_one(); 								// waiting thread is notified 
 	//std::cout<<"[start_recording] out."<<std::endl;
 }
 
@@ -534,11 +605,11 @@ void Experiment::stop_recording()
 
 void Experiment::stop_experiment()
 {	
-	std::cout<<"[stop_experiment] in."<<std::endl;
+	//std::cout<<"[stop_experiment] in."<<std::endl;
 	std::lock_guard<std::mutex> lk(this->m_mutex);				// locker to access shared variables
 	this->workdone = true;										// start of the microphone recording boolean
 	this->m_condVar.notify_one(); 								// waiting thread is notified 
-	std::cout<<"[stop_experiment] out."<<std::endl;
+	//std::cout<<"[stop_experiment] out."<<std::endl;
 }
 
 
@@ -555,7 +626,7 @@ bool Experiment::writeAnswer(int * answeri)
 	cin >> ans;
 	if (isdigit(ans[0]))
 	{
-		std::cout<<"'"<<ans<<"' is a digit -> '"<<atoi(ans.c_str())<<"'"<<std::endl;
+		//std::cout<<"'"<<ans<<"' is a digit -> '"<<atoi(ans.c_str())<<"'"<<std::endl;
 		*answeri = atoi(ans.c_str());
 	}
 	else if (0 == ans.compare("s") || 0 == ans.compare("\x18")|| 0 == ans.compare("\x18s")) // if has to stop/pause the experiment
@@ -563,27 +634,35 @@ bool Experiment::writeAnswer(int * answeri)
 		ret = true;
 	}
     
-    std::cout<<"The new answer is='"<<ans<<"'"<<std::endl;
+    //std::cout<<"The new answer is='"<<ans<<"'"<<std::endl;
     return ret;
+}
+
+void Experiment::fillAudioBuffer(AudioFile<double>::AudioBuffer buffer)
+{
+	std::lock_guard<std::mutex> mlock(this->m_mutex);
+	buffer[0].resize(this->af_i);									// keep only the data that has been recorded
+	this->af->setNumSamplesPerChannel(buffer[0].size());			// resize the audioFile object
+	this->af->setAudioBuffer(buffer);								// add the new buffer
+	this->af_i = 0;													// reset the audioBuffer iterator
+	this->audioBufferReady = true;
+	this->m_condVar.notify_one();
 }
 
 void Experiment::save_audio(int id_seq)
 {
+	std::unique_lock<std::mutex> mlock(this->m_mutex);
+	this->m_condVar.wait(mlock, std::bind(&Experiment::isAudioBufferReady, this));
 	string path(c->getPathDirectory());  					// create the name of the .wav with full path
 	path += std::to_string(c->getId()) + "/wav/";			// id of the candidate
 	
 	string name(std::to_string(c->getId()) + "_");  		// create the name of the .wav with full path
 	name += c->expstring(this->expToExec) + "_";			// current experiment's name
 	name += std::to_string(id_seq) + ".wav";				// id of the sequence
-
-	std::cout<<"[main][save_audio] in...["<<path+name<<"]...af_realsize="<<std::to_string(this->af_i)<<std::endl;
-	std::lock_guard<std::mutex> lk(this->m_mutex);			// locker to access shared variables
-	this->af->printSummary();
+	//std::cout<<"[main][save_audio] in...["<<path+name<<"]..."<<std::endl;
+	//this->af->printSummary();
 	this->af->save(path+name);								// save wav file of the sequence's answer
-	this->af_i = 0;											// reset iterator
-	for(int i=0; i<this->af_max; i++){						// clean the entire buffer
-		this->af->samples[0][i] = 0;						// clean 
-	}
+	this->audioBufferReady = false;
 }
 
 /*------------------------------------------*/
@@ -592,10 +671,10 @@ void Experiment::save_audio(int id_seq)
 /* 					     					*/
 /*------------------------------------------*/
 bool Experiment::isrecording()	{ return this->is_recording; }
+bool Experiment::isstopedrecording()	{ return !(this->is_recording); }
 bool Experiment::isworkdone()	{ return this->workdone; }
 bool Experiment::isrecordingorworkdone()	{ return (isworkdone() || isrecording()); }
-
-
+bool Experiment::isAudioBufferReady()		{ return this->audioBufferReady;}
 
 
 
