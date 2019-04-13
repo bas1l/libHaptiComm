@@ -145,6 +145,10 @@ bool Experiment::create()
 	this->is_recording = false; 												// allow t_record to start or stop the recording
 	this->audioBufferReady = false;
 	
+	// period for the SPI communication
+    double durationRefresh_ms = 1/(double) alph->getFreqRefresh_mHz();
+    this->period_spi_ns  = durationRefresh_ms * ms2ns; // * ns
+    
 	std::cout<<"[experiment] create::...end"<<std::endl;
     return 0;
 }
@@ -226,8 +230,11 @@ void Experiment::record_from_microphone()
 		signal4recording();												// wait for messaging the thread to start to record
 		if (ad_start_rec(adrec) < 0) 									// start recording
 			E_FATAL("Failed to start recording\n");
-				
+		std::cout<<"[MICROPHONE] timer since start="<<nowLocal(this->c_start).count()<<" ms"<<std::endl;
+		auto clk_start = chrono::high_resolution_clock::now();			// get timer when the mic is opened
 		do { k = ad_read(adrec, micBuf, sizeBuff); } while(k<1);		// wait until signal is found
+		int latency_ms = (int)(nowLocal(clk_start).count());			// calculate the latency between the mic opening and the first datas
+			
 		for(i=0; i<k && this->af_i<sizefullBuff; i++){					// store the first record into the big buffer object
 			buffer[0][this->af_i++] = micBuf[i];
 		}
@@ -241,6 +248,7 @@ void Experiment::record_from_microphone()
 			}
 			std::this_thread::sleep_for(std::chrono::milliseconds(ttw));// let some time for alsa to feed the buffer
 		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(latency_ms));	// wait for the latency due to the mic driver
 		do {
 			if ((k = ad_read(adrec, micBuf, sizeBuff)) < 0)				// record...
 				E_FATAL("Failed to read audio\n");
@@ -263,33 +271,47 @@ void Experiment::record_from_microphone()
 }
 
 void Experiment::executeStimuli()
-{
-    // get SPI refresh time (millisecond)
-    double durationRefresh_ms = 1/(double) alph->getFreqRefresh_mHz();
-    int durationRefresh_ns  = durationRefresh_ms * ms2ns; // * ns
-    
-    // init drive electronics
-    this->ad->spi_open();
-    this->ad->configure();
-    // init all the actuators to zero
-    this->ad->execute_trajectory(alph->getneutral(), durationRefresh_ns);
-    
+{   
+	// CREATION input variables
+	waveformLetter 	values;				// vector based on the wav in the config file
+	char 			haptiCommActuatorletter, ERMActuatorletter;
+	
+	// INITIALISATION
+    this->ad->spi_open();			// open SPI port: init drive electronics
+    this->ad->configure();			// configure actuators values of the pcb
+    this->ad->execute_trajectory(alph->getneutral(), this->period_spi_ns); // reset to 0 the actuators
+    haptiCommActuatorletter = '1';	// configuration file's value for the hapticomm actuators
+    ERMActuatorletter 		= '2';	// configuration file's value for the ERM actuators
+	
     // decide which experiment has to be executed
-    if (BrailleDevSpace == this->expToExec || BrailleDevTemp == this->expToExec)
+    if (BrailleDevSpace == this->expToExec)						// BRAILLE_DEV AND SPACE
     {
-        executeActuator(&durationRefresh_ns);
+    	values = alph->getl(haptiCommActuatorletter);
+        executeActuatorSpace(values);
     }
-    else if (BuzzerSpace == this->expToExec || BuzzerTemp == this->expToExec)
+    else if (BrailleDevTemp == this->expToExec)					// BRAILLE_DEV AND TEMPORAL
+    {
+    	values = alph->getl(haptiCommActuatorletter);
+        executeActuatorTemp(values);
+    }
+    else if (BuzzerSpace == this->expToExec)					// ERM_DEV AND SPACE
 	{
-        executeActuator(&durationRefresh_ns);
+    	values = alph->getl(ERMActuatorletter);
+        executeActuatorSpace(values);
 	}
-	else if (FingersSpace == this->expToExec || FingersTemp == this->expToExec)
-	{
-		executeF(&durationRefresh_ns);
+    else if (BuzzerTemp == this->expToExec)						// ERM_DEV AND TEMPORAL
+    {
+    	values = alph->getl(ERMActuatorletter);
+        executeActuatorTemp(values);
     }
-	else if (Calibration == this->expToExec)
+	else if (FingersSpace == this->expToExec || FingersTemp == this->expToExec) // FINGERS SPACE AND TEMPORAL
 	{
-		executeCalibration(&durationRefresh_ns);
+		executeF();
+    }
+	else if (Calibration == this->expToExec)					// TR WORDS CALIBRATION
+	{
+    	values = alph->getl(haptiCommActuatorletter);
+		executeCalibration(values);
     }
     else
     {
@@ -299,22 +321,18 @@ void Experiment::executeStimuli()
 	std::cout<<"[main][experiment][executeActuator] end of the function..."<<std::endl;
 }
 
-bool Experiment::executeCalibration(int * durationRefresh_ns)
+bool Experiment::executeCalibration(waveformLetter values)
 {
 	std::cout<<"[experiment][executeActuator] start..."<<std::endl;
 	// environmental variables
 	bool 			rect;			// 
 	int 			i, j, nbAct, timeleft, randomttw, overruns;
 
-	/* input variables */
-	waveformLetter 	values;			// vector based on the wav in the config file
 	/* output variables */
 	td_msecarray 	vhrc;			// vector of high resolution clock
 	td_msecarray 	timerDebug;		// vector of high resolution clock for debugging
 	int 			answeri;
 	
-	/* Initialisation */
-	values 		= alph->getl('a');
 	rect 		= false;
 	overruns 	= 0;
 	i 			= 0;
@@ -336,35 +354,33 @@ bool Experiment::executeCalibration(int * durationRefresh_ns)
 	std::cout<<"+...                                        ...+"<<std::endl;
 	std::cout<<"+----------------------------------------------+"<<std::endl;
 	cin.get();
-	
-	for(i=this->seq_start; i<this->seq.size(); i++) // for the sequence i
-	//for(i=this->seq_start; i<10; i++) // for the sequence i
+	for(i=this->seq_start; i<this->seq.size(); i++) 			// for the sequence i
 	{
+		// initialisation
 		std::cout<<std::endl<<"[main][Calibration] New sequence: ["<<i<<"/"<<this->seq.size()<<"]"<<std::endl;
-		this->c_start = chrono::high_resolution_clock::now(); 							// https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
-		start_recording(); 																// change is_recording value to true
+		this->c_start = chrono::high_resolution_clock::now(); 		// https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
+		randomWaiting();											// random waiting time to avoir any adapting rythm behavior during the exp
 		
-		/* Execution of the stimulus */
-		randomttw = 250 + rand()%2750; 													// randomize the time to wait between 1000-3000ms
-		std::this_thread::sleep_for(std::chrono::milliseconds(randomttw));				// sleep for 'x' ms to randomize when it comes to the skin
-		vhrc[0] = nowLocal(this->c_start);												// get timer since beginning of the sequence
-		overruns += this->ad->execute_selective_trajectory(values, *durationRefresh_ns);// execute the trajectories
-		this->ad->execute_trajectory(this->alph->getneutral(), *durationRefresh_ns);	// 
-		vhrc[1] = nowLocal(this->c_start);
+		// work
+		start_recording(); 											// start to record from microphone
+		vhrc[0] = nowLocal(this->c_start);							// get timing before stimuli
+		std::cout<<"[ACTUATOR] timer since start="<<vhrc[0].count()<<" ms"<<std::endl;
+		overruns += this->ad->execute_selective_trajectory(values, this->period_spi_ns); // execute the sequence
+		this->ad->execute_trajectory(this->alph->getneutral(), this->period_spi_ns);		// all actuators to rest (security)
+		vhrc[1] = nowLocal(this->c_start);							// get timing after stimuli
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));	// let some time to record the mic
+		rect = writeAnswer(&answeri);								// write the answer given by the participant
+		stop_recording(); 											// stop to record from microphone
 		
-		std::this_thread::sleep_for(std::chrono::milliseconds(1)); 						// let some time to record the mic
-		rect = writeAnswer(&answeri);
-		stop_recording(); 																// change is_recording value to false
-		if (rect) 																		// if 's' answer, exit
+		// store and check the work
+		if (rect) 													// if 's' answer, exit
 		{
 			std::cout<<"[EXIT] The experiment will be saved to i="<<i-1<<"/"<<this->seq.size()<<std::endl;
 			break; // go to save
 		}
-		
-		// save the result
-		save_audio(i);
-		vvtimer.push_back(vhrc);
-		vanswer.push_back(answeri);
+		save_audio(i);					// save audio file
+		vvtimer.push_back(vhrc);		// save timers
+		vanswer.push_back(answeri);		// save answer
 	}
 	
 	this->seq_end = i;
@@ -372,23 +388,80 @@ bool Experiment::executeCalibration(int * durationRefresh_ns)
 	return false;
 }
 
-bool Experiment::executeActuator(int * durationRefresh_ns)
+bool Experiment::executeActuatorSpace(waveformLetter values)
 {
 	std::cout<<"[experiment][executeActuator] start..."<<std::endl;
 	// environmental variables
+	waveformLetter	valuestmp;
 	bool 			rect;
 	int 			i, overruns;
-	/* input variables */
-	waveformLetter 	values;
-	char 			letter;
+	/* output variables */
+	td_msecarray 	vhrc;
+	td_msecarray 	timerDebug;
+	int 			answeri;
+	
+	rect 		= false;
+	overruns 	= 0;
+	i 			= 0;
+	
+	/* work */
+	std::this_thread::sleep_for(std::chrono::milliseconds(50)); // let some time to open the mic
+	std::cout<<"+----------------------------------------------+"<<std::endl;
+	std::cout<<"+...                                        ...+"<<std::endl;
+	std::cout<<"     Experiment: \t"<<c->expstring(this->expToExec)<<std::endl;
+	std::cout<<"+    Press [ENTER] to start the experiment     +"<<std::endl;
+	std::cout<<"+...                                        ...+"<<std::endl;
+	std::cout<<"+----------------------------------------------+"<<std::endl;
+	cin.get();
+	for(i=this->seq_start; i<this->seq.size(); i++) 			// for the sequence i
+	{
+		// initialisation
+		std::cout<<std::endl<<"[main] New sequence: ["<<i<<"/"<<this->seq.size()<<"]"<<std::endl;
+		valuestmp = setupWaveformSpace(&i, values, &vhrc);			// set up the waveform corresponding to the sequence
+		this->c_start = chrono::high_resolution_clock::now(); 		// https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
+		randomWaiting();											// random waiting time to avoir any adapting rythm behavior during the exp
+		
+		// work
+		start_recording(); 											// start to record from microphone
+		vhrc[0] = nowLocal(this->c_start);							// get timing before stimuli
+		std::cout<<"[ACTUATOR] timer since start="<<vhrc[0].count()<<" ms"<<std::endl;
+		overruns += this->ad->execute_selective_trajectory(valuestmp, this->period_spi_ns); // execute the sequence
+		this->ad->execute_trajectory(this->alph->getneutral(), this->period_spi_ns);		// all actuators to rest (security)
+		vhrc[1] = nowLocal(this->c_start);							// get timing after stimuli
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));	// let some time to record the mic
+		rect = writeAnswer(&answeri);								// write the answer given by the participant
+		stop_recording(); 											// stop to record from microphone
+		
+		// store and check the work
+		if (rect) 													// if 's' answer, exit
+		{
+			std::cout<<"[EXIT] The experiment will be saved to i="<<i-1<<"/"<<this->seq.size()<<std::endl;
+			break; // go to save
+		}
+		save_audio(i);					// save audio file
+		vvtimer.push_back(vhrc);		// save timers
+		vanswer.push_back(answeri);		// save answer
+	}
+	
+	this->seq_end = i;
+	stop_experiment();
+	return false;
+}
+
+
+bool Experiment::executeActuatorTemp(waveformLetter values)
+{
+	std::cout<<"[experiment][executeActuator] start..."<<std::endl;
+	// environmental variables
+	waveformLetter	valuestmp;
+	bool 			rect;
+	int 			i, j, nbIt, overruns;
 	/* output variables */
 	td_msecarray 	vhrc;
 	td_msecarray 	timerDebug;
 	int 			answeri;
 	
 	/* Initialisation */
-	letter		= (BrailleDevSpace == this->expToExec || BrailleDevTemp == this->expToExec)?'a':'b';
-	values 		= alph->getl(letter);
 	rect 		= false;
 	overruns 	= 0;
 	i 			= 0;
@@ -402,142 +475,88 @@ bool Experiment::executeActuator(int * durationRefresh_ns)
 	std::cout<<"+...                                        ...+"<<std::endl;
 	std::cout<<"+----------------------------------------------+"<<std::endl;
 	cin.get();
-	//for(i=this->seq_start; i<this->seq.size(); i++) // for the sequence i
-	for(i=this->seq_start; i<10; i++) // for the sequence i
+	for(i=this->seq_start; i<this->seq.size(); i++) 			// for the sequence i
 	{
+		// initialisation
 		std::cout<<std::endl<<"[main] New sequence: ["<<i<<"/"<<this->seq.size()<<"]"<<std::endl;
-		this->c_start = chrono::high_resolution_clock::now(); // https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
-		start_recording(); // change is_recording value to true
-		overruns += executeSequence(&i, values, durationRefresh_ns, &vhrc); 	// copy of variable[values]  is important (erase)
+		valuestmp = setupWaveformTemp(&i, values, &vhrc);			// set up the waveform corresponding to the sequence
+		nbIt = std::accumulate(this->seq[i].begin(),this->seq[i].end(),0);
+		this->c_start = chrono::high_resolution_clock::now(); 		// https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
+		randomWaiting();											// random waiting time to avoir any adapting rythm behavior during the exp
 		
-		//dispTimers(i, answeri, vhrc, timerDebug);
-		std::this_thread::sleep_for(std::chrono::milliseconds(1)); 			// let some time to record the mic
-		rect = writeAnswer(&answeri);
-		stop_recording(); // change is_recording value to false
+		// work
+		start_recording(); 											// start to record from microphone
+		vhrc[0] = nowLocal(this->c_start);							// get timing before stimuli
+		for (j=0;j!=nbIt; j++)
+		{
+			overruns += this->ad->execute_selective_trajectory(valuestmp, this->period_spi_ns); // execute the trajectories
+		    this->ad->execute_trajectory(this->alph->getneutral(), this->period_spi_ns);
+		   // std::this_thread::sleep_for(std::chrono::milliseconds(5));						// wait between stimuli?
+		}
 		
-		if (rect) // if 's' answer, exit
+		this->ad->execute_trajectory(this->alph->getneutral(), this->period_spi_ns);		// all actuators to rest (security)
+		vhrc[1] = nowLocal(this->c_start);							// get timing after stimuli
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));	// let some time to record the mic
+		rect = writeAnswer(&answeri);								// write the answer given by the participant
+		stop_recording(); 											// stop to record from microphone
+		
+		// store and check the work
+		if (rect) 													// if 's' answer, exit
 		{
 			std::cout<<"[EXIT] The experiment will be saved to i="<<i-1<<"/"<<this->seq.size()<<std::endl;
 			break; // go to save
 		}
-		//dispTimers(i, answeri, vhrc, timerDebug);
-		
-		// save the result
-		save_audio(i);
-		vvtimer.push_back(vhrc);
-		vanswer.push_back(answeri);
+		save_audio(i);					// save audio file
+		vvtimer.push_back(vhrc);		// save timers
+		vanswer.push_back(answeri);		// save answer
 	}
-	
 	this->seq_end = i;
 	stop_experiment();
 	return false;
 }
 
-
-
-
-bool Experiment::executeF(int * durationRefresh_ns){
+bool Experiment::executeF(){
     return false;
 }
 
-// values has to be a non-pointer because modified inside the function (erase)
-int Experiment::executeSequence(int * currSeq, waveformLetter values_copy, int * dr_ns, td_msecarray * vhrc){
-    int ovr=0;
-    if (BrailleDevSpace == this->expToExec || BuzzerSpace == this->expToExec)
-    {
-        ovr = executeSequenceSpace(currSeq, &values_copy, dr_ns, vhrc);
-    }
-    else
-    {
-        ovr = executeSequenceTemp(currSeq, &values_copy, dr_ns, vhrc);
-    }
-    
-    if (ovr) { std::cout<<"Overruns: "<<ovr<<std::endl; }
-	
-    return ovr;
-}
-
-
-int Experiment::executeSequenceSpace(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc)
+waveformLetter Experiment::setupWaveformSpace(int * currSeq, waveformLetter values_copy, td_msecarray * vhrc)
 {
-    int ovr=0, timeleft=0; 		// ready to check each actuator availability of the sequence
-    int nbAct = values->size();
-    waveformLetter::iterator it;
-    int randomttw = 250 + rand()%2750; 	// randomize the time to wait between 1000-3000ms
-    std::cout<<"randomttw= "<<to_string(randomttw)<<"ms"<<std::endl;
+    waveformLetter::iterator 	it;
+    std::vector<uint8_t> 		rel_id_chan;
+    int nbAct;
     
-    std::vector<uint8_t> rel_id_chan = {10, 9, 11, 14, 18, 19};
-    
-    /* Transforms the values vector corresponding to the sequence */
-    for (int a=0; a!=nbAct; a++)
+    rel_id_chan = {10, 9, 11, 14, 18, 19};		// actuator's ID (AD5383)
+    nbAct 		= values_copy.size();			// get the number of actuator
+    for (int a=0; a!=nbAct; a++) 				// Transforms the values vector corresponding to the sequence
     {
         if (this->seq[*currSeq][a]==0) 
         {
-            it = values->find(rel_id_chan[a]);
-            values->erase(it);
+            it = values_copy.find(rel_id_chan[a]);
+            values_copy.erase(it);
         }
     }
 	
-    /* Time to wait before executing the sequence */
-    auto timespent = nowLocal(this->c_start).count(); // now - (beginning of the loop for this sequence)
-    timeleft = randomttw-timespent;
-    if (timeleft>0)
-        usleep(timeleft*1000);
-    else
-    	ovr -= timeleft;
-    
-    /* Execution of the sequence */
-    (*vhrc)[0] = nowLocal(this->c_start);
-    ovr = this->ad->execute_selective_trajectory(*values, *dr_ns); // execute the trajectories
-    this->ad->execute_trajectory(this->alph->getneutral(), *dr_ns);
-    (*vhrc)[1] = nowLocal(this->c_start);
-    
-    return ovr;
+    return values_copy;
 }
 
 
-int Experiment::executeSequenceTemp(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc)
+waveformLetter Experiment::setupWaveformTemp(int * currSeq, waveformLetter values_copy, td_msecarray * vhrc)
 {
-    int j=0, ovr=0, timeleft=0; // ready to check each actuator availability of the sequence
-    int nbAct = values->size();
-    waveformLetter::iterator it;
-    std::vector<uint8_t> rel_id_chan = {10, 9, 11, 14, 18, 19};
-    int nbiteration = std::accumulate(this->seq[*currSeq].begin(),this->seq[*currSeq].end(),0);
-    int randomttw = 250 + rand()%2750; // randomize the time to wait between 1000-3000ms
+    waveformLetter::iterator 	it;
+    std::vector<uint8_t> 		rel_id_chan;
+    int a, nbAct;
     
-    std::cout<<"[executeSequenceTemp] randomttw= "<<to_string(randomttw)<<"ms"<<std::endl;
-    /* Transforms the values vector corresponding to the sequence */
-    for (int a=0; a!=nbAct; a++)
+    nbAct 		= values_copy.size();
+    rel_id_chan = {10, 9, 11, 14, 18, 19};
+    for (a=0; a!=nbAct; a++)
     {
         if (a != this->actchannelID[*currSeq]) 
         {
-            it = values->find(rel_id_chan[a]);
-            values->erase(it);
+            it = values_copy.find(rel_id_chan[a]);
+            values_copy.erase(it);
         }
     }
-    
-    std::cout<<"[executeSequenceTemp] number of iteration='"<<nbiteration<<"'"<<std::endl;
-    std::cout<<"[executeSequenceTemp] size of values='"<<values->size()<<"'"<<std::endl;
-    /* Time to wait before executing the sequence */
-    auto timespent = nowLocal(this->c_start).count(); // now - (beginning of the loop for this sequence)
-    timeleft = randomttw-timespent;
-    if (timeleft>0)
-        usleep(timeleft*1000);
-    else
-    	ovr -= timeleft;
-    
-    /* Execution of the sequence */
-    (*vhrc)[0] = nowLocal(this->c_start);
-    for (j=0;j!=nbiteration; j++)
-    {
-        ovr = this->ad->execute_selective_trajectory(*values, *dr_ns); // execute the trajectories
-        //std::cout<<"[executeSequenceTemp] do it! '"<<j<<"'x times"<<std::endl;
-        this->ad->execute_trajectory(this->alph->getneutral(), *dr_ns);
-        //usleep(5*1000);
-    }
-    (*vhrc)[1] = nowLocal(this->c_start);
-    
-    return ovr;
+    return values_copy;
 }
 
 void Experiment::initactid4temp(){
@@ -697,6 +716,16 @@ bool Experiment::isAudioBufferReady()		{ return this->audioBufferReady;}
 /* 				e. Tools					*/
 /* 					     					*/
 /*------------------------------------------*/
+
+void Experiment::randomWaiting()
+{
+    /* Time to wait before executing the sequence */
+    int timespent, timeleft, randomttw;
+	randomttw 	= 250 + rand()%2750; 								// randomize the time to wait between 1000-3000ms
+	timespent 	= (int)(nowLocal(this->c_start).count()); 			// now - (beginning of the loop for this sequence)
+    timeleft 	= randomttw-timespent;
+	std::this_thread::sleep_for(std::chrono::milliseconds(timeleft));// let some time for alsa to feed the buffer
+}
 
 td_msec Experiment::nowLocal(td_highresclock start)
 {

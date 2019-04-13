@@ -134,7 +134,7 @@ private:
 	int 						exitStatus;
 	const char * 				cfgSource;
 	const char * 				scope;
-
+	int 						period_spi_ns; // period used to refresh datas
 	/* b. AudioFile and sequence parameters */
 	int af_i;
 	int af_max;
@@ -176,12 +176,12 @@ private:
 	void record_from_microphone();
 	void executeStimuli();
 
-	bool executeCalibration(int * durationRefresh_ns);	
-	bool executeActuator(int * durationRefresh_ns);
-	bool executeF(int * durationRefresh_ns);
-	int  executeSequence(int * 		currSeq, waveformLetter values_copy, int * 	dr_ns, td_msecarray * vhrc);
-	int  executeSequenceSpace(int * currSeq, waveformLetter *values, int * 		dr_ns, td_msecarray * vhrc);
-	int  executeSequenceTemp(int * 	currSeq, waveformLetter *values, int * 		dr_ns, td_msecarray * vhrc);
+	bool executeCalibration(waveformLetter values);	
+	bool executeActuatorSpace(waveformLetter values);
+	bool executeActuatorTemp(waveformLetter values);
+	bool executeF();
+	waveformLetter  setupWaveformSpace(int * currSeq, waveformLetter values_copy, td_msecarray * vhrc);
+	waveformLetter  setupWaveformTemp( int * currSeq, waveformLetter values_copy, td_msecarray * vhrc);
 	void initactid4temp(); 
 	
 	/* b. threads related */
@@ -206,6 +206,7 @@ private:
 	bool isAudioBufferReady();
 	
 	/* e. tools */
+	void randomWaiting();
 	td_msec nowLocal(td_highresclock start);
 	void dispTimers(int numSeq, int answeri, td_msecarray vhrc, td_msecarray timerDebug);
 };
