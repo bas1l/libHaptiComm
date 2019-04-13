@@ -724,7 +724,8 @@ void Experiment::randomWaiting()
 	randomttw 	= 250 + rand()%2750; 								// randomize the time to wait between 1000-3000ms
 	timespent 	= (int)(nowLocal(this->c_start).count()); 			// now - (beginning of the loop for this sequence)
     timeleft 	= randomttw-timespent;
-	std::this_thread::sleep_for(std::chrono::milliseconds(timeleft));// let some time for alsa to feed the buffer
+	std::cout<<"wait for: "<<timeleft<<"(ms)"<<std::endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(timeleft));// let some time for alsa to feed the buffer
 }
 
 td_msec Experiment::nowLocal(td_highresclock start)
