@@ -383,7 +383,7 @@ bool Experiment::executeCalibration(waveformLetter values)
 		vvtimer.push_back(vhrc);		// save timers
 		vanswer.push_back(answeri);		// save answer
 		
-		std::cout<<"Push [ENTER] to start the next sequence:"<<std::endl;
+		std::cout<<"Push [ENTER] to start the next sequence. Say the number <"<<(i%10)+1<<">"<<std::endl;
 		cin.get();
 	}
 	
