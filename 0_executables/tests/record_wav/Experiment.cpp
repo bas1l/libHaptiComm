@@ -354,6 +354,7 @@ bool Experiment::executeCalibration(waveformLetter values)
 	std::cout<<"+...                                        ...+"<<std::endl;
 	std::cout<<"+----------------------------------------------+"<<std::endl;
 	cin.get();
+	
 	for(i=this->seq_start; i<this->seq.size(); i++) 			// for the sequence i
 	{
 		// initialisation
@@ -381,6 +382,9 @@ bool Experiment::executeCalibration(waveformLetter values)
 		save_audio(i);					// save audio file
 		vvtimer.push_back(vhrc);		// save timers
 		vanswer.push_back(answeri);		// save answer
+		
+		std::cout<<"Push [ENTER] to start the next sequence:"<<std::endl;
+		cin.get();
 	}
 	
 	this->seq_end = i;
