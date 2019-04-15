@@ -496,14 +496,14 @@ bool Candidat::initseq(){
 }
 
 bool Candidat::initexpeOrder(){
-	expeOrder.push_back( std::make_pair(false,BrailleDevSpace) );
-	expeOrder.push_back( std::make_pair(false,BrailleDevTemp) );
+	expeOrder.push_back( std::make_pair(true,BrailleDevTemp) );
 	expeOrder.push_back( std::make_pair(true, FingersSpace) );
 	expeOrder.push_back( std::make_pair(true, FingersTemp) );
-	expeOrder.push_back( std::make_pair(false,BuzzerSpace) );
 	expeOrder.push_back( std::make_pair(true,BuzzerTemp) );
-	std::random_shuffle(expeOrder.begin()+1, expeOrder.end());
-
+	
+	expeOrder.push_back( std::make_pair(false,BrailleDevSpace) );
+	expeOrder.push_back( std::make_pair(false,BuzzerSpace) );
+	std::random_shuffle(expeOrder.begin(), expeOrder.end());
 	expeOrder.push_back( std::make_pair(false,Calibration) );	// when writing and reading, will be execute first
 	return true;
 }

@@ -230,7 +230,7 @@ void Experiment::record_from_microphone()
 		signal4recording();												// wait for messaging the thread to start to record
 		if (ad_start_rec(adrec) < 0) 									// start recording
 			E_FATAL("Failed to start recording\n");
-		std::cout<<"[MICROPHONE] timer since start="<<nowLocal(this->c_start).count()<<" ms"<<std::endl;
+		//std::cout<<"[MICROPHONE] timer since start="<<nowLocal(this->c_start).count()<<" ms"<<std::endl;
 		auto clk_start = chrono::high_resolution_clock::now();			// get timer when the mic is opened
 		do { k = ad_read(adrec, micBuf, sizeBuff); } while(k<1);		// wait until signal is found
 		int latency_ms = (int)(nowLocal(clk_start).count());			// calculate the latency between the mic opening and the first datas
@@ -353,10 +353,13 @@ bool Experiment::executeCalibration(waveformLetter values)
 	std::cout<<"+    Press [ENTER] to start the Calibration    +"<<std::endl;
 	std::cout<<"+...                                        ...+"<<std::endl;
 	std::cout<<"+----------------------------------------------+"<<std::endl;
-	cin.get();
 	
 	for(i=this->seq_start; i<this->seq.size(); i++) 			// for the sequence i
 	{
+		std::cout<<"Push [ENTER] to start the next sequence. Say the number <"<<(i%10)+1<<">"<<std::endl;
+		if(i!=0) std::cin.ignore(INT_MAX);
+		std::cin.get();
+		
 		// initialisation
 		std::cout<<std::endl<<"[main][Calibration] New sequence: ["<<i<<"/"<<this->seq.size()<<"]"<<std::endl;
 		this->c_start = chrono::high_resolution_clock::now(); 		// https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
@@ -365,7 +368,7 @@ bool Experiment::executeCalibration(waveformLetter values)
 		// work
 		start_recording(); 											// start to record from microphone
 		vhrc[0] = nowLocal(this->c_start);							// get timing before stimuli
-		std::cout<<"[ACTUATOR] timer since start="<<vhrc[0].count()<<" ms"<<std::endl;
+		//std::cout<<"[ACTUATOR] timer since start="<<vhrc[0].count()<<" ms"<<std::endl;
 		overruns += this->ad->execute_selective_trajectory(values, this->period_spi_ns); // execute the sequence
 		this->ad->execute_trajectory(this->alph->getneutral(), this->period_spi_ns);		// all actuators to rest (security)
 		vhrc[1] = nowLocal(this->c_start);							// get timing after stimuli
@@ -383,8 +386,6 @@ bool Experiment::executeCalibration(waveformLetter values)
 		vvtimer.push_back(vhrc);		// save timers
 		vanswer.push_back(answeri);		// save answer
 		
-		std::cout<<"Push [ENTER] to start the next sequence. Say the number <"<<(i%10)+1<<">"<<std::endl;
-		cin.get();
 	}
 	
 	this->seq_end = i;
