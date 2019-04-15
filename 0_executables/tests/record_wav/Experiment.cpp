@@ -357,7 +357,7 @@ bool Experiment::executeCalibration(waveformLetter values)
 	for(i=this->seq_start; i<this->seq.size(); i++) 			// for the sequence i
 	{
 		std::cout<<"Push [ENTER] to start the next sequence. Say the number <"<<(i%10)+1<<">"<<std::endl;
-		if(i!=0) std::cin.ignore(INT_MAX);
+		if(i!=0) std::cin.ignore();
 		std::cin.get();
 		
 		// initialisation
