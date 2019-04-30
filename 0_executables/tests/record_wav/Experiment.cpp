@@ -16,9 +16,6 @@ Experiment::~Experiment()
     delete this->wf;
     delete this->alph;
     delete this->ad;
-    
-	//if(vr_ps!=NULL) ps_free(vr_ps);
-	if(vr_cfg!=NULL) cmd_ln_free_r(vr_cfg);
 }
 
 
@@ -32,7 +29,7 @@ bool Experiment::create()
 	std::cout << std::fixed;
 	std::cout << std::setprecision(2);
 	std::cout<<"[experiment] create::start..."<<std::endl;
-	   
+	int err = 0;
 	// input variables
 	this->seq = this->c->getSequence();				// get the sequence for the experiment
 	this->expToExec = this->c->nextExp();			// define current experiment
@@ -74,70 +71,25 @@ bool Experiment::create()
 	
 	std::cout<<"cfg->configure>>"<<std::endl;
 	this->cfg->configure(cfgSource, dev, wf, alph);	// hapticomm configuration file
-
 	
+	// Prepare PCM for use.
+	rate_mic = EXPERIMENT_SAMPLING_RATE;
+	if ((err = snd_pcm_open (&capture_handle, "default", SND_PCM_STREAM_CAPTURE, 0)) < 0) {
+		fprintf (stderr, "cannot open audio device %s (%s)\n", "default", snd_strerror (err));
+		exit (1);
+	}
+	if ((err = init_captureHandle (&this->capture_handle, &rate_mic)) < 0) {
+		fprintf (stderr, "init_captureHandle failed (%s)\n", snd_strerror (err));
+		exit (1);
+	}
 	
-	// preparing the command line arguments 'argv' variable for CMU Sphinx VR
-	std::cout<<"fakeargs>>"<<std::endl;
-	string fdd(c->getPathDict()+c->getLangage()+"/"+c->getLangage()); // folder of the CMU Sphinx database
-	if(1)
-	{
-		std::cout<<"fakeargs>>pass..."<<std::endl;
-	}
-	else if(c->getLangage().compare("en-us") ==0) // english VR
-	{
-		char jsgfval[128], eInfoval[128], adcdevval[128];
-		strcpy(jsgfval, fdd.c_str());
-		strcat(jsgfval, ".gram");
-		strcpy(eInfoval, 	"/dev/null");
-		strcpy(adcdevval, 	"plughw:1,0");
-		
-		this->vr_cfg = cmd_ln_init(NULL, ps_args(), TRUE,   	// Load the configuration structure - ps_args() passes the default values
-					"-logfn", 	eInfoval,                   	// suppress log info from being sent to screen
-					"-jsgf", 	jsgfval,
-					//"-adcdev", 	adcdevval,
-					 NULL);
-	} 
-	else // french VR
-	{
-		char lmval[128], dictval[128], hmmval[128], jsgfval[128], eInfoval[128], adcdevval[128];
-		strcpy(lmval, 	fdd.c_str());
-		strcat(lmval, 	".lm.bin");
-		strcpy(dictval, fdd.c_str());
-		strcat(dictval, ".dic");
-		strcpy(hmmval, 	fdd.c_str());
-		strcat(hmmval, 	"/");
-		strcpy(hmmval, 	fdd.c_str());
-		strcpy(jsgfval, fdd.c_str());
-		strcat(jsgfval, ".gram");
-		strcpy(eInfoval, 	"/dev/null");
-		strcpy(adcdevval, 	"plughw:1,0");
-		
-		this->vr_cfg = cmd_ln_init(NULL, ps_args(), TRUE,   	// Load the configuration structure - ps_args() passes the default values
-					"-hmm", 	lmval,  						// path to the standard english language model
-					"-lm", 		lmval,                  		// custom language model (file must be present)
-					"-dict", 	dictval,                   		// custom dictionary (file must be present)
-					"-logfn", 	eInfoval,                   	// suppress log info from being sent to screen
-					"-jsgf", 	jsgfval,
-					//"-adcdev", 	adcdevval,
-					 NULL);
-	}
-
-	std::cout<<"cmd_ln_parse_r"<<std::endl;
-	int argc = 0;
-	char** argv = (char**)malloc(32 * sizeof(char)); // chars
-	this->vr_cfg = cmd_ln_parse_r(NULL, cont_args_def, argc, argv, TRUE);	// default values for cfg
-	free(argv);
-	//ps_default_search_args(this->vr_cfg);			// fill non-defined variables with default values
-		
 	// init wav writer (AudioFile library)
 	std::cout<<"AudioFile"<<std::endl;
 	this->af = new AudioFile<double>();
-	int sampleRate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate");
 	this->af_i = 0;										// iterator for audioFile
-	this->af_max = sampleRate * 10;						// size of audioFile buffer
+	this->af_max = rate_mic * 10;						// size of audioFile buffer
 	this->af->setAudioBufferSize(1, this->af_max);		// init audioFile buffer
-	this->af->setSampleRate(sampleRate);				// set sample rate
+	this->af->setSampleRate(	rate_mic);				// set sample rate
 	this->af->setBitDepth(16);							// set bit depth
 	
 	// thread and shared memory's variables initialisation for voice recording
@@ -150,7 +102,7 @@ bool Experiment::create()
     this->period_spi_ns  = durationRefresh_ms * ms2ns; // * ns
     
 	std::cout<<"[experiment] create::...end"<<std::endl;
-    return 0;
+    return err;
 }
 
 
@@ -204,75 +156,88 @@ void Experiment::record_from_microphone()
 {
 	using namespace std::this_thread;
 	using namespace std::chrono;
-	/* create */
-	ad_rec_t * adrec;
+	// MEMORY ALLOCATIONS
 	AudioFile<double>::AudioBuffer buffer;								// intermediate buffer between audioFile buffer and
-    int16 micBuf[2048];
-	int32_t k;	
-	int i, samprate, sizeBuff, sizefullBuff, ttw, nbS;
-	float nbSperMS;
-
+	int i, ii, j;
+	int overruns, err;
+	int sizeBuf, sizefullBuff;
+	int ttw, ttw_left;
+	int nbReadMax, durRecMax_sec, nbItPerSec;
+	short ** buf;
+	high_resolution_clock::time_point clk_read_before, clk_read_after;
+	double time_span;
+	
+	
+	
 	/* initialize */
-	const char * adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev");
-	samprate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 		// sampling rate for 'ad'
-	std::cout<<"\t\t\t\tsamprate="<<samprate<<std::endl;
-	sizeBuff 		= 2048;
-	sizefullBuff 	= 10*samprate;
-	nbSperMS 		= samprate/(float)1000;
-	ttw 			= 50; // milliseconds
-	nbS 			= nbSperMS*ttw; // nb sample / ttw
+	i = 0;
+	ii = 0;
+	j = 0;
+	durRecMax_sec	= 10;
+	sizeBuf 		= 2048;
+	sizefullBuff 	= durRecMax_sec*this->rate_mic;
+	ttw 			= pow(10,3)*sizeBuf/this->rate_mic; // in millisecond. 
+	nbItPerSec		= (this->rate_mic/sizeBuf)+1;
+	nbReadMax 		= durRecMax_sec*nbItPerSec;
+	
+	buf = (short**)calloc(nbReadMax, sizeof(short *));
+	for(ii = 0; ii < nbReadMax; ii++) { 
+		buf[ii] = (short*)calloc(sizeBuf, sizeof(short));
+	}
 	buffer.resize (1);
 	buffer[0].resize (sizefullBuff);
-	if ((adrec = ad_open_dev(adcdev, samprate)) == NULL) 				// open the audio device (microphone)
-		E_FATAL("Failed to open audio device\n");
+	
 	
 	/* work */
 	std::cout<<"[record_from_microphone] READY..."<<std::endl;
 	while(!signal4stop_experiment())									// check if experiment is done
 	{
+		i = 0;
 		signal4recording();												// wait for messaging the thread to start to record
-		if (ad_start_rec(adrec) < 0) 									// start recording
-			E_FATAL("Failed to start recording\n");
-		//snd_pcm_prepare(pcm_handle);
-		//snd_pcm_drop(pcm_handle);
-		//std::cout<<"[MICROPHONE] timer since start="<<nowLocal(this->c_start).count()<<" ms"<<std::endl;
-		auto clk_start = chrono::high_resolution_clock::now();			// get timer when the mic is opened
-		do { k = ad_read(adrec, micBuf, sizeBuff); } while(k<1);		// wait until signal is found
-		int latency_ms = (int)(nowLocal(clk_start).count());			// calculate the latency between the mic opening and the first datas
-			
-		for(i=0; i<k && this->af_i<sizefullBuff; i++){					// store the first record into the big buffer object
-			buffer[0][this->af_i++] = micBuf[i];
+		if ((err = snd_pcm_prepare (this->capture_handle)) < 0) {
+			fprintf (stderr, "cannot prepare audio interface for use (%s)\n", snd_strerror (err));
+			exit (1);
+		}
+		if ((err = snd_pcm_start (this->capture_handle)) < 0) {
+			fprintf (stderr, "start recording failed (%s)\n", snd_strerror (err));
+			exit (1);
 		}
 		sleep_for(milliseconds(ttw));	// let some time for alsa to feed the buffer
-		while(!signal4stop_recording())
-		{
-			if ((k = ad_read(adrec, micBuf, nbS)) < 0)					// record...
-				E_FATAL("Failed to read audio\n");
-			for(i=0; i<k && this->af_i<sizefullBuff; i++){				// store the records into the big buffer object
-				buffer[0][this->af_i++] = micBuf[i];
-			}
-			sleep_for(milliseconds(ttw));// let some time for alsa to feed the buffer
-		}
-		sleep_for(milliseconds(latency_ms));	// wait for the latency due to the mic driver
-		do {
-			if ((k = ad_read(adrec, micBuf, sizeBuff)) < 0)				// record...
-				E_FATAL("Failed to read audio\n");
-			for(i=0; i<k && this->af_i<sizefullBuff; i++){				// store the records into the big buffer object
-				buffer[0][this->af_i++] = micBuf[i];
-			}
-		} while(k>0);
-		if (ad_stop_rec(adrec) < 0) 									// answer has been given, stop recording
-					E_FATAL("Failed to stop recording\n");
 		
-		std::transform(buffer[0].begin(), buffer[0].end(), buffer[0].begin(), std::bind(std::divides<double>(), std::placeholders::_1, 
-		            		   SHRT_MAX));								// Normalisation from uint16_t into -1/+1
+		while(!signal4stop_recording() || i == nbReadMax)
+		{
+			clk_read_before = chrono::high_resolution_clock::now();	// get timer when the mic is opened	
+			if ((err = snd_pcm_readi(this->capture_handle, buf[i++], sizeBuf)) < 0) {
+				fprintf (stderr, "read from audio interface failed (%s)\n", snd_strerror (err));
+				exit (1);
+			}
+			clk_read_after 	= chrono::high_resolution_clock::now();	// get timer when the mic is opened	
+			time_span 		= duration_cast<duration<double>>(clk_read_after - clk_read_before).count();
+			ttw_left 		= ttw-time_span*pow(10,3);	
+			if (ttw_left>0) sleep_for(milliseconds(ttw_left));
+			else overruns += ttw_left;
+		}
+		if (i==nbReadMax) std::cout<<"[WARNING] Buffer full without asking to stop.."<<std::endl;
+		if ((err = snd_pcm_drop(this->capture_handle)) < 0) {
+			fprintf (stderr, "drop the microphone failed (%s)\n", snd_strerror (err));
+			exit (1);
+		}
+		for(ii=0; ii<=i && this->af_i<sizefullBuff; ii++){
+			for(j=0; j<sizeBuf && af_i<sizefullBuff; j++){				// store the records into the big buffer object
+				buffer[0][this->af_i++] = buf[ii][j];
+			}
+		}
+		buffer[0].resize(af_i);									// keep only the data that has been recorded
+		std::transform(buffer[0].begin(), buffer[0].end(), buffer[0].begin(), 
+					   std::bind(std::divides<double>(), std::placeholders::_1, SHRT_MAX));
+		
 		fillAudioBuffer(buffer);										// fill Audiobuffer with tmp buffer 
 	}
 	
 	/* leave */
-	if (ad_close(adrec) < 0) 											// experiment is done, close microphone
-		E_FATAL("Failed to close the device\n");
+	snd_pcm_close(this->capture_handle);
 	std::cout<<"[record_from_microphone] end of the function..."<<std::endl;
+	std::cout<<"[OVERRUNS] Total overrruns="<<overruns<<" samples."<<std::endl;
 }
 
 void Experiment::executeStimuli()
@@ -735,6 +700,61 @@ bool Experiment::isAudioBufferReady()		{ return this->audioBufferReady;}
 /* 					     					*/
 /*------------------------------------------*/
 
+int Experiment::init_captureHandle(snd_pcm_t ** capture_handle, unsigned int * exact_rate)
+{
+
+	snd_pcm_hw_params_t *hw_params;
+	int err = 0;
+	
+	if ((err = snd_pcm_hw_params_malloc (&hw_params)) < 0) {
+		fprintf (stderr, "cannot allocate hardware parameter structure (%s)\n",
+			 snd_strerror (err));
+		return err;
+	}
+	// Fill params with a full configuration space for a PCM.
+	if ((err = snd_pcm_hw_params_any (*capture_handle, hw_params)) < 0) {
+		fprintf (stderr, "cannot initialize hardware parameter structure (%s)\n",
+			 snd_strerror (err));
+		return err;
+	}
+	// Mode de lecture sur le pulse code modulation
+	if ((err = snd_pcm_hw_params_set_access (*capture_handle, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
+		fprintf (stderr, "cannot set access type (%s)\n",
+			 snd_strerror (err));
+		return err;
+	}
+	if ((err = snd_pcm_hw_params_set_format (*capture_handle, hw_params, SND_PCM_FORMAT_S16_LE)) < 0) {
+		fprintf (stderr, "cannot set sample format (%s)\n", snd_strerror (err));
+		return err;
+	}
+	// snd_pcm_hw_params_set_rate_near
+	if ((err = snd_pcm_hw_params_set_rate_near (*capture_handle, hw_params, exact_rate, 0)) < 0)
+	{
+		fprintf (stderr, "cannot set sample rate (%s)\n", snd_strerror (err));
+		return err;
+	}
+	// Restrict a configuration space to contain only its minimum channels count.
+	if ((err = snd_pcm_hw_params_set_channels (*capture_handle, hw_params, 1)) < 0) {
+		fprintf (stderr, "cannot set channel count (%s)\n", snd_strerror (err));
+		return err;
+	}
+	// Install one PCM hardware configuration chosen from a configuration space and snd_pcm_prepare it.
+	if ((err = snd_pcm_hw_params (*capture_handle, hw_params)) < 0) {
+		fprintf (stderr, "cannot set parameters (%s)\n", snd_strerror (err));
+		return err;
+	}
+
+	if (snd_pcm_hw_params_can_pause	(hw_params)	 == 0) {
+		printf("pause is not supported!!!\n");
+	}
+	
+			
+	snd_pcm_hw_params_free (hw_params);
+	
+	return err;
+}
+
+
 void Experiment::randomWaiting()
 {
     /* Time to wait before executing the sequence */
@@ -778,13 +798,13 @@ void record_from_microphone_bak()
 	AudioFile<double>::AudioBuffer buffer;						// intermediate buffer between audioFile buffer and
     int16 micBuf[2048];
 	int32_t k;	
-	int i, samprate, sizeBuff, sizefullBuff, ttw, nbS;
+	int i, samprate, sizeBuf, sizefullBuff, ttw, nbS;
 	float nbSperMS;
 	bool disp, dispLoop, is_recording_local;
 
 	const char * adcdev = cmd_ln_str_r(this->vr_cfg, "-adcdev");
 	samprate = (int) cmd_ln_float32_r(this->vr_cfg, "-samprate"); 			// sampling rate for 'ad'
-	sizeBuff 		= 2048;
+	sizeBuf 		= 2048;
 	sizefullBuff 	= 10*samprate;
 	nbSperMS 		= samprate/(float)1000;
 	ttw 			= 50; // milliseconds
@@ -813,7 +833,7 @@ void record_from_microphone_bak()
 		
 //		std::cout<<">>>>>>>>>>>>>>>>>>>>>> ["<<(this->af_i/(float)sizefullBuff)*100<<"%]"<<std::endl;
 				
-		do { k = ad_read(adrec, micBuf, sizeBuff); } while(k<1);	// wait until signal is found
+		do { k = ad_read(adrec, micBuf, sizeBuf); } while(k<1);	// wait until signal is found
 		
 		auto c_work1 = nowLocal(this->c_start);
 		for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
@@ -834,7 +854,7 @@ void record_from_microphone_bak()
 		auto lenBuff2_ms = this->af_i*1000/(float)samprate;
 		
 		do {
-			if ((k = ad_read(adrec, micBuf, sizeBuff)) < 0)				// record...
+			if ((k = ad_read(adrec, micBuf, sizeBuf)) < 0)				// record...
 				E_FATAL("Failed to read audio\n");
 			for(i=0; i<k && this->af_i<sizefullBuff; i++){			// store the records into the big buffer object
 				buffer[0][this->af_i++] = micBuf[i];

@@ -1,18 +1,28 @@
 /*
  * Experiment.h
  *
- *  Created on: 14 janv. 2019
+ *  Created on: 10 Apr. 2019
  *      Author: Basil Duvernoy
  */
 
-#include <array> // std::array
-#include <chrono> // std::clock, std::chrono::high_resolution_clock::now
-#include <numeric> // accumulate
-#include <stdlib.h> // srand, rand
-#include <string.h> // strncmp
+/* STANDARD LIBRARIES */
+#include <algorithm>			// for max_element, transform
+#include <atomic>				
+#include <array> 				// std::array
+#include <chrono> 				// std::clock, std::chrono::high_resolution_clock::now
+#include <condition_variable>	
+#include <iomanip>				// cout with desired floating precision
+#include <iostream>
+#include <functional>			// std::bind and placeholders
+#include <limits.h>
+#include <mutex>
+#include <numeric> 				// accumulate
+#include <stdlib.h> 			// srand, rand
+#include <string.h> 			// strncmp
 #include <sys/mman.h>
-#include <time.h> // time
-#include <unistd.h> // sleep, usleep
+#include <time.h> 				// time
+#include <thread>
+#include <unistd.h> 			// sleep, usleep
 #include <vector>
 
 /* HAPTICOMM LIBRARIES */
@@ -25,39 +35,32 @@
 /* Candidat library for experiment */
 #include "Candidat.h"
 
-/* SPEECH RECOGNITION LIBRARIES PocketSphinx and SphinxBase */
-#include <sphinxbase/err.h>
-#include <sphinxbase/ad.h>
-#include <pocketsphinx.h>
+/* Alsa library */
+#include <alsa/asoundlib.h>
 
-using namespace std;
+
+/* Reading and writing wav's library */
+#include "AudioFile.h"
+
+#include <pthread.h>
+#include <sched.h>
+
 
 #ifndef EXPERIMENT_H_
 #define EXPERIMENT_H_
 
-
-
-
-/** Configuration for the voice recognition
- * (to be modified after the deadline) */
-static const arg_t cont_args_def[] = {
-    POCKETSPHINX_OPTIONS,
-    /* Argument file. */
-    {"-adcdev", // about the microphone device (has to be default)
-     ARG_STRING,
-     NULL,
-     "Name of audio device to use for input."},
-    CMDLN_EMPTY_OPTION
-};
+#define EXPERIMENT_SAMPLING_RATE 16000
 
 
 /************************************************ 
- * 
- *                 CLASS EXPERIMENT
- * 
- * 
+ * 												*
+ *                 CLASS EXPERIMENT				*
+ * 												*
+ * 												*
  ************************************************/
-class Experiment {
+class Experiment 
+{
+
 public:
 	Experiment(const char * _cfgSource, Candidat * _c, int _seq_start)// Create the structure of the Experiment
 	{
@@ -67,9 +70,8 @@ public:
 		this->seq_start = _seq_start;
 		/* HaptiComm variables
 		 * (1) If not in the .h -> CANNOT COMPILE (?)
-		 * (2) Same for the destructor 
-	     * (3) This implementation fixes issues with template classes. 
-		 * (3b)https://bytefreaks.net/programming-2/c/c-undefined-reference-to-templated-class-function
+		 * (-) This implementation fixes issues with template classes. 
+		 * (--)https://bytefreaks.net/programming-2/c/c-undefined-reference-to-templated-class-function
 		 * --------------------------------*/
 		this->cfg = new HaptiCommConfiguration();
 		this->dev = new DEVICE();
@@ -80,97 +82,133 @@ public:
 		
 		cout << "[experiment] new::...end" << endl;
 	}
+	~Experiment();
 	
-	virtual ~Experiment(){ // Destroy the Experiment object
-	    delete this->cfg;
-	    delete this->dev;
-	    delete this->wf;
-	    delete this->alph;
-	    delete this->ad;
-	    
-		ps_free(vr_ps);
-		cmd_ln_free_r(vr_cfg);
-	}
-	
-	/* Classic functions */
+	/* a. Classic functions */
 	bool create();
 	bool execute();
-
-	/* Getters */
-	//vector<std::array<td_msec, 3>> getTimer();
-	vector<td_msecarray> getTimer();
+		
+	
+	/* b. Getters */
+	vector<msec_array_t> getTimer();
 	vector<int> getAnswer();
 	int getSeq_start();
 	int getSeq_end();
 	
 	
 private:
-	// HaptiComm variables
-	HaptiCommConfiguration * cfg;
-	DEVICE * dev;
-	WAVEFORM * wf;
-	ALPHABET * alph;
-	AD5383 * ad;
-	int exitStatus;
-	const char * cfgSource;
-	const char * scope;
-	
+/* 1. VARIABLES */
+	/* a. HaptiComm variables */
+	HaptiCommConfiguration * 	cfg;
+	DEVICE * 					dev;
+	WAVEFORM * 					wf;
+	ALPHABET * 					alph;
+	AD5383 * 					ad;
+	int 						exitStatus;
+	const char * 				cfgSource;
+	const char * 				scope;
+	int 						period_spi_ns; // period used to refresh datas
+	/* b. AudioFile and sequence parameters */
+	int af_i;
+	int af_max;
 	int seq_start;
 	int seq_end;
 	
-	// voice recognition variables (sphinx)
-	ps_decoder_t * vr_ps; // decoder for voice recognition
-	cmd_ln_t * vr_cfg; // config for voice recognition
+	/* c. Thread for executing tap and record voice and shared variables */
+	std::mutex 				m_mutex;
+	std::condition_variable m_condVar;
+	bool 					workdone;
+	bool 					is_recording;
+	bool	 				audioBufferReady;
+	pthread_attr_t     		attr;
+	pthread_t  				t_record;
+	pthread_t  				t_tap;
 
 	
-	// Candidat variables
-	Candidat * c;
+	
+	/* d. Alsa voice recording variables */
+	snd_pcm_t *capture_handle;
+	unsigned int rate_mic;
+	
+	/* e. Candidat variables */
+	Candidat * 			c;
 	vector<vector<int>> seq;
-	vector<int> actchannelID;
-	expEnum expToExec;
+	vector<int> 		actchannelID;
+	expEnum 			expToExec;
 	
-	// output/result variables
-	  //    vector<std::array<td_msec, 3>> vvtimer;
-	td_highresclock c_start;
-	vector<td_msecarray> vvtimer;
-	vector<int> vanswer;
-	
-	/* function to execute depending on expToExec */
-	bool executeF(int * durationRefresh_ns);
-	//bool executeBD(int * durationRefresh_ns);
-	//bool executeBuz(int * durationRefresh_ns);
-	//bool executeActuator(char letter, int * durationRefresh_ns);
-	//int executeSequence(int * i, waveformLetter values, int * dr_ns, td_highresclock * c_start, array<td_msec, 3> * vhrc);
-	bool executeActuator(int * durationRefresh_ns);
-	int  executeSequence(int * currSeq, waveformLetter values_copy, int * dr_ns, td_msecarray * vhrc);
-	int executeSequenceSpace(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc);
-	int  executeSequenceTemp(int * currSeq, waveformLetter *values, int * dr_ns, td_msecarray * vhrc);
-	int recognize_from_microphone(ad_rec_t *ad, td_msecarray * vhrc, td_msecarray * timerDebug);
+	/* f. output/result variables */
+	highresclock_t 			c_start;
+	vector<msec_array_t> 	vvtimer;
+	vector<int> 			vanswer;
+	AudioFile<double> * 	af;
 	
 	
-	//int recognize_from_microphone(ps_decoder_t * vr_ps, ad_rec_t *ad,
-	//							int16_t * adbuf, char const *hyp,
-	//							bool * utt_started, int32_t * k,
-	//							array<td_msec, 3> * vhrc);
-	td_msec nowSeq();
-	bool rectifyAnswer(int * answeri);
-	void pasteTimers(int numSeq, int answeri, td_msecarray vhrc, td_msecarray timerDebug);
+/* 2. FUNCTIONS */
+	/* a. main tasks experiment */
+	static void * static_record_from_microphone(void * c);
+	static void * static_executeStimuli(void * c);
+	void record_from_microphone();
+	void executeStimuli();
 
-	bool wordtonumb(const char * hyp, int * answer);
-	void recognize_from_microphoneBckpup();
-	
-	/* SETTERS */
+	bool executeCalibration(waveformLetter values);	
+	bool executeActuatorSpace(waveformLetter values);
+	bool executeActuatorTemp(waveformLetter values);
+	bool executeF();
+	waveformLetter  setupWaveformSpace(int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
+	waveformLetter  setupWaveformTemp( int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
 	void initactid4temp(); 
 	
-
+	/* b. threads related */
+	bool signal4recording();
+	bool signal4stoprecording();
+	bool signal4stop_recording();
+	bool signal4stop_experiment();
+	void start_recording();
+	void stop_recording();
+	void stop_experiment();
+	
+	/* c. answers related */
+	bool writeAnswer(int * answeri);
+	void fillAudioBuffer(AudioFile<double>::AudioBuffer buffer);
+	void save_audio(int id_seq);
+		
+	/* d. checkers */
+	bool isrecording();
+	bool isstopedrecording();
+	bool isworkdone();
+	bool isrecordingorworkdone();
+	bool isAudioBufferReady();
+	
+	/* e. tools */
+	int init_captureHandle(snd_pcm_t ** capture_handle, unsigned int * exact_rate);
+	void randomWaiting();
+	msec_t nowLocal(highresclock_t start);
+	void dispTimers(int numSeq, int answeri, msec_array_t vhrc, msec_array_t timerDebug);
 };
 
-
-
-
-
-
 #endif /* Experiment_H_ */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

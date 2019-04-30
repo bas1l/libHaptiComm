@@ -6,35 +6,54 @@ set(CMAKE_CXX_FLAGS "-O2 -std=c++11")
 
 message("${CMAKE_SYSTEM_NAME}")
 
-# A. Include directory
-include_directories("1_include")
-include_directories("/usr/local/include/sphinxbase")
-include_directories("/usr/local/include/pocketsphinx")
+set(INCLUDE_DIR ${CMAKE_SOURCE_DIR}/1_include)
+set(SOURCES_DIR ${CMAKE_SOURCE_DIR}/2_src)
+set(EXT_LIB_DIR ${CMAKE_SOURCE_DIR}/3_external_lib)
+set(SPHINXBASE_DIR "/usr/local/include/sphinxbase")
+set(POCKETSPHINX_DIR "/usr/local/include/pocketsphinx")
 
+# A. Include directory
+include_directories(${INCLUDE_DIR} ${SPHINXBASE_DIR} ${POCKETSPHINX_DIR})# ${SOURCES_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 
 # B. External libraries
+find_package(Boost COMPONENTS filesystem REQUIRED)
 ## B.1  Dynamic libraries
-add_library(audioFile "3_external_lib/AudioFile-master/AudioFile.cpp")
+add_library(audioFile ${EXT_LIB_DIR}/AudioFile-master/AudioFile.cpp)
 ## B.2  Static libraries
 add_library(config4cpp STATIC IMPORTED)
-set_target_properties(config4cpp PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/3_external_lib/libconfig4cpp.a)
-find_package(Boost COMPONENTS filesystem REQUIRED)
+set_target_properties(config4cpp PROPERTIES IMPORTED_LOCATION ${EXT_LIB_DIR}/libconfig4cpp.a)
 
 
 # C. Developped libraries
-add_library(libad5383 		"2_src/ad5383.cpp")
-add_library(libdevice 		"2_src/device.cpp")
-add_library(libGPIOClass 	"2_src/GPIOClass.cpp")
-add_library(libutils		"2_src/utils.cpp")
+add_library(GPIOClass ${SOURCES_DIR}/GPIOClass.cpp)
+add_library(utils ${SOURCES_DIR}/utils.cpp)
+add_library(ad5383 ${SOURCES_DIR}/ad5383.cpp)
+add_library(device ${SOURCES_DIR}/device.cpp)
+add_library(alphabet ${SOURCES_DIR}/alphabet.cpp)
+add_library(waveform ${SOURCES_DIR}/waveform.cpp)
+add_library(HaptiCommConfiguration ${SOURCES_DIR}/HaptiCommConfiguration.cpp)
 
-add_library(libwaveform 	"2_src/waveform.cpp")
-target_link_libraries(libwaveform libutils libdevice audioFile)
+set(HAPTICOMM_LIB ${CMAKE_BINARY_DIR}/libhapticomm.a)
+add_custom_target(combined
+        COMMAND ar -x $<TARGET_FILE:utils>
+        COMMAND ar -x $<TARGET_FILE:config4cpp>
+        COMMAND ar -x $<TARGET_FILE:ad5383>
+        COMMAND ar -x $<TARGET_FILE:device>
+        COMMAND ar -x $<TARGET_FILE:alphabet>
+        COMMAND ar -x $<TARGET_FILE:waveform>
+        COMMAND ar -x $<TARGET_FILE:HaptiCommConfiguration>
+        COMMAND ar -x $<TARGET_FILE:audioFile>
+        COMMAND ar -qcs ${HAPTICOMM_LIB} *.o
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+        DEPENDS utils config4cpp ad5383 device alphabet waveform HaptiCommConfiguration audioFile
+)
+add_library(hapticomm STATIC IMPORTED GLOBAL)
+add_dependencies(hapticomm combined)
+set_target_properties(hapticomm
+        PROPERTIES
+        IMPORTED_LOCATION ${HAPTICOMM_LIB}
+)
 
-add_library(libalphabet 	"2_src/alphabet.cpp")
-target_link_libraries(libalphabet libwaveform libdevice)
-
-add_library(config4HaptiComm "2_src/HaptiCommConfiguration.cpp")
-target_link_libraries(config4HaptiComm config4cpp libdevice libwaveform)
 
 
 # D. C executable files directories

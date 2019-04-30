@@ -29,8 +29,6 @@ main (int argc, char *argv[])
 	unsigned int rate;
 	int sizeBuf = 2048, sizefullBuff;
 	snd_pcm_t *capture_handle;
-	snd_pcm_status_t * pcm_state;
-	snd_pcm_status_alloca(&pcm_state);
 	
 	int af_i, durationRecord_sec, nbItPerSec, nbRead, ttw, overruns;
 	AudioFile<double> * af;
