@@ -116,7 +116,7 @@ public:
 		
 	
 	/* b. Getters */
-	vector<msec_array_t> getTimer();
+	vector<td_msecarray> getTimer();
 	vector<int> getAnswer();
 	int getSeq_start();
 	int getSeq_end();
@@ -151,9 +151,9 @@ private:
 	pthread_t  				t_tap;
 	
 	
-	/* d. Alsa voice recording variables */
-	snd_pcm_t *capture_handle;
-	
+	/* d. voice recognition variables (sphinx) */
+	ps_decoder_t * 	vr_ps; 					// decoder for voice recognition
+	cmd_ln_t * 		vr_cfg; 				// config for voice recognition
 	
 	/* e. Candidat variables */
 	Candidat * 			c;
@@ -162,8 +162,8 @@ private:
 	expEnum 			expToExec;
 	
 	/* f. output/result variables */
-	highresclock_t 		c_start;
-	vector<msec_array_t> 	vvtimer;
+	td_highresclock 		c_start;
+	vector<td_msecarray> 	vvtimer;
 	vector<int> 			vanswer;
 	AudioFile<double> * 	af;
 	
@@ -179,8 +179,8 @@ private:
 	bool executeActuatorSpace(waveformLetter values);
 	bool executeActuatorTemp(waveformLetter values);
 	bool executeF();
-	waveformLetter  setupWaveformSpace(int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
-	waveformLetter  setupWaveformTemp( int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
+	waveformLetter  setupWaveformSpace(int * currSeq, waveformLetter values_copy, td_msecarray * vhrc);
+	waveformLetter  setupWaveformTemp( int * currSeq, waveformLetter values_copy, td_msecarray * vhrc);
 	void initactid4temp(); 
 	
 	/* b. threads related */
@@ -206,8 +206,8 @@ private:
 	
 	/* e. tools */
 	void randomWaiting();
-	msec_t nowLocal(highresclock_t start);
-	void dispTimers(int numSeq, int answeri, msec_array_t vhrc, msec_array_t timerDebug);
+	td_msec nowLocal(td_highresclock start);
+	void dispTimers(int numSeq, int answeri, td_msecarray vhrc, td_msecarray timerDebug);
 };
 
 #endif /* Experiment_H_ */

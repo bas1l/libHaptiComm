@@ -172,7 +172,7 @@ bool Experiment::execute(){
 /* 			   	b. Getters					*/
 /* 					     					*/
 /********************************************/
-vector<msec_array_t> Experiment::getTimer(){ return this->vvtimer; }
+vector<td_msecarray> Experiment::getTimer(){ return this->vvtimer; }
 vector<int>         Experiment::getAnswer(){ return this->vanswer; }
 int              Experiment::getSeq_start(){ return this->seq_start; }
 int                Experiment::getSeq_end(){ return this->seq_end; }
@@ -336,8 +336,8 @@ bool Experiment::executeCalibration(waveformLetter values)
 	int 			i, j, nbAct, timeleft, randomttw, overruns;
 
 	/* output variables */
-	msec_array_t 	vhrc;			// vector of high resolution clock
-	msec_array_t 	timerDebug;		// vector of high resolution clock for debugging
+	td_msecarray 	vhrc;			// vector of high resolution clock
+	td_msecarray 	timerDebug;		// vector of high resolution clock for debugging
 	int 			answeri;
 	
 	rect 		= false;
@@ -412,8 +412,8 @@ bool Experiment::executeActuatorSpace(waveformLetter values)
 	bool 			rect;
 	int 			i, overruns;
 	/* output variables */
-	msec_array_t 	vhrc;
-	msec_array_t 	timerDebug;
+	td_msecarray 	vhrc;
+	td_msecarray 	timerDebug;
 	int 			answeri;
 	
 	rect 		= false;
@@ -475,8 +475,8 @@ bool Experiment::executeActuatorTemp(waveformLetter values)
 	bool 			rect;
 	int 			i, j, nbIt, overruns;
 	/* output variables */
-	msec_array_t 	vhrc;
-	msec_array_t 	timerDebug;
+	td_msecarray 	vhrc;
+	td_msecarray 	timerDebug;
 	int 			answeri;
 	
 	/* Initialisation */
@@ -537,7 +537,7 @@ bool Experiment::executeF(){
     return false;
 }
 
-waveformLetter Experiment::setupWaveformSpace(int * currSeq, waveformLetter values_copy, msec_array_t * vhrc)
+waveformLetter Experiment::setupWaveformSpace(int * currSeq, waveformLetter values_copy, td_msecarray * vhrc)
 {
     waveformLetter::iterator 	it;
     std::vector<uint8_t> 		rel_id_chan;
@@ -558,7 +558,7 @@ waveformLetter Experiment::setupWaveformSpace(int * currSeq, waveformLetter valu
 }
 
 
-waveformLetter Experiment::setupWaveformTemp(int * currSeq, waveformLetter values_copy, msec_array_t * vhrc)
+waveformLetter Experiment::setupWaveformTemp(int * currSeq, waveformLetter values_copy, td_msecarray * vhrc)
 {
     waveformLetter::iterator 	it;
     std::vector<uint8_t> 		rel_id_chan;
@@ -746,12 +746,12 @@ void Experiment::randomWaiting()
     std::this_thread::sleep_for(std::chrono::milliseconds(timeleft));// let some time for alsa to feed the buffer
 }
 
-msec_t Experiment::nowLocal(highresclock_t start)
+td_msec Experiment::nowLocal(td_highresclock start)
 {
     return chrono::duration<double, milli>(chrono::high_resolution_clock::now()-start);
 }
 
-void Experiment::dispTimers(int numSeq, int answeri, msec_array_t vhrc, msec_array_t timerDebug)
+void Experiment::dispTimers(int numSeq, int answeri, td_msecarray vhrc, td_msecarray timerDebug)
 {
     std::cout<<"["<<numSeq<<"][";
     for (int i=0; i!=seq[numSeq].size(); i++){
@@ -772,6 +772,7 @@ void Experiment::dispTimers(int numSeq, int answeri, msec_array_t vhrc, msec_arr
 /* 				a. ALL						*/
 /* 					     					*/
 /*------------------------------------------*
+
 void record_from_microphone_bak()
 {
 	ad_rec_t * adrec;

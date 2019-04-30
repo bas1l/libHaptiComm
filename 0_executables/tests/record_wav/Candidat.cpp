@@ -261,7 +261,7 @@ expEnum Candidat::nextExp(){
 
 
 /*
-bool Candidat::saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> * answers){
+bool Candidat::saveResults(vector<std::array<msec_t, 3>>* timers, vector<int> * answers){
 	/* save the results into the corresponding file (current experiment) *
 	string expstr = this->expstring(this->nextExp()); // current experiment string
 	string file(this->pathDirectory+to_string(this->id)+"/"+expstr+".csv");
@@ -285,7 +285,7 @@ bool Candidat::saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> *
 	}
 	mf.close();
 */
-bool Candidat::saveResults(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end){
+bool Candidat::saveResults(vector<msec_array_t>* timers, vector<int> * answers, int * seq_start, int * seq_end){
 	/* save the results in a csv file */
 	fillcsvfile(timers, answers, seq_start, seq_end);
 
@@ -594,7 +594,7 @@ bool Candidat::seteoe()
 	return false;
 }
 
-bool Candidat::fillcsvfile(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end){
+bool Candidat::fillcsvfile(vector<msec_array_t>* timers, vector<int> * answers, int * seq_start, int * seq_end){
 	string expname( this->expstring(this->nextExp()) ); // current experiment string
 	string fname(   this->pathDirectory+to_string(this->id)+"/"+expname+".csv" );
 
