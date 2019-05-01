@@ -14,7 +14,6 @@
 #include <iomanip>				// cout with desired floating precision
 #include <iostream>
 #include <functional>			// std::bind and placeholders
-#include <limits.h>
 #include <mutex>
 #include <numeric> 				// accumulate
 #include <stdlib.h> 			// srand, rand
@@ -35,9 +34,10 @@
 /* Candidat library for experiment */
 #include "Candidat.h"
 
-/* Alsa library */
-#include <alsa/asoundlib.h>
-
+/* SPEECH RECOGNITION LIBRARIES PocketSphinx and SphinxBase */
+#include <sphinxbase/err.h>
+#include <sphinxbase/ad.h>
+#include <pocketsphinx.h>
 
 /* Reading and writing wav's library */
 #include "AudioFile.h"
@@ -49,9 +49,35 @@
 #ifndef EXPERIMENT_H_
 #define EXPERIMENT_H_
 
-#define EXPERIMENT_SAMPLING_RATE 16000
 
 
+/** Configuration for the voice recognition
+ * (to be modified after the deadline) */
+static const arg_t cont_args_def[] = {
+    POCKETSPHINX_OPTIONS,
+    /* Argument file. */
+    {"-argfile",
+     ARG_STRING,
+     NULL,
+     "Argument file giving extra arguments."},
+    {"-adcdev",
+     ARG_STRING,
+     "plughw:1,0",
+     "Name of audio device to use for input."},
+    {"-infile",
+     ARG_STRING,
+     NULL,
+     "Audio file to transcribe."},
+    {"-inmic",
+     ARG_BOOLEAN,
+     "no",
+     "Transcribe audio from microphone."},
+    {"-time",
+     ARG_BOOLEAN,
+     "no",
+     "Print word times in file transcription."},
+    CMDLN_EMPTY_OPTION
+};
 /************************************************ 
  * 												*
  *                 CLASS EXPERIMENT				*
@@ -90,7 +116,7 @@ public:
 		
 	
 	/* b. Getters */
-	vector<msec_array_t> getTimer();
+	vector<td_msecarray> getTimer();
 	vector<int> getAnswer();
 	int getSeq_start();
 	int getSeq_end();
@@ -123,12 +149,11 @@ private:
 	pthread_attr_t     		attr;
 	pthread_t  				t_record;
 	pthread_t  				t_tap;
-
 	
 	
-	/* d. Alsa voice recording variables */
-	snd_pcm_t *capture_handle;
-	unsigned int rate_mic;
+	/* d. voice recognition variables (sphinx) */
+	ps_decoder_t * 	vr_ps; 					// decoder for voice recognition
+	cmd_ln_t * 		vr_cfg; 				// config for voice recognition
 	
 	/* e. Candidat variables */
 	Candidat * 			c;
@@ -137,8 +162,8 @@ private:
 	expEnum 			expToExec;
 	
 	/* f. output/result variables */
-	highresclock_t 			c_start;
-	vector<msec_array_t> 	vvtimer;
+	td_highresclock 		c_start;
+	vector<td_msecarray> 	vvtimer;
 	vector<int> 			vanswer;
 	AudioFile<double> * 	af;
 	
@@ -154,8 +179,8 @@ private:
 	bool executeActuatorSpace(waveformLetter values);
 	bool executeActuatorTemp(waveformLetter values);
 	bool executeF();
-	waveformLetter  setupWaveformSpace(int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
-	waveformLetter  setupWaveformTemp( int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
+	waveformLetter  setupWaveformSpace(int * currSeq, waveformLetter values_copy, td_msecarray * vhrc);
+	waveformLetter  setupWaveformTemp( int * currSeq, waveformLetter values_copy, td_msecarray * vhrc);
 	void initactid4temp(); 
 	
 	/* b. threads related */
@@ -180,10 +205,9 @@ private:
 	bool isAudioBufferReady();
 	
 	/* e. tools */
-	int init_captureHandle(snd_pcm_t ** capture_handle, unsigned int * exact_rate);
 	void randomWaiting();
-	msec_t nowLocal(highresclock_t start);
-	void dispTimers(int numSeq, int answeri, msec_array_t vhrc, msec_array_t timerDebug);
+	td_msec nowLocal(td_highresclock start);
+	void dispTimers(int numSeq, int answeri, td_msecarray vhrc, td_msecarray timerDebug);
 };
 
 #endif /* Experiment_H_ */

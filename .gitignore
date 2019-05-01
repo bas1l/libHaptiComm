@@ -1,6 +1,8 @@
 
 results/*
 3_external_lib/libconfig4cpp.a
+*.au
+*.aup
 *.hpp
 *.ipp
 *.html

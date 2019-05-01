@@ -5,4 +5,4 @@ project(daemonPS)
 add_executable(${PROJECT_NAME} "main.cpp")
 
 link_directories(${CMAKE_BINARY_DIR})
-target_link_libraries (${PROJECT_NAME} LINK_PUBLIC wiringPi libad5383)
+target_link_libraries (${PROJECT_NAME} LINK_PUBLIC wiringPi ad5383)

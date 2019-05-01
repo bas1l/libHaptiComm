@@ -41,9 +41,9 @@ enum expEnum {	BrailleDevSpace=10, BrailleDevTemp=11,
 				BuzzerSpace=30, 	BuzzerTemp=31,
 				Calibration=40};
 
-typedef std::chrono::time_point<std::chrono::high_resolution_clock> td_highresclock;
-typedef std::chrono::duration<double, milli> td_msec;
-typedef array<td_msec, SIZE_ARRAY_TIMERS> td_msecarray;
+typedef std::chrono::time_point<std::chrono::high_resolution_clock> highresclock_t;
+typedef std::chrono::duration<double, milli> msec_t;
+typedef array<msec_t, SIZE_ARRAY_TIMERS> msec_array_t;
 
 class Candidat {
 public:
@@ -55,8 +55,8 @@ public:
 	bool loadFromDB();				// load the candidat from the path directory variable
 	bool isNextExp();				// return if there is a next experiment
 	expEnum nextExp();				// return the next experiment to execute
-	//bool saveResults(vector<std::array<td_msec, 3>>* timers, vector<int> * answers);
-	bool saveResults(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end);
+	//bool saveResults(vector<std::array<msec_t, 3>>* timers, vector<int> * answers);
+	bool saveResults(vector<msec_array_t>* timers, vector<int> * answers, int * seq_start, int * seq_end);
 
 
 	
@@ -125,7 +125,7 @@ private:
 	bool saveInfo(); 						// save all initalised informations
 	/* tools, files and directories modifiers */
 	bool seteoe();
-	bool fillcsvfile(vector<td_msecarray>* timers, vector<int> * answers, int * seq_start, int * seq_end);
+	bool fillcsvfile(vector<msec_array_t>* timers, vector<int> * answers, int * seq_start, int * seq_end);
 	expEnum str2expEnum(string eestr);
 	bool copyDir(boost::filesystem::path const & source, boost::filesystem::path const & destination);
 
