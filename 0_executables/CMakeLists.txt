@@ -10,6 +10,7 @@ add_subdirectory("neutral")
 
 #add_subdirectory("experiment/apparentMotion201811")
 add_subdirectory("experiment/subitation")
+add_subdirectory("tests/test_adxl345")
 
 #add_subdirectory("tests/determine-up")
 #add_subdirectory("tests/blinkgpio")

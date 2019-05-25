@@ -189,7 +189,7 @@ void workSymbols(std::queue<char> & sentences, std::condition_variable & cv,
 {
     // init drive electronics
     AD5383 ad;
-    ad.spi_open();
+    if (!ad.spi_open()) exit;
     ad.configure();
     
     int timerInterLetterMs = 20;

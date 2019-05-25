@@ -6,8 +6,8 @@
  *      Author: Basil Duvernoy
  */
 
-#include <array>    // std::array
 #include <algorithm>// std::random_shuffle
+#include <array>    // std::array
 #include <cstring>
 #include <chrono>   // std::clock, std::chrono::high_resolution_clock::now
 #include <bitset> 	// to check bit value on number

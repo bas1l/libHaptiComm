@@ -18,11 +18,6 @@ AD5383::AD5383() : _spi_fd(0) {
     {
         _data_neutral[i] = AD5383_DEFAULT_NEUTRAL;
     }
-
-    memset(&_ioc_xfer, 0, sizeof(_ioc_xfer));
-    _ioc_xfer.tx_buf = (unsigned long)_out_buffer;
-    _ioc_xfer.len = 3;
-    _ioc_xfer.rx_buf = (unsigned long)_in_buffer;
 }
 
 AD5383::~AD5383() {}
@@ -326,6 +321,18 @@ uint16_t AD5383::spi_xfer() {
     if(!_spi_fd)
         return 0;
 
+    struct spi_ioc_transfer tr = {
+		.tx_buf = (unsigned long)_out_buffer,
+		.rx_buf = (unsigned long)_in_buffer,
+		
+		.len = ARRAY_SIZE(_out_buffer),
+		.speed_hz = AD5383_SPI_SELECT_CLOCK_HZ,
+				
+		.delay_usecs = 0,
+		.bits_per_word = AD5383_SPI_SELECT_BITS,
+		.cs_change = true
+	};
+    
     if(ioctl(_spi_fd, SPI_IOC_MESSAGE(1),&_ioc_xfer) == -1)
     {
         perror("spi_xfer/ioctl");

@@ -33,6 +33,8 @@ add_library(alphabet ${SOURCES_DIR}/alphabet.cpp)
 add_library(waveform ${SOURCES_DIR}/waveform.cpp)
 add_library(HaptiCommConfiguration ${SOURCES_DIR}/HaptiCommConfiguration.cpp)
 
+add_library(adxl345 ${SOURCES_DIR}/adxl345.cpp)
+
 set(HAPTICOMM_LIB ${CMAKE_BINARY_DIR}/libhapticomm.a)
 add_custom_target(combined
         COMMAND ar -x $<TARGET_FILE:utils>

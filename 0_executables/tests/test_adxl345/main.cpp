@@ -1,0 +1,83 @@
+/*
+ * subitation.cpp
+ *
+ *  Created on: 05 Apr. 2019
+ *      Author: Basil Duvernoy
+ */
+
+#include <iostream>		// std::cout, std::fixed
+#include <getopt.h>
+#include <map>
+#include <string>
+#include <string.h>
+#include <time.h>
+#include <iomanip>      // std::setprecision
+
+	
+#include "adxl345.h"
+
+int main(int argc, char *argv[])
+{
+	std::cout<<std::fixed<<std::setprecision(2);
+	const char * spidev_fd = (argc<=1 || strlen(argv[1]) == 0)?"/dev/spidev0.0":argv[1];
+	
+	ADXL345 acc1, acc2, acc3;
+
+	if (!acc1.spi_open(25)) return 0;
+	if (!acc1.configure()) return 0;
+	if (!acc2.spi_open(24)) return 0;
+	if (!acc2.configure()) return 0;
+	if (!acc3.spi_open(23)) return 0;
+	if (!acc3.configure()) return 0;
+	std::cout<<"accs are opened and configured."<<std::endl;
+	std::cout<<"--------------------"<<std::endl<<std::endl;
+	
+	struct timespec tim, tim2;
+	tim.tv_sec = 0;
+	tim.tv_nsec = 50*1000000; // msec*10^6
+   
+	uint16_t value_x, value_y, value_z;
+	int cpt=0;
+	bool tap1 = false, tap2 = false, tap3 = false;
+	while (!tap1 || !tap2 || !tap3)
+	{
+		if (0)
+		{
+			std::cout<<"new datas axis: "<<std::flush;
+			value_x = acc1.get_axis(ADXL345_SELECT_X);
+			value_y = acc1.get_axis(ADXL345_SELECT_Y);
+			value_z = acc1.get_axis(ADXL345_SELECT_Z);
+			std::cout<<"x="<<value_x<<",\ty="<<value_y<<",\tz="<<value_z<<std::endl;	
+		}
+		
+		if(1)
+		{
+			if (!tap1 && acc1.int_tap_detected_reg())
+			{
+				tap1 = true;
+				std::cout<<"acc[1]: tap detected!"<<std::endl;
+			}
+			if (!tap2 && acc2.int_tap_detected_reg())
+			{	
+				tap2 = true;
+				std::cout<<"acc[2]: tap detected!"<<std::endl;
+			}
+			if (!tap3 && acc3.int_tap_detected_reg())
+			{
+				tap3 = true;
+				std::cout<<"acc[3]: tap detected!"<<std::endl;
+			}
+		}
+		
+		nanosleep(&tim, &tim2);
+	}
+	
+	return 0;
+}
+
+
+
+
+
+
+

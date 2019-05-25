@@ -241,7 +241,7 @@ void Experiment::record_from_microphone()
 }
 
 void Experiment::executeStimuli()
-{   
+{
 	// CREATION input variables
 	waveformLetter 	values;				// vector based on the wav in the config file
 	char 			haptiCommActuatorletter, ERMActuatorletter;
@@ -314,6 +314,11 @@ bool Experiment::executeCalibration(waveformLetter values)
 	std::random_shuffle(answerOrder.begin(), answerOrder.end());// shuffle the answers
 	std::vector<uint8_t> rel_id_chan = {10, 9, 11, 14, 18, 19};	// id of the actuators
     
+    for(i=0; i!=vhrc.size(); i++)
+    {
+		vhrc[i] = nowLocal(chrono::high_resolution_clock::now());
+	}
+	
 	for (int a=1; a!=nbAct; a++)
 	{
 		values.erase(values.find(rel_id_chan[a])); 			// keep only the first actuator to do the stimulus

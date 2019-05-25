@@ -83,14 +83,14 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	
-	/* get the results *
+	/* get the results */
 	auto timers 	= exp.getTimer();
 	auto answers 	= exp.getAnswer();
 	int start 		= exp.getSeq_start();
 	int end 		= exp.getSeq_end();
-	*/
+	
 	/* push the results into the corresponding files */
-	//c.saveResults(&timers, &answers, &start, &end);
+	c.saveResults(&timers, &answers, &start, &end);
 	
 	
     return 0;

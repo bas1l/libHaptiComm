@@ -595,6 +595,7 @@ bool Candidat::seteoe()
 }
 
 bool Candidat::fillcsvfile(vector<msec_array_t>* timers, vector<int> * answers, int * seq_start, int * seq_end){
+	int t = -1;
 	string expname( this->expstring(this->nextExp()) ); // current experiment string
 	string fname(   this->pathDirectory+to_string(this->id)+"/"+expname+".csv" );
 
@@ -620,7 +621,8 @@ bool Candidat::fillcsvfile(vector<msec_array_t>* timers, vector<int> * answers, 
 			}
 			// timers
 			for (int k=0; k<(*timers)[i].size(); ++k) {
-				mf<<to_string((*timers)[i][k].count())<<",";
+				t = (*timers)[i][k].count();
+				mf<<to_string(t)<<",";
 			}
 			// answer
 			mf<<to_string((*answers)[i]);
@@ -658,7 +660,7 @@ bool Candidat::fillcsvfile(vector<msec_array_t>* timers, vector<int> * answers, 
 		if (!job_done) // if gap between previous_number_sequences and seq_start
 		{
 			for (int i=cptline; i!=*seq_start; ++i) {
-				fout<<to_string(i)<<"-1,-1,-1,-1,-1,-1, -1,-1,-1, -1"<<endl;
+				fout<<to_string(i)<<",-1,-1,-1,-1,-1,-1,-1,-1,-1,-1"<<endl;
 			}
 		}
 		
@@ -672,7 +674,8 @@ bool Candidat::fillcsvfile(vector<msec_array_t>* timers, vector<int> * answers, 
 			}
 			// timers
 			for (int k=0; k<(*timers)[ans_idx].size(); ++k) {
-				fout<<to_string((*timers)[ans_idx][k].count())<<",";
+				t = (*timers)[ans_idx][k].count();
+				fout<<to_string(t)<<",";
 			}
 			// answer
 			fout<<to_string((*answers)[ans_idx]);
