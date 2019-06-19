@@ -227,12 +227,12 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, int prosody)
 				if (letters.front() == ' ')
 				{
 					letters.pop_front();
-					usleep(PROSODY_LETTER_DELAY);
+    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_WORD_DELAY));
 				}
 				else if (letters.front() == '.')
 				{
 					letters.pop_front();
-					usleep(PROSODY_SENTENCE_DELAY);
+    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_SENTENCE_DELAY));
 				}
 				else
 				{
@@ -244,7 +244,7 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, int prosody)
 					}
 					values.clear();
 					letters.pop_front();
-					usleep(PROSODY_LETTER_DELAY);	
+    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
 				}
 			}
         }
@@ -255,7 +255,7 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, int prosody)
         		if (letters.front() == ' ')
         		{
     				letters.pop_front();
-    				usleep(PROSODY_LETTER_DELAY);
+    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_WORD_DELAY));
         		}
         		else if (letters.front() == '.')
         		{
@@ -271,7 +271,7 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, int prosody)
     				}
     				values.clear();
     				letters.pop_front();
-    				usleep(PROSODY_LETTER_DELAY);	
+    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
         		}
 			}
         }
@@ -293,7 +293,7 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, int prosody)
 					}
 					values.clear();
 		            letters.pop_front();
-					usleep(PROSODY_LETTER_DELAY);
+		            std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
 				}
 			}
 		}
