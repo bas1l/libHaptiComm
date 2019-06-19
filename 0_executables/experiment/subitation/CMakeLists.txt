@@ -12,5 +12,5 @@ link_directories(${CMAKE_BINARY_DIR})
 target_link_libraries (${PROJECT_NAME} 
 			LINK_PUBLIC pthread ncurses ${Boost_SYSTEM_LIBRARY} boost_filesystem
 			asound  hapticomm audioFile
-			candidat experiment)
+			candidat experiment adxl345)
 add_dependencies(${PROJECT_NAME} hapticomm)

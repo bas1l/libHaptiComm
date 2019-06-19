@@ -29,6 +29,7 @@
 #include "HaptiCommConfiguration.h"
 #include "waveform.h"
 #include "ad5383.h"
+#include "adxl345.h"
 #include "utils.h"
 #include "alphabet.h"
 
@@ -91,7 +92,8 @@ public:
 	
 	/* b. Getters */
 	vector<msec_array_t> getTimer();
-	vector<int> getAnswer();
+	vector<int> 		 getAnswer();
+	vector<int> 		 getConfidence();
 	int getSeq_start();
 	int getSeq_end();
 	
@@ -140,6 +142,7 @@ private:
 	highresclock_t 			c_start;
 	vector<msec_array_t> 	vvtimer;
 	vector<int> 			vanswer;
+	vector<int> 			vconfidence;
 	AudioFile<double> * 	af;
 	
 	

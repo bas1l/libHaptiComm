@@ -126,6 +126,7 @@ bool Experiment::execute(){
 /********************************************/
 vector<msec_array_t> Experiment::getTimer(){ return this->vvtimer; }
 vector<int>         Experiment::getAnswer(){ return this->vanswer; }
+vector<int>     Experiment::getConfidence(){ return this->vconfidence; }
 int              Experiment::getSeq_start(){ return this->seq_start; }
 int                Experiment::getSeq_end(){ return this->seq_end; }
 
@@ -504,6 +505,7 @@ bool Experiment::executeActuatorTemp(waveformLetter values)
 }
 
 bool Experiment::executeF(){
+	
     return false;
 }
 
@@ -689,11 +691,11 @@ void Experiment::save_audio(int id_seq)
 /* 				d. checkers					*/
 /* 					     					*/
 /*------------------------------------------*/
-bool Experiment::isrecording()	{ return this->is_recording; }
-bool Experiment::isstopedrecording()	{ return !(this->is_recording); }
-bool Experiment::isworkdone()	{ return this->workdone; }
-bool Experiment::isrecordingorworkdone()	{ return (isworkdone() || isrecording()); }
-bool Experiment::isAudioBufferReady()		{ return this->audioBufferReady;}
+bool Experiment::isrecording() { return this->is_recording; }
+bool Experiment::isstopedrecording() { return !(this->is_recording); }
+bool Experiment::isworkdone() { return this->workdone; }
+bool Experiment::isrecordingorworkdone() { return (isworkdone() || isrecording()); }
+bool Experiment::isAudioBufferReady() { return this->audioBufferReady;}
 
 
 

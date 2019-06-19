@@ -260,34 +260,50 @@ expEnum Candidat::nextExp(){
 }
 
 
-/*
-bool Candidat::saveResults(vector<std::array<msec_t, 3>>* timers, vector<int> * answers){
-	/* save the results into the corresponding file (current experiment) *
-	string expstr = this->expstring(this->nextExp()); // current experiment string
-	string file(this->pathDirectory+to_string(this->id)+"/"+expstr+".csv");
-	cout<<"[candidat][saveResults] writing results into: "<<file<<endl;
-	std::ofstream mf(file);
-	if(!mf) { cerr<<"[candidat][saveResults] "<<file<<": Error opening file"<<endl; }
+bool Candidat::saveResults(std::vector<msec_array_t> * timers, 
+						   std::vector<int> * answers, 
+						   std::vector<int> * confidence, 
+						   int * seq_start, int * seq_end){
 
-	mf<<"actuator1,actuator2,actuator3,actuator4,actuator5,actuator6,";
-	mf<<"time1,time2,time3,";
-	mf<<"answer";
-	mf<<endl;
-	for (int i=0; i<this->seq.size(); ++i)
+	std::vector<std::vector<int>> results;
+	std::string header;
+	int nb_lines, nb_columns, nb_timers, curr_item;
+	int l, t;
+	int x=0;
+	
+	nb_timers = (timers->at(0)).size();
+	nb_columns = this->seq[0].size() + nb_timers + 3; // +3 for ID sequence, anwser, and confidence slots
+	nb_lines = timers->size();
+	results.resize(nb_lines, std::vector<int>(nb_columns));
+	// for each lines
+	for (l=0; l<nb_lines; l++)
 	{
-		for (int j=0; j<this->seq[i].size(); ++j)
-		{
-			mf<<to_string(this->seq[i][j])<<",";
+		curr_item = 0;
+		// id of the sequence
+		results[l][curr_item++] = *seq_start + l;
+		// value of the sequence
+		for (t=0; t<this->seq[*seq_start+l].size(); ++t) {
+			results[l][curr_item++] = this->seq[*seq_start + l][t];
 		}
-		mf<<to_string((*timers)[i][0].count())<<","<<to_string((*timers)[i][1].count())<<","<<to_string((*timers)[i][2].count())<<",";
-	mf<<to_string((*answers)[i]);
-		mf<<endl;
+		// for each timers
+		for (t=0; t<nb_timers; t++, curr_item++)
+		{
+			results[l][curr_item] = (timers->at(l))[t].count();
+		}		// answer
+		results[l][curr_item++] = answers->at(l);
+		// confidence
+		results[l][curr_item] = 0;//confidence->at(l);
 	}
-	mf.close();
-*/
-bool Candidat::saveResults(vector<msec_array_t>* timers, vector<int> * answers, int * seq_start, int * seq_end){
+
+	// header of the CSV file
+	header = "id_seq,";
+	header += "actuator1,actuator2,actuator3,actuator4,actuator5,actuator6,";
+	header += "before_stimuli(ms),after_stimuli(ms),time_answer(ms),";
+	header += "value_answer(0:6),";
+	header += "confidence(0:3)";
+	
 	/* save the results in a csv file */
-	fillcsvfile(timers, answers, seq_start, seq_end);
+	fillcsvfile(header, results, seq_start, seq_end);
 
 	/* if seq_end = max, the experiment has been done */
 	if (this->seq.size() == *seq_end)
@@ -386,33 +402,20 @@ bool Candidat::setPathDirectory(string p){
  * INITIALISATION
  *************/
 bool Candidat::initexpVariables(){
-	cout<<"More informations is needed to create the candidat:"<<endl;
+	cout<<"More informations are needed to create the candidat:"<<endl;
 	this->initlangage();
 	this->initage();
 	this->inittype();
 	this->initapc();
 	this->initseq();
 	this->initexpeOrder();
-	
-	
-	/* Display *
-	for (int i=0; i<this->seq.size();++i)
-	{
-		for (int j=0; j<this->seq[0].size();++j)
-		{
-			cout<<this->seq[i][j] ;
-		}
-		cout<<"\t";
-	}
-	cout<<endl;
-	*/
 	return true;
 }
 
 bool Candidat::initlangage(){
-	string tmp;
-	cout<<"Which is the langage to use? ('en-us' or 'fr-fr')"<<endl;
-	cin >> tmp;
+	string tmp = "fr-fr";
+	//cout<<"Which is the langage to use? ('en-us' or 'fr-fr')"<<endl;
+	//cin >> tmp;
 	
 	return setlangage(tmp);
 }
@@ -496,15 +499,16 @@ bool Candidat::initseq(){
 }
 
 bool Candidat::initexpeOrder(){
-	expeOrder.push_back( std::make_pair(true,BrailleDevTemp) );
-	expeOrder.push_back( std::make_pair(true, FingersSpace) );
+	expeOrder.push_back( std::make_pair(true, BrailleDevTemp) );
 	expeOrder.push_back( std::make_pair(true, FingersTemp) );
-	expeOrder.push_back( std::make_pair(true,BuzzerTemp) );
+	expeOrder.push_back( std::make_pair(true, BuzzerTemp) );
 	
-	expeOrder.push_back( std::make_pair(false,BrailleDevSpace) );
-	expeOrder.push_back( std::make_pair(false,BuzzerSpace) );
+	expeOrder.push_back( std::make_pair(true, FingersSpace) );
+	expeOrder.push_back( std::make_pair(false, BrailleDevSpace) );
+	expeOrder.push_back( std::make_pair(true, BuzzerSpace) );
+	
 	std::random_shuffle(expeOrder.begin(), expeOrder.end());
-	expeOrder.push_back( std::make_pair(false,Calibration) );	// when writing and reading, will be execute first
+	expeOrder.push_back( std::make_pair(true, Calibration) );	// when writing and reading, it will be executed first
 	return true;
 }
 
@@ -565,7 +569,6 @@ bool Candidat::saveInfo(){
 /*************
  * TOOLS
  *************/
-
 bool Candidat::seteoe()
 {
 	string expname( this->expstring(this->nextExp()) ); // current experiment string
@@ -594,100 +597,85 @@ bool Candidat::seteoe()
 	return false;
 }
 
-bool Candidat::fillcsvfile(vector<msec_array_t>* timers, vector<int> * answers, int * seq_start, int * seq_end){
-	int t = -1;
-	string expname( this->expstring(this->nextExp()) ); // current experiment string
-	string fname(   this->pathDirectory+to_string(this->id)+"/"+expname+".csv" );
 
-	/* if new file */
-	if (0 == *seq_start) {
-		std::ofstream mf(fname);
+bool Candidat::fillcsvfile(std::string header, 
+						   std::vector<std::vector<int>> values,
+						   int * line_start, int * line_end){	
+	int i, j;
+	string expname;
+	string fname, tmpname;
+	std::ofstream mf;
+	
+	expname = this->expstring(this->nextExp()); // current experiment string
+	fname = this->pathDirectory+to_string(this->id)+"/"+expname+".csv";
+	tmpname = fname+".tmp";
+	
+	// if new file
+	if (0 == *line_start) { 
+		mf.open(fname);
 		if(!mf) { cerr<<"[candidat][saveResults] "<<fname<<": Error opening file"<<endl; }
-		else {    cout<<"[candidat][saveResults] writing results into: "<<fname<<endl;}
-
 		// header
-		mf<<"id_seq,actuator1,actuator2,actuator3,actuator4,actuator5,actuator6,";
-		mf<<"before_stimuli(ms),after_stimuli(ms),time_answer(ms),";
-		mf<<"value_answer(0:6)";
-		mf<<endl;
-
-		// for each sequence
-		for (int i=*seq_start; i!=*seq_end; ++i) {
-			// id of the sequence
-			mf<<to_string(i)<<",";
-			// value of the sequence
-			for (int j=0; j<this->seq[i].size(); ++j) {
-				mf<<to_string(this->seq[i][j])<<",";
-			}
-			// timers
-			for (int k=0; k<(*timers)[i].size(); ++k) {
-				t = (*timers)[i][k].count();
-				mf<<to_string(t)<<",";
-			}
-			// answer
-			mf<<to_string((*answers)[i]);
-			// eol
-			mf<<endl;
-		}
-		mf.close();
-		
+		mf<<header<<endl;
 	}
-	/* else already exists */
-	else {
-		int ans_idx;
+	// if already exists
+	else 
+	{
+		std::ifstream f_in; //File to read from
 		string line;
-		string tmpname( this->pathDirectory+to_string(this->id)+"/"+expname+".csv.tmp" );
+		int ans_idx, cptline;
+
+		cptline = -1; // remove the header's count, start to -1
 		
-		std::ifstream fin(fname); //File to read from
-		std::ofstream fout(tmpname); //Temporary file
-		if (!fin) { cerr<<"[candidat][saveResults] "<<fname <<": Error opening file"<<endl; return true;}
-		else      { cout<<"[candidat][saveResults] writing results into: "<<fname<<endl;}
-		if (!fout) { cerr<<"[candidat][saveResults] "<<tmpname<<": Error opening file"<<endl; return true;}
-		
-		int cptline=-1; // remove the header's count, start to -1
-		bool job_done = false;
-		while(getline(fin, line) && !job_done) { // fill the tmp file until seq_start
-			if (cptline == *seq_start)
-				job_done = true;
-			else
-				fout<<line<<endl;
-				cout<<"cptline="<<cptline<<", line="<<line<<endl;
-			
+		try {
+			mf.open(tmpname);
+		}
+		catch (std::ifstream::failure e) {
+			std::cerr << "[candidat][saveResults] Exception opening "<<tmpname<<"file\n";
+		}
+		try {
+			f_in.open(fname);
+		}
+		catch (std::ifstream::failure e) {
+			std::cerr << "[candidat][saveResults] Exception opening "<<fname<<"file\n";
+		}
+
+		while(getline(f_in, line)) { // fill the tmp file up to line_start lines
 			cptline++;
+			if (cptline == *line_start){
+				break;
+			}
+			mf<<line<<endl;
 		}
-		fin.close();
-		
-		if (!job_done) // if gap between previous_number_sequences and seq_start
+		f_in.close();
+		if (cptline != *line_start) // if gap between previous_number_sequences and seq_start
 		{
-			for (int i=cptline; i!=*seq_start; ++i) {
-				fout<<to_string(i)<<",-1,-1,-1,-1,-1,-1,-1,-1,-1,-1"<<endl;
+			for (i=cptline; i!=*line_start; ++i) {
+				mf<<to_string(i)<<",-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1"<<endl;
 			}
 		}
-		
-		for (int i=*seq_start; i!=*seq_end; ++i) { // for each sequence
-			ans_idx = i - *seq_start;
-			// id of the sequence
-			fout<<to_string(i)<<",";
-			// value of the sequence
-			for (int j=0; j<this->seq[i].size(); ++j) {
-				fout<<to_string(this->seq[i][j])<<",";
-			}
-			// timers
-			for (int k=0; k<(*timers)[ans_idx].size(); ++k) {
-				t = (*timers)[ans_idx][k].count();
-				fout<<to_string(t)<<",";
-			}
-			// answer
-			fout<<to_string((*answers)[ans_idx]);
-			// eol
-			fout<<endl;
-		}
-		fout.close();
-		
-		if (remove(fname.c_str()) != 0) { cerr<<"[candidat][saveResults] "<<fname<<": Error deleting file"<<endl; }
-		if (rename(tmpname.c_str(), fname.c_str()) != 0) { cerr<<"[candidat][saveResults] "<<tmpname<<": Error renaming file"<<endl; }
 	}
-		
+	cout<<"[candidat][saveResults] writing results into: "<<fname<<endl;
+	
+	// for each lines, 
+	for (i=0; i!=values.size(); ++i) {
+		// for each values,
+		mf<<to_string(values[i][0])<<endl;
+		for (j=1; j<values[i].size(); ++j) {
+			mf<<","<<to_string(values[i][j]);
+		}
+	}
+	// close the current file
+	mf.close();
+
+	// if already exists
+	if (0 != *line_start) {
+		if (remove(fname.c_str()) != 0) { 
+			cerr<<"[candidat][saveResults] "<<fname<<": Error deleting file"<<endl; 
+		}
+		if (rename(tmpname.c_str(), fname.c_str()) != 0) {
+			cerr<<"[candidat][saveResults] "<<tmpname<<": Error renaming file"<<endl; 
+		}
+	}
 	cout<<"[SUCCES]...written"<<endl;
 	
 	return false;

@@ -56,7 +56,8 @@ public:
 	bool isNextExp();				// return if there is a next experiment
 	expEnum nextExp();				// return the next experiment to execute
 	//bool saveResults(vector<std::array<msec_t, 3>>* timers, vector<int> * answers);
-	bool saveResults(vector<msec_array_t>* timers, vector<int> * answers, int * seq_start, int * seq_end);
+	bool saveResults(std::vector<msec_array_t> * timers, std::vector<int> * answers, 
+					 std::vector<int> * confidence, int * seq_start, int * seq_end);
 
 
 	
@@ -125,7 +126,8 @@ private:
 	bool saveInfo(); 						// save all initalised informations
 	/* tools, files and directories modifiers */
 	bool seteoe();
-	bool fillcsvfile(vector<msec_array_t>* timers, vector<int> * answers, int * seq_start, int * seq_end);
+	bool fillcsvfile(std::string header, std::vector<std::vector<int>> values, 
+					 int * line_start, int * line_end);
 	expEnum str2expEnum(string eestr);
 	bool copyDir(boost::filesystem::path const & source, boost::filesystem::path const & destination);
 

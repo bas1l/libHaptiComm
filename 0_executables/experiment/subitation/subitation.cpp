@@ -13,7 +13,7 @@
 #include "Candidat.h"
 #include "Experiment.h"
 
-
+void usage();
 bool setOpt(int *argc, char *argv[], map<string, string> *options);
 
 
@@ -22,6 +22,14 @@ int main(int argc, char *argv[])
 	// Options
 	map<string, string> options;
 	setOpt(&argc, argv, &options);
+	if (options.find("firstname")->second == "" || 
+		options.find("lastname")->second == "" || 
+		options.find("seqnumb")->second == "")
+	{
+		usage();
+		return 1;
+	}
+	
 	string firstname(options.find("firstname")->second);
 	string lastname(options.find("lastname")->second);
 	string dirdict(options.find("dirdict")->second);
@@ -86,16 +94,36 @@ int main(int argc, char *argv[])
 	/* get the results */
 	auto timers 	= exp.getTimer();
 	auto answers 	= exp.getAnswer();
+	auto confidence = exp.getConfidence();
 	int start 		= exp.getSeq_start();
 	int end 		= exp.getSeq_end();
 	
 	/* push the results into the corresponding files */
-	c.saveResults(&timers, &answers, &start, &end);
+	std::cout<<"save results:"<<std::endl;
+	c.saveResults(&timers, &answers, &confidence, &start, &end);
 	
 	
     return 0;
 }
 
+
+void usage(){
+	fprintf(stderr,
+			"\n"
+	    "usage: subitation <options>\n"
+            "\n"
+		"[REQUIRED] \n"
+		"  -f <firstname>  first name of the candidat\n"
+		"  -l <lastname>  last name of the candidat\n"
+		"  -s <seq numb>  number ID of the sequence (between 0-60)\n"
+	    "The <options> can be:\n"
+	    "  -c <cfg path>  Parse the specified configuration file\n"
+		"  -d <dir dict>  dictionnary directory\n"
+		"  -e <exp dict>  experiment result directory\n"
+	    "\n");
+	exit(1);
+	
+}
 
 
 /* 
@@ -132,32 +160,32 @@ bool setOpt(int *argc, char *argv[], map<string, string> * options)
 		{
 			case 'c':
 				options->insert( std::pair<string,string>(cfg, optarg));
-				cout << "option -c with value " << optarg << endl;	
+				cout << "option -c with value <" << optarg << ">"<< endl;	
 				break;
 
 			case 'd':
 				options->insert( std::pair<string,string>(dirdict,optarg));
-				cout << "option -d with value " << optarg << endl;				
+				cout << "option -d with value <" << optarg << ">"<< endl;				
 				break;
 				
 			case 'e':
 				options->insert( std::pair<string,string>(direxp,optarg));
-				cout << "option -e with value " << optarg << endl;				
+				cout << "option -e with value <" << optarg << ">"<< endl;				
 				break;
 				
 			case 'f':
 				options->insert( std::pair<string,string>(firstname,optarg));
-				cout << "option -f with value " << optarg << endl;
+				cout << "option -f with value <" << optarg << ">"<< endl;
 				break;
 			
 			case 'l':
 				options->insert( std::pair<string,string>(lastname,optarg));
-				cout << "option -l with value " << optarg << endl;
+				cout << "option -l with value <" << optarg << ">"<< endl;
 				break;
 				
 			case 's':
 				options->insert( std::pair<string,string>(seqnumb,optarg));
-				cout << "option -s with value " << optarg << endl;
+				cout << "option -s with value <" << optarg << ">"<< endl;
 				break;
 				
 			case '?':
