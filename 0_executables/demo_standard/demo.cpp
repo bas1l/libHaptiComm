@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
 
 void generateSentences(std::atomic<bool> & workdone, std::string str_alph)
 {
-    std::string s = "the quick brown fox jumps over the lazy dog";
+    std::string s = "the quick brown fox jumps over the lazy dog.";
     std::string str_prosody = " .";
     std::string str_ponc = "',;:!?-";
 	//printw("alphabet:%s", str_alph.c_str());
@@ -309,9 +309,19 @@ usage()
 	    "usage: demo <options>\n"
             "\n"
 	    "The <options> can be:\n"
-	    "  -h             Print this usage statement\n"
-	    "  -cfg <source>  Parse the specified configuration file\n"
-	    "  -scope <name>  Application scope in the configuration source\n"
+	    "  -h, --help\n"
+		"\tPrint this usage statement\n"
+	    "  -c, --cfg <source>\n"
+		"\tParse the specified configuration file\n"
+	    "  --scope <name>\n"
+		"\tApplication scope in the configuration source\n"
+		"You can set up one of the following no argument options:\n"
+		"  -l, --letter\n"
+		"\tApply instantaneously symbols when a key is pressed.\n"
+		"  -w, --word\n"
+		"\tApply the all symbols when a 'space' appears.\n"
+		"  -s, --sentence\n"
+		"\tApply the all symbols when a 'dot' appears.\n"
 	    "\n"
 	    "A configuration <source> can be one of the following:\n"
 	    "  file.cfg       A configuration file\n"
@@ -327,6 +337,7 @@ usage()
  */
 int setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource, const char *& scope)
 {
+	string help 	 	 = "help";
 	string letter_long 	 = "letter";
 	string word_long 	 = "word";
 	string sentence_long = "sentence";
@@ -335,6 +346,7 @@ int setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource, cons
 	
 	static struct option long_options[] =
 	{
+		{help.c_str(), 			no_argument, NULL, 'h'},
 		{letter_long.c_str(), 	no_argument, NULL, 'l'},
 		{word_long.c_str(),  	no_argument, NULL, 'w'},
 		{sentence_long.c_str(), no_argument, NULL, 's'},
@@ -348,7 +360,7 @@ int setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource, cons
 	
 	*prosody=0;
 	// Detect the end of the options. 
-	while ((c = getopt_long(*argc, argv, "lwscp", long_options, NULL)) != -1)
+	while ((c = getopt_long(*argc, argv, "hlwscp", long_options, NULL)) != -1)
 	{
 		switch (c)
 		{
@@ -367,10 +379,15 @@ int setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource, cons
 			case 'c':
 				cfgSource = optarg;
 				break;
-				
+
 			case 'p':
 				scope = optarg;
 				break;
+				
+			case 'h':
+				usage();
+				return -1;
+				
 			case '?':
 				/* getopt_long already printed an error message. */
 				*prosody =  -1;

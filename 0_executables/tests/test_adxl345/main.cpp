@@ -21,7 +21,7 @@
 #include "adxl345.h"
 
 
-#define NB_ACCS 6
+//#define NB_ACCS 6
 
 int main(int argc, char *argv[])
 {
@@ -30,23 +30,26 @@ int main(int argc, char *argv[])
 	
 	struct timespec tim_model, tim_rem, handled_rem;
 	std::vector<ADXL345> accs;
-	std::vector<int> cs_pins = {26, 6, 13, 24, 23, 25};
+	std::vector<int> cs_pins = {6, 13, 24, 23, 25};
+	//std::vector<int> cs_pins = {26, 6, 13, 24, 23, 25};
 	std::vector<bool> taps;
-	
+	int nb_accs;
 	
 	tim_model.tv_sec = 0;
 	tim_model.tv_nsec = 1*pow(10,6); // msec*10^6
 	tim_rem = tim_model;
-	accs.reserve(NB_ACCS);
-	taps.reserve(NB_ACCS);
-	for (int i=0; i<NB_ACCS; i++)
+	nb_accs = cs_pins.size();
+	accs.reserve(nb_accs);
+	taps.reserve(nb_accs);
+	for (int i=0; i<nb_accs; i++)
 	{
-		std::cout<<"accelerometer["<<i<<"]:\t gpio["<<cs_pins[i]<<"] "<<std::flush;
+		std::cout<<"accelerometer["<<i<<"] "<<std::endl;
+		std::cout<<"\tgpio["<<cs_pins[i]<<"]\t"<<std::flush;
 		accs.push_back(ADXL345());
 		if (!accs[i].spi_open(cs_pins[i])) return 0;
-		else std::cout<<"\t spi_open[OK]"<<std::flush;
+		else std::cout<<"spi_open[OK]\t"<<std::flush;
 		if (!accs[i].configure()) return 0;
-		else std::cout<<"\t configure[OK]"<<std::flush;
+		else std::cout<<"configure[OK]\t"<<std::flush;
 		std::cout<<std::endl;
 		// clean previous taps which have been registered
 		accs[i].int_tap_detected_reg();

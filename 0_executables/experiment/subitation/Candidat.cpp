@@ -117,7 +117,6 @@ bool Candidat::create()
 	clfstream<<lineStr<<endl;
 	clfstream.close();
 
-
 	/* create the candidat directory and corresponding files */
 	string candidatFolder(this->pathDirectory + to_string(this->id));
 	// copy the model folder into the candidate directory
@@ -126,13 +125,12 @@ bool Candidat::create()
 	//this->copyDir(boost::filesystem::path("/home/basil/haptiComm/results/subitation/modelDir"),
 	//		boost::filesystem::path("/home/basil/haptiComm/results/subitation/15"));
 
-
 	/* save all the informations into the infoFile */
 	this->saveInfo();
 
 	cout<<"[candidat] [SUCCESS] Candidate('"<<this->firstname<<' '<<this->lastname 
-	<<"') has been created with its current folder named '" 
-	<<to_string(this->id)<<"'."<<endl;
+			<<"') has been created with its current folder named '" 
+			<<to_string(this->id)<<"'."<<endl;
 
 	return err;
 }
@@ -158,7 +156,7 @@ bool Candidat::loadFromDB(){
 	std::ifstream filein(fileinstr); //File to read from
 	if (!filein)
 	{
-		cerr<<"[candidat][loadFromDB] "<<fileinstr <<": Error opening file"<<endl;
+		cerr<<"[candidat][loadFromDB] "<<fileinstr<<": Error opening file"<<endl;
 		err = true;
 	}
 
@@ -508,7 +506,7 @@ bool Candidat::initexpeOrder(){
 	expeOrder.push_back( std::make_pair(true, BuzzerSpace) );
 	
 	std::random_shuffle(expeOrder.begin(), expeOrder.end());
-	expeOrder.push_back( std::make_pair(true, Calibration) );	// when writing and reading, it will be executed first
+	expeOrder.push_back( std::make_pair(false, Calibration) );	// when writing and reading, it will be executed first
 	return true;
 }
 
@@ -601,82 +599,87 @@ bool Candidat::seteoe()
 bool Candidat::fillcsvfile(std::string header, 
 						   std::vector<std::vector<int>> values,
 						   int * line_start, int * line_end){	
-	int i, j;
-	string expname;
-	string fname, tmpname;
-	std::ofstream mf;
+	// variables
+	std::ofstream f_out;//Tmp file to write to
+	std::ifstream f_in; //File to read from
+	struct stat buffer;
+	string expname, fname, tmpname, line;
+	int ans_idx, cptline, i, j;
+	bool is_new;
 	
+	// initialisation
 	expname = this->expstring(this->nextExp()); // current experiment string
 	fname = this->pathDirectory+to_string(this->id)+"/"+expname+".csv";
 	tmpname = fname+".tmp";
-	
-	// if new file
-	if (0 == *line_start) { 
-		mf.open(fname);
-		if(!mf) { cerr<<"[candidat][saveResults] "<<fname<<": Error opening file"<<endl; }
-		// header
-		mf<<header<<endl;
+	cptline = -1; // remove the header's count, start to -1
+	is_new = (fopen(fname.c_str(), "r"))?false:true; // if new file
+	try {
+		f_out.open(tmpname);
 	}
-	// if already exists
-	else 
-	{
-		std::ifstream f_in; //File to read from
-		string line;
-		int ans_idx, cptline;
-
-		cptline = -1; // remove the header's count, start to -1
-		
-		try {
-			mf.open(tmpname);
-		}
-		catch (std::ifstream::failure e) {
-			std::cerr << "[candidat][saveResults] Exception opening "<<tmpname<<"file\n";
-		}
+	catch (std::ifstream::failure e) {
+		std::cerr << "[candidat][saveResults] Exception opening "<<tmpname<<"file"<<std::endl;
+	}
+	
+	// process
+	if (is_new) { 	// header
+		f_out<<header<<std::endl;
+		cptline++;
+	}
+	else
+	{				// copy from existing file
 		try {
 			f_in.open(fname);
 		}
 		catch (std::ifstream::failure e) {
-			std::cerr << "[candidat][saveResults] Exception opening "<<fname<<"file\n";
+			std::cerr << "[candidat][saveResults] Exception opening "<<fname<<"file"<<std::endl;
 		}
-
 		while(getline(f_in, line)) { // fill the tmp file up to line_start lines
+			f_out<<line<<std::endl;
 			cptline++;
 			if (cptline == *line_start){
 				break;
 			}
-			mf<<line<<endl;
-		}
-		f_in.close();
-		if (cptline != *line_start) // if gap between previous_number_sequences and seq_start
-		{
-			for (i=cptline; i!=*line_start; ++i) {
-				mf<<to_string(i)<<",-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1"<<endl;
-			}
 		}
 	}
-	cout<<"[candidat][saveResults] writing results into: "<<fname<<endl;
+	while (cptline<*line_start) { // possible: gap between prev_nb_seq and seq_start
+		f_out<<to_string(cptline++)<<",-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1"<<std::endl;
+	}
 	
 	// for each lines, 
 	for (i=0; i!=values.size(); ++i) {
+		// sequence id
+		f_out<<to_string(values[i][0]);
 		// for each values,
-		mf<<to_string(values[i][0])<<endl;
 		for (j=1; j<values[i].size(); ++j) {
-			mf<<","<<to_string(values[i][j]);
+			f_out<<","<<to_string(values[i][j]);
+		}
+		f_out<<std::endl;
+	}
+	
+	// if there are lines after the ones freshly added
+	while(getline(f_in, line)) {
+		if (cptline<*line_end){ // skip the line
+			cptline++;
+		}
+		else
+		{
+			f_out<<line<<std::endl;
 		}
 	}
-	// close the current file
-	mf.close();
-
-	// if already exists
-	if (0 != *line_start) {
+	
+	// close the file streams and
+	// copy to main file and remove the tmp file
+	f_out.close();
+	if (!is_new) {
+		f_in.close();
 		if (remove(fname.c_str()) != 0) { 
-			cerr<<"[candidat][saveResults] "<<fname<<": Error deleting file"<<endl; 
-		}
-		if (rename(tmpname.c_str(), fname.c_str()) != 0) {
-			cerr<<"[candidat][saveResults] "<<tmpname<<": Error renaming file"<<endl; 
+			std::cerr<<"[candidat][saveResults] "<<fname<<": Error deleting file"<<std::endl; 
 		}
 	}
-	cout<<"[SUCCES]...written"<<endl;
+	if (rename(tmpname.c_str(), fname.c_str()) != 0) {
+		std::cerr<<"[candidat][saveResults] "<<tmpname<<": Error renaming file"<<std::endl; 
+	}
+	std::cout<<"[candidat][saveResults] Results in: "<<fname<<"...[SUCCES]"<<std::endl;
 	
 	return false;
 }
