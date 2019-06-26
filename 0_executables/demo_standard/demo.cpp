@@ -15,6 +15,7 @@
 #include <thread>
 #include <unistd.h>
 
+#include "ctype.h"
 // hapticomm headers
 #include "HaptiCommConfiguration.h"
 #include "waveform.h"
@@ -29,7 +30,7 @@
 #define PROSODY_SENTENCE 3
 
 #define PROSODY_LETTER_DELAY 	20
-#define PROSODY_WORD_DELAY   	100
+#define PROSODY_WORD_DELAY   	150
 #define PROSODY_SENTENCE_DELAY  500
 
 std::mutex m_mutex;
@@ -144,7 +145,7 @@ int main(int argc, char *argv[])
 
 void generateSentences(std::atomic<bool> & workdone, std::string str_alph)
 {
-    std::string s = "the quick brown fox jumps over the lazy dog.";
+    std::string s = "the quick brown fox jumps over the lazy dog";
     std::string str_prosody = " .";
     std::string str_ponc = "',;:!?-";
 	//printw("alphabet:%s", str_alph.c_str());
@@ -179,7 +180,7 @@ void generateSentences(std::atomic<bool> & workdone, std::string str_alph)
                 //printw("\n<Key not implemented> Need to Exit ? Press '*'.\n");
             }
           }
-    }while((ch = getch()) != '*');
+    }while((ch = tolower(getch())) != '*');
     
     
     printw("\tWHC::create_sentences::End\n");

@@ -269,10 +269,26 @@ bool Candidat::saveResults(std::vector<msec_array_t> * timers,
 	int l, t;
 	int x=0;
 	
+	nb_columns = 0;
+	// header of the CSV file
+	header = "id_seq";
+	header += ",actuator1,actuator2,actuator3,actuator4,actuator5,actuator6";
+	header += ",before_stimuli(ms),after_stimuli(ms),time_answer(ms)";
+	if (answers->size() != 0)
+	{
+		header += ",value_answer(0:6)";
+		nb_columns++;
+	}
+	if (confidence->size() != 0)
+	{
+		header += ",confidence(0:4)";
+		nb_columns++;
+	}
 	nb_timers = (timers->at(0)).size();
-	nb_columns = this->seq[0].size() + nb_timers + 3; // +3 for ID sequence, anwser, and confidence slots
+	nb_columns += this->seq[0].size() + nb_timers + 1; // +3 for ID sequence, anwser, and confidence slots
 	nb_lines = timers->size();
 	results.resize(nb_lines, std::vector<int>(nb_columns));
+	
 	// for each lines
 	for (l=0; l<nb_lines; l++)
 	{
@@ -287,24 +303,78 @@ bool Candidat::saveResults(std::vector<msec_array_t> * timers,
 		for (t=0; t<nb_timers; t++, curr_item++)
 		{
 			results[l][curr_item] = (timers->at(l))[t].count();
-		}		// answer
-		results[l][curr_item++] = answers->at(l);
+		}
+		// answer
+		if (l < answers->size())
+		{
+			results[l][curr_item++] = answers->at(l);
+		}
 		// confidence
-		results[l][curr_item] = 0;//confidence->at(l);
+		if (l < confidence->size())
+		{
+			results[l][curr_item++] = confidence->at(l);
+		}
 	}
-
-	// header of the CSV file
-	header = "id_seq,";
-	header += "actuator1,actuator2,actuator3,actuator4,actuator5,actuator6,";
-	header += "before_stimuli(ms),after_stimuli(ms),time_answer(ms),";
-	header += "value_answer(0:6),";
-	header += "confidence(0:3)";
 	
 	/* save the results in a csv file */
 	fillcsvfile(header, results, seq_start, seq_end);
 
 	/* if seq_end = max, the experiment has been done */
 	if (this->seq.size() == *seq_end)
+	{
+		return seteoe();
+	}
+
+	return false;
+}
+
+
+
+bool Candidat::saveResultsCalibrationERM(std::vector<msec_array_t> * timers, 
+						   std::vector<int> * answers, 
+						   std::vector<int> * confidence, 
+						   std::vector<std::vector<int>> * seqq, 
+						   std::vector<int> * identificationWAV, 
+						   int * seq_start, int * seq_end){
+
+	std::vector<std::vector<int>> results;
+	std::string header;
+	int nb_lines, nb_columns, nb_timers, curr_item;
+	int l, t;
+	int x=0;
+	
+	nb_timers = (timers->at(0)).size();
+	nb_columns = (seqq->at(0)).size() + nb_timers + 4; // +3 for ID sequence, anwser, confidence and identificationWAV slots
+	nb_lines = timers->size();
+	results.resize(nb_lines, std::vector<int>(nb_columns));
+	// for each lines
+	for (l=0; l<nb_lines; l++, curr_item=0)
+	{
+		// id of the sequence
+		results[l][curr_item++] = l;
+		// value of the sequence
+		for (t=0; t<(seqq->at(l)).size(); ++t) {
+			results[l][curr_item++] = (seqq->at(l))[t];
+		}
+		// for each timers
+		for (t=0; t<nb_timers; t++, curr_item++)
+		{
+			results[l][curr_item] = (timers->at(l))[t].count();
+		}
+		// answer
+		results[l][curr_item++] = answers->at(l);
+		// confidence
+		results[l][curr_item++] = confidence->at(l);
+		// wav identification for 50, 100 or 150/200ms duration ERM
+		results[l][curr_item] = identificationWAV->at(l);
+	}
+	
+	
+	/* save the results in a csv file */
+	fillcsvfile(header, results, seq_start, seq_end);
+
+	/* if seq_end = max, the experiment has been done */
+	if (seqq->size() == *seq_end)
 	{
 		return seteoe();
 	}
@@ -506,7 +576,10 @@ bool Candidat::initexpeOrder(){
 	expeOrder.push_back( std::make_pair(true, BuzzerSpace) );
 	
 	std::random_shuffle(expeOrder.begin(), expeOrder.end());
-	expeOrder.push_back( std::make_pair(false, Calibration) );	// when writing and reading, it will be executed first
+	
+	expeOrder.push_back( std::make_pair(false, CalibrationERM) );
+	expeOrder.push_back( std::make_pair(false, CalibrationWord) );	// when writing and reading, it will be executed first
+	
 	return true;
 }
 
@@ -626,7 +699,7 @@ bool Candidat::fillcsvfile(std::string header,
 		cptline++;
 	}
 	else
-	{				// copy from existing file
+	{ // copy from existing file
 		try {
 			f_in.open(fname);
 		}
@@ -649,11 +722,14 @@ bool Candidat::fillcsvfile(std::string header,
 	for (i=0; i!=values.size(); ++i) {
 		// sequence id
 		f_out<<to_string(values[i][0]);
+		std::cout<<"["<<i<<"]"<<values[i][0]<<std::flush;
 		// for each values,
 		for (j=1; j<values[i].size(); ++j) {
 			f_out<<","<<to_string(values[i][j]);
+			std::cout<<","<<values[i][j]<<std::flush;
 		}
 		f_out<<std::endl;
+		std::cout<<std::endl;
 	}
 	
 	// if there are lines after the ones freshly added
@@ -701,8 +777,10 @@ string Candidat::expstring(expEnum ee)
 		ret = "BuzzerSpace";
 	else if(ee == BuzzerTemp)
 		ret = "BuzzerTemp";
-	else if(ee == Calibration)
-		ret = "Calibration";
+	else if(ee == CalibrationWord)
+		ret = "CalibrationWord";
+	else if(ee == CalibrationERM)
+		ret = "CalibrationERM";
 	else
 		ret = "";
 	
@@ -738,9 +816,13 @@ expEnum Candidat::str2expEnum(string eestr)
 	{
 		ee = BuzzerTemp;
 	}
-	else if (eestr.compare("Calibration") == 0)
+	else if (eestr.compare("CalibrationWord") == 0)
 	{
-		ee = Calibration;
+		ee = CalibrationWord;
+	}
+	else if (eestr.compare("CalibrationERM") == 0)
+	{
+		ee = CalibrationERM;
 	}
 	else
 	{

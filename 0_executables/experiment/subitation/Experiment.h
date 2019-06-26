@@ -6,7 +6,7 @@
  */
 
 /* STANDARD LIBRARIES */
-#include <algorithm>			// for max_element, transform
+#include <algorithm>			// for max_element, transform, random_shuffle
 #include <atomic>				
 #include <array> 				// std::array
 #include <chrono> 				// std::clock, std::chrono::high_resolution_clock::now
@@ -94,6 +94,8 @@ public:
 	vector<msec_array_t> getTimer();
 	vector<int> 		 getAnswer();
 	vector<int> 		 getConfidence();
+	vector<vector<int>>  getSeq();
+	vector<int> 		 getERMCalibrationID();
 	int getSeq_start();
 	int getSeq_end();
 	
@@ -143,6 +145,7 @@ private:
 	vector<msec_array_t> 	vvtimer;
 	vector<int> 			vanswer;
 	vector<int> 			vconfidence;
+	vector<int> 			vermCalibrationID;
 	AudioFile<double> * 	af;
 	
 	
@@ -153,7 +156,8 @@ private:
 	void record_from_microphone();
 	void executeStimuli();
 
-	bool executeCalibration(waveformLetter values);	
+	bool executeCalibrationWord(waveformLetter values);
+	bool executeCalibrationERM(std::vector<waveformLetter> vvalues);
 	bool executeActuatorSpace(waveformLetter values);
 	bool executeActuatorTemp(waveformLetter values);
 	bool executeF();
@@ -172,6 +176,7 @@ private:
 	
 	/* c. answers related */
 	bool writeAnswer(int * answeri);
+	bool writeConfidence(int * confidencei);
 	void fillAudioBuffer(AudioFile<double>::AudioBuffer buffer);
 	void save_audio(int id_seq);
 		

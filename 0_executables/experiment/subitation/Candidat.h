@@ -39,7 +39,7 @@ using namespace boost::filesystem;
 enum expEnum {	BrailleDevSpace=10, BrailleDevTemp=11,
 				FingersSpace=20, 	FingersTemp=21,
 				BuzzerSpace=30, 	BuzzerTemp=31,
-				Calibration=40};
+				CalibrationWord=40, CalibrationERM=50};
 
 typedef std::chrono::time_point<std::chrono::high_resolution_clock> highresclock_t;
 typedef std::chrono::duration<double, milli> msec_t;
@@ -58,6 +58,10 @@ public:
 	//bool saveResults(vector<std::array<msec_t, 3>>* timers, vector<int> * answers);
 	bool saveResults(std::vector<msec_array_t> * timers, std::vector<int> * answers, 
 					 std::vector<int> * confidence, int * seq_start, int * seq_end);
+	bool saveResultsCalibrationERM(std::vector<msec_array_t> * timers, std::vector<int> * answers, 
+						   std::vector<int> * confidence, 
+						   std::vector<std::vector<int>> * seq, std::vector<int> * identificationWAV, 
+						   int * seq_start, int * seq_end);
 
 
 	

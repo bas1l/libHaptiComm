@@ -95,13 +95,23 @@ int main(int argc, char *argv[])
 	auto timers 	= exp.getTimer();
 	auto answers 	= exp.getAnswer();
 	auto confidence = exp.getConfidence();
+	auto seq 		= exp.getSeq();
+	auto ERMcalib 	= exp.getERMCalibrationID();
+	
 	int start 		= exp.getSeq_start();
 	int end 		= exp.getSeq_end();
 	
 	/* push the results into the corresponding files */
 	std::cout<<"save results:"<<std::endl;
-	c.saveResults(&timers, &answers, &confidence, &start, &end);
-	
+	if (ERMcalib.size() == 0)
+	{
+		c.saveResults(&timers, &answers, &confidence, &start, &end);
+	}
+	else
+	{
+		c.saveResultsCalibrationERM(&timers, &answers, &confidence, 
+									&seq, &ERMcalib, &start, &end);
+	}
 	
     return 0;
 }
