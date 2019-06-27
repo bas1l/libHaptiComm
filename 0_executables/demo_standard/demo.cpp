@@ -46,9 +46,9 @@ static void usage();
 
 bool signal4keypressed();
 void copySentences(std::deque<char> * letters);
-bool addto_sentence(char ch);
+void addto_sentence(char ch);
 bool is_sentencesEmpty();
-bool jobdone();
+void jobdone();
 bool is_jobdone();
 
 
@@ -82,22 +82,22 @@ int main(int argc, char *argv[])
 	std::cout<<"[initialisation][options] prosody=";
 	switch (prosody)
 	{
-		case PROSODY_WITHOUT:
-			std::cout<<"PROSODY_WITHOUT"<<std::endl;
-			break;
-		case PROSODY_LETTER:
-			std::cout<<"PROSODY_LETTER"<<std::endl;
-			break;
-		case PROSODY_WORD:
-			std::cout<<"PROSODY_WORD"<<std::endl;
-			break;
-		case PROSODY_SENTENCE:
-			std::cout<<"PROSODY_SENTENCE"<<std::endl;
-			break;
+	    case PROSODY_WITHOUT:
+		std::cout<<"PROSODY_WITHOUT"<<std::endl;
+		break;
+	    case PROSODY_LETTER:
+		std::cout<<"PROSODY_LETTER"<<std::endl;
+		break;
+	    case PROSODY_WORD:
+		std::cout<<"PROSODY_WORD"<<std::endl;
+		break;
+	    case PROSODY_SENTENCE:
+		std::cout<<"PROSODY_SENTENCE"<<std::endl;
+		break;
 	}
 	std::cout<<"[initialisation][options] cfgSource="<<cfgSource<<std::endl;
-    std::cout<<"[initialisation] ...done."<<std::endl;
-    /* SETUP ENVIRONEMENT
+	std::cout<<"[initialisation] ...done."<<std::endl;
+	/* SETUP ENVIRONEMENT
 	 * printw and timer
 	 *
 	*/
@@ -151,13 +151,15 @@ void generateSentences(std::atomic<bool> & workdone, std::string str_alph)
 	//printw("alphabet:%s", str_alph.c_str());
     
     int ch;
-    printw("You can start to write a letter, a word, a sentence \n --- When you are done, press '*' to Exit ---\n");
+    
+    printw("You can start to write a letter, a word, a sentence \n");
+    printw(" --- When you are done, press '*' to Exit ---\n");
     do{
         if (ch != ERR)
         {
             // if part of the alphabet
             if (   str_alph.find(ch) != std::string::npos ||
-				str_prosody.find(ch) != std::string::npos)
+		   str_prosody.find(ch) != std::string::npos)
             {
                 printw("%c", ch);
                 addto_sentence(ch);
@@ -212,92 +214,92 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, int prosody)
     // thread, one by one, and play them consecutively.
     while(!is_jobdone())
     {
-		signal4keypressed();
+	signal4keypressed();
     	copySentences(&letters);
     	
         // if last char is a space, then a word is finished
-        if ((letters.front() == '+') || (letters.front() == '-'))
+	if ((letters.front() == '+') || (letters.front() == '-'))
         {
             letters.pop_front();
             continue;
         }
         else if (prosody == PROSODY_SENTENCE&& letters.end() != std::find(letters.begin(), letters.end(), '.'))
         {
-        	while (!letters.empty())
-			{
-				if (letters.front() == ' ')
-				{
-					letters.pop_front();
-    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_WORD_DELAY));
-				}
-				else if (letters.front() == '.')
-				{
-					letters.pop_front();
-    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_SENTENCE_DELAY));
-				}
-				else
-				{
-					values = alph->getl(letters.front());
-					int ovr = ad.execute_selective_trajectory(values, durationRefresh_ns);
-					if (ovr)
-					{
-						overruns += ovr;
-					}
-					values.clear();
-					letters.pop_front();
-    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
-				}
-			}
+	    while (!letters.empty())
+	    {
+		if (letters.front() == ' ')
+		{
+		    letters.pop_front();
+		    std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_WORD_DELAY));
+		}
+		else if (letters.front() == '.')
+		{
+		    letters.pop_front();
+		    std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_SENTENCE_DELAY));
+		}
+		else
+		{
+		    values = alph->getl(letters.front());
+		    int ovr = ad.execute_selective_trajectory(values, durationRefresh_ns);
+		    if (ovr)
+		    {
+			overruns += ovr;
+		    }
+		    values.clear();
+		    letters.pop_front();
+		    std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
+		}
+	    }
         }
         else if (prosody == PROSODY_WORD && letters.end() != std::find(letters.begin(), letters.end(), ' '))
         {
-        	while (!letters.empty())
-			{
-        		if (letters.front() == ' ')
-        		{
-    				letters.pop_front();
-    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_WORD_DELAY));
-        		}
-        		else if (letters.front() == '.')
-        		{
-    				letters.pop_front();
-        		}
-        		else
-        		{
-    				values = alph->getl(letters.front());
-    				int ovr = ad.execute_selective_trajectory(values, durationRefresh_ns);
-    				if (ovr)
-    				{
-    					overruns += ovr;
-    				}
-    				values.clear();
-    				letters.pop_front();
-    				std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
-        		}
-			}
-        }
-		else if (prosody == PROSODY_LETTER || prosody == PROSODY_WITHOUT)
+	    while (!letters.empty())
+	    {
+		if (letters.front() == ' ')
 		{
-			if (letters.front() == ' ' || letters.front() == '.')
-			{
-				letters.pop_front();
-			}
-			else
-			{
-				while (!letters.empty())
-				{
-					values = alph->getl(letters.front());
-					int ovr = ad.execute_selective_trajectory(values, durationRefresh_ns);
-					if (ovr)
-					{
-						overruns += ovr;
-					}
-					values.clear();
-		            letters.pop_front();
-		            std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
-				}
-			}
+		    letters.pop_front();
+		    std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_WORD_DELAY));
 		}
+		else if (letters.front() == '.')
+		{
+		    letters.pop_front();
+		}
+		else
+		{
+		    values = alph->getl(letters.front());
+		    int ovr = ad.execute_selective_trajectory(values, durationRefresh_ns);
+		    if (ovr)
+		    {
+			overruns += ovr;
+		    }
+		    values.clear();
+		    letters.pop_front();
+		    std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
+		}
+	    }
+        }
+	else if (prosody == PROSODY_LETTER || prosody == PROSODY_WITHOUT)
+	{
+	    if (letters.front() == ' ' || letters.front() == '.')
+	    {
+		letters.pop_front();
+	    }
+	    else
+	    {
+		while (!letters.empty())
+		{
+		    values = alph->getl(letters.front());
+		    int ovr = ad.execute_selective_trajectory(values, durationRefresh_ns);
+		    if (ovr)
+		    {
+			overruns += ovr;
+		    }
+		    values.clear();
+		    letters.pop_front();
+		    std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
+		}
+	    }
+	}
      }
 }
 
@@ -347,7 +349,7 @@ int setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource, cons
 	
 	static struct option long_options[] =
 	{
-		{help.c_str(), 			no_argument, NULL, 'h'},
+		{help.c_str(), 		no_argument, NULL, 'h'},
 		{letter_long.c_str(), 	no_argument, NULL, 'l'},
 		{word_long.c_str(),  	no_argument, NULL, 'w'},
 		{sentence_long.c_str(), no_argument, NULL, 's'},
@@ -363,40 +365,40 @@ int setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource, cons
 	// Detect the end of the options. 
 	while ((c = getopt_long(*argc, argv, "hlwscp", long_options, NULL)) != -1)
 	{
-		switch (c)
-		{
-			case 'l':
-				*prosody = PROSODY_LETTER;
-				break;
+	    switch (c)
+	    {
+		case 'l':
+		    *prosody = PROSODY_LETTER;
+		    break;
 
-			case 'w':
-				*prosody =  PROSODY_WORD;
-				break;
-				
-			case 's':
-				*prosody =  PROSODY_SENTENCE;
-				break;
+		case 'w':
+		    *prosody =  PROSODY_WORD;
+		    break;
+		    
+		case 's':
+		    *prosody =  PROSODY_SENTENCE;
+		    break;
 
-			case 'c':
-				cfgSource = optarg;
-				break;
+		case 'c':
+		    cfgSource = optarg;
+		    break;
 
-			case 'p':
-				scope = optarg;
-				break;
-				
-			case 'h':
-				usage();
-				return -1;
-				
-			case '?':
-				/* getopt_long already printed an error message. */
-				*prosody =  -1;
-				break;
-			
-			default:
-				abort();
-		}
+		case 'p':
+		    scope = optarg;
+		    break;
+		    
+		case 'h':
+		    usage();
+		    return -1;
+		    
+		case '?':
+		    /* getopt_long already printed an error message. */
+		    *prosody =  -1;
+		    break;
+	    
+		default:
+		    abort();
+	    }
 	}
 	
 	
@@ -407,7 +409,7 @@ int setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource, cons
 /*
  * SHARED VARIABLES MODIFIERS
  */
-bool addto_sentence(char ch)
+void addto_sentence(char ch)
 {
 	std::lock_guard<std::mutex> lk(m_mutex); // locker to access shared variables
 	sentences.push(ch);
@@ -426,7 +428,7 @@ void copySentences(std::deque<char> * letters)
 	m_condVar.notify_one(); // waiting thread is notified 
 }
 
-bool jobdone()
+void jobdone()
 {
 	std::unique_lock<std::mutex> mlock(m_mutex);
 	workdone = true;
