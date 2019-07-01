@@ -89,7 +89,7 @@ bool Experiment::create()
 	this->af_i = 0;										// iterator for audioFile
 	this->af_max = rate_mic * 10;						// size of audioFile buffer
 	this->af->setAudioBufferSize(1, this->af_max);		// init audioFile buffer
-	this->af->setSampleRate(	rate_mic);				// set sample rate
+	this->af->setSampleRate(rate_mic);				// set sample rate
 	this->af->setBitDepth(16);							// set bit depth
 	
 	// thread and shared memory's variables initialisation for voice recording
@@ -243,7 +243,7 @@ void Experiment::record_from_microphone()
 				//std::cout<<","<<buffer[0][this->af_i-1]<<std::flush;
 			}
 		}
-		std::cout<<"[record_from_microphone] Before, Zeros = "<<z<<"/"<<sizeBuf*i<<std::endl;
+		//std::cout<<"[record_from_microphone] Before, Zeros = "<<z<<"/"<<sizeBuf*i<<std::endl;
 		z=0;
 		for (ii=0; ii<buffer[0].size();ii++)
 		{
@@ -252,7 +252,7 @@ void Experiment::record_from_microphone()
 					z++;
 				}
 		}
-		std::cout<<"[record_from_microphone] Buffer after resize, before transform, Zeros = "<<z<<"/"<<sizeBuf*i<<std::endl;
+		//std::cout<<"[record_from_microphone] Buffer after resize, before transform, Zeros = "<<z<<"/"<<sizeBuf*i<<std::endl;
 		std::transform(buffer[0].begin(), buffer[0].end(), buffer[0].begin(), 
 					   std::bind(std::divides<double>(), std::placeholders::_1, SHRT_MAX));
 		z=0;
@@ -263,7 +263,7 @@ void Experiment::record_from_microphone()
 					z++;
 				}
 		}
-		std::cout<<"[record_from_microphone] Buffer after transform, Zeros = "<<z<<"/"<<sizeBuf*i<<std::endl;
+		//std::cout<<"[record_from_microphone] Buffer after transform, Zeros = "<<z<<"/"<<sizeBuf*i<<std::endl;
 			
 		fillAudioBuffer(buffer);										// fill Audiobuffer with tmp buffer 
 	}
@@ -312,10 +312,14 @@ void Experiment::executeStimuli()
     	values = alph->getl(ERMActuatorletter);
         executeActuatorTemp(values);
     }
-	else if (FingersSpace == this->expToExec || FingersTemp == this->expToExec) // FINGERS SPACE AND TEMPORAL
+	else if (FingersSpace == this->expToExec) // FINGERS SPACE AND TEMPORAL
 	{
-		executeF();
+		executeFingerSpace();
     }
+    else if (FingersTemp == this->expToExec)
+    {
+		std::cout<<"[experiment][execute] Experiment<"<<to_string(expToExec)<<"> not available yet."<<std::endl;
+	}
 	else if (CalibrationWord == this->expToExec)					// TR WORDS CALIBRATION
 	{
     	values = alph->getl(haptiCommActuatorletter);
@@ -488,7 +492,7 @@ bool Experiment::executeCalibrationERM(std::vector<waveformLetter> vvalues)
 	cin.get();
 	for(i=0; i<this->seq.size(); i++) 			// for the sequence i
 	{
-		if ( i==this->seq.size()/3 || i==2*(this->seq.size()/3) )
+		if ( i==this->seq.size()/4 || i==2*(this->seq.size()/4) || i==3*(this->seq.size()/4) )
 		{
 			std::cout<<"------ BREAK IS NEEDED. Press [ENTER] to start again:"<<std::endl;
 			cin.get();
@@ -524,6 +528,72 @@ bool Experiment::executeCalibrationERM(std::vector<waveformLetter> vvalues)
 		vvtimer.push_back(vhrc);		// save timers
 		vanswer.push_back(answeri);		// save answer
 		vconfidence.push_back(confidencei); // save confidence
+	}
+	
+	this->seq_end = i;
+	stop_experiment();
+	return false;
+}
+
+bool Experiment::executeFingerSpace()
+{	
+	using namespace std::this_thread;
+	using namespace std::chrono;
+	std::cout<<"[experiment][executeActuator] start..."<<std::endl;
+	// environmental variables
+	waveformLetter	valuestmp;
+	bool 			rect;
+	int 			i, overruns;
+	/* output variables */
+	msec_array_t 	vhrc;
+	msec_array_t 	timerDebug;
+	int 			answeri, confidencei;
+	
+	rect 		= false;
+	overruns 	= 0;
+	i 			= 0;
+	
+	/* work */
+	sleep_for(milliseconds(50)); // let some time to open the mic
+	std::cout<<"+----------------------------------------------+"<<std::endl;
+	std::cout<<"+...                                        ...+"<<std::endl;
+	std::cout<<"     Experiment: \t"<<c->expstring(this->expToExec)<<std::endl;
+	std::cout<<"+    Press [ENTER] to start the experiment     +"<<std::endl;
+	std::cout<<"+...                                        ...+"<<std::endl;
+	std::cout<<"+----------------------------------------------+"<<std::endl;
+	cin.get();
+	for(i=this->seq_start; i<this->seq.size(); i++) 			// for the sequence i
+	{
+		// initialisation
+		std::cout<<std::endl<<"[main] New sequence: ["<<i<<"/"<<this->seq.size()<<"]"<<std::endl;
+		//valuestmp = setupWaveformSpace(&i, values, &vhrc);			// set up the waveform corresponding to the sequence
+		this->c_start = chrono::high_resolution_clock::now(); 		// https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
+		randomWaiting();											// random waiting time to avoir any adapting rythm behavior during the exp
+		
+		// work
+		start_recording(); 											// start to record from microphone
+		vhrc[0] = nowLocal(this->c_start);							// get timing before stimuli
+		std::cout<<"[ACTUATOR] timer since start="<<vhrc[0].count()<<" ms"<<std::endl;
+		overruns += this->ad->execute_selective_trajectory(valuestmp, this->period_spi_ns); // execute the sequence
+		this->ad->execute_trajectory(this->alph->getneutral(), this->period_spi_ns);		// all actuators to rest (security)
+		vhrc[1] = nowLocal(this->c_start);							// get timing after stimuli
+		sleep_for(milliseconds(1));	// let some time to record the mic
+		rect = writeAnswer(&answeri);								// write the answer given by the participant
+		sleep_for(milliseconds(1000));								// let some time to record the mic
+		stop_recording(); 											// stop to record from microphone
+		
+		// store and check the work
+		if (rect) 													// if 's' answer, exit
+		{
+			std::cout<<"[EXIT] The experiment will be saved to i="<<i-1<<"/"<<this->seq.size()<<std::endl;
+			break; // go to save
+		}
+		writeConfidence(&confidencei);
+		
+		save_audio(i);					// save audio file
+		vvtimer.push_back(vhrc);		// save timers
+		vanswer.push_back(answeri);		// save answer
+		vconfidence.push_back(confidencei); // save answer
 	}
 	
 	this->seq_end = i;
@@ -599,6 +669,7 @@ bool Experiment::executeActuatorSpace(waveformLetter values)
 }
 
 
+
 bool Experiment::executeActuatorTemp(waveformLetter values)
 {
 	using namespace std::this_thread;
@@ -671,10 +742,6 @@ bool Experiment::executeActuatorTemp(waveformLetter values)
 	return false;
 }
 
-bool Experiment::executeF(){
-	
-    return false;
-}
 
 waveformLetter Experiment::setupWaveformSpace(int * currSeq, waveformLetter values_copy, msec_array_t * vhrc)
 {

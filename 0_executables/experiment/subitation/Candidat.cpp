@@ -343,8 +343,28 @@ bool Candidat::saveResultsCalibrationERM(std::vector<msec_array_t> * timers,
 	int l, t;
 	int x=0;
 	
+	// header of the CSV file
+	header = "id_seq";
+	header += ",actuator1,actuator2,actuator3,actuator4,actuator5,actuator6";
+	header += ",before_stimuli(ms),after_stimuli(ms),time_answer(ms)";
+	if (answers->size() != 0)
+	{
+		header += ",value_answer(0:6)";
+		nb_columns++;
+	}
+	if (confidence->size() != 0)
+	{
+		header += ",confidence(0:4)";
+		nb_columns++;
+	}
+	if (identificationWAV->size() != 0)
+	{
+		header += ",identificationWAV";
+		nb_columns++;
+	}
+	
 	nb_timers = (timers->at(0)).size();
-	nb_columns = (seqq->at(0)).size() + nb_timers + 4; // +3 for ID sequence, anwser, confidence and identificationWAV slots
+	nb_columns += (seqq->at(0)).size() + nb_timers + 1; // +1 for ID sequence slots
 	nb_lines = timers->size();
 	results.resize(nb_lines, std::vector<int>(nb_columns));
 	// for each lines
@@ -357,9 +377,9 @@ bool Candidat::saveResultsCalibrationERM(std::vector<msec_array_t> * timers,
 			results[l][curr_item++] = (seqq->at(l))[t];
 		}
 		// for each timers
-		for (t=0; t<nb_timers; t++, curr_item++)
+		for (t=0; t<nb_timers; ++t)
 		{
-			results[l][curr_item] = (timers->at(l))[t].count();
+			results[l][curr_item++] = (timers->at(l))[t].count();
 		}
 		// answer
 		results[l][curr_item++] = answers->at(l);

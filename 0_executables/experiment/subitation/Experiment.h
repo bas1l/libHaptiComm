@@ -158,9 +158,11 @@ private:
 
 	bool executeCalibrationWord(waveformLetter values);
 	bool executeCalibrationERM(std::vector<waveformLetter> vvalues);
+	
+	bool executeFingerSpace();
 	bool executeActuatorSpace(waveformLetter values);
 	bool executeActuatorTemp(waveformLetter values);
-	bool executeF();
+	
 	waveformLetter  setupWaveformSpace(int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
 	waveformLetter  setupWaveformTemp( int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
 	void initactid4temp(); 
