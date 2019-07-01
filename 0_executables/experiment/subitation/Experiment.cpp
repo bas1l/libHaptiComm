@@ -287,7 +287,7 @@ void Experiment::executeStimuli()
     this->ad->execute_trajectory(alph->getneutral(), this->period_spi_ns); // reset to 0 the actuators
     haptiCommActuatorletter = '1';	// configuration file's value for the hapticomm actuators
     ERMActuatorletter 		= '2';	// configuration file's value for the ERM actuators
-	ERMCalibrationLetter[0] = '2';
+	ERMCalibrationLetter[0] = '5';
 	ERMCalibrationLetter[1] = '3';
 	ERMCalibrationLetter[2] = '4';
 	
