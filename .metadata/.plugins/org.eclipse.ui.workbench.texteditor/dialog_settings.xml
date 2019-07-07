@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item value="false" key="isRegEx"/>
+		<item value="signal4recording" key="selection"/>
+		<item value="false" key="casesensitive"/>
+		<item value="false" key="incremental"/>
+		<item value="true" key="wrap"/>
+		<item value="false" key="wholeword"/>
+		<list key="findhistory">
+			<item value="signal4recording"/>
+			<item value="save_audio"/>
+			<item value="save_recording"/>
+			<item value="is record"/>
+			<item value="rectifyAnswer"/>
+			<item value="wait"/>
+			<item value="start_recording"/>
+			<item value="[record_from_microphone]"/>
+		</list>
+		<list key="replacehistory">
+			<item value="[thread]"/>
+			<item value="adBuf"/>
+			<item value="dispTimers"/>
+			<item value="str2num"/>
+			<item value=""/>
+			<item value="Experiment"/>
+		</list>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
+		<item value="505" key="DIALOG_WIDTH"/>
+		<item value="1|Segoe UI|13.5|0|WINDOWS|1|-27|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="693" key="DIALOG_HEIGHT"/>
+		<item value="1630" key="DIALOG_X_ORIGIN"/>
+		<item value="556" key="DIALOG_Y_ORIGIN"/>
+	</section>
+</section>

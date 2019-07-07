@@ -18,16 +18,13 @@ AD5383::AD5383() : _spi_fd(0) {
     {
         _data_neutral[i] = AD5383_DEFAULT_NEUTRAL;
     }
-
-    memset(&_ioc_xfer, 0, sizeof(_ioc_xfer));
-    _ioc_xfer.tx_buf = (unsigned long)_out_buffer;
-    _ioc_xfer.len = 3;
-    _ioc_xfer.rx_buf = (unsigned long)_in_buffer;
 }
 
-AD5383::~AD5383() {}
 
-
+AD5383::~AD5383() 
+{
+	spi_close();
+}
 
 
 void AD5383::configure() {
@@ -41,43 +38,43 @@ void AD5383::configure() {
 void AD5383::set_channel_properties(uint8_t channel_id, uint16_t channel_neutral_value) {
     _data_neutral[channel_id] = channel_neutral_value;
 
-    spi_xfer(AD5383_REG_A,AD5383_WRITE,channel_id,AD5383_REG_OFFSET,AD5383_DEFAULT_OFFSET);
-    spi_xfer(AD5383_REG_A,AD5383_WRITE,channel_id,AD5383_REG_GAIN,AD5383_DEFAULT_GAIN);
-    spi_xfer(AD5383_REG_A,AD5383_WRITE,channel_id,AD5383_REG_DATA,channel_neutral_value);
+    spi_xfer(AD5383_REG_A, AD5383_WRITE, channel_id, AD5383_REG_OFFSET,  AD5383_DEFAULT_OFFSET);
+    spi_xfer(AD5383_REG_A, AD5383_WRITE, channel_id, AD5383_REG_GAIN,	AD5383_DEFAULT_GAIN);
+    spi_xfer(AD5383_REG_A, AD5383_WRITE, channel_id, AD5383_REG_DATA,	channel_neutral_value);
 }
 
 
 bool AD5383::spi_open(const char *port_name, uint8_t transfer_mode, uint8_t bit_justification, uint8_t bits_per_word, uint32_t max_speed) {
-    _spi_fd = open(port_name, O_RDWR);
-    if(!_spi_fd)
+    
+    if(!(_spi_fd = open(port_name, O_RDWR)))
     {
         perror("spi_open/open");
         _spi_fd = 0;
         return false;
     }
 
-    if(ioctl(_spi_fd,SPI_IOC_WR_MODE,&transfer_mode) != 0)
+    if(ioctl(_spi_fd, SPI_IOC_WR_MODE, &transfer_mode) != 0)
     {
         perror("spi_open/SPI_IOC_WR_MODE");
         _spi_fd = 0;
         return false;
     }
 
-    if(ioctl(_spi_fd,SPI_IOC_WR_LSB_FIRST,&bit_justification) != 0)
+    if(ioctl(_spi_fd, SPI_IOC_WR_LSB_FIRST, &bit_justification) != 0)
     {
         perror("spi_open/SPI_IOC_WR_LSB_FIRST");
         _spi_fd = 0;
         return false;
     }
 
-    if(ioctl(_spi_fd,SPI_IOC_WR_BITS_PER_WORD,&bits_per_word) != 0)
+    if(ioctl(_spi_fd, SPI_IOC_WR_BITS_PER_WORD, &bits_per_word) != 0)
     {
         perror("spi_open/SPI_IOC_WR_BITS_PER_WORD");
         _spi_fd = 0;
         return false;
     }
 
-    if(ioctl(_spi_fd,SPI_IOC_WR_MAX_SPEED_HZ,&max_speed) != 0)
+    if(ioctl(_spi_fd, SPI_IOC_WR_MAX_SPEED_HZ, &max_speed) != 0)
     {
         perror("spi_open/SPI_IOC_WR_MAX_SPEED_HZ");
         _spi_fd = 0;
@@ -89,11 +86,13 @@ bool AD5383::spi_open(const char *port_name, uint8_t transfer_mode, uint8_t bit_
 
 
 bool AD5383::spi_close() {
-    if(!_spi_fd || close(_spi_fd) != 0)
-    {
-        perror("spi_close/close");
-        return false;
-    }
+    if(_spi_fd && close(_spi_fd) != 0)
+	{
+		perror("spi_close/close");
+		return false;
+	}
+	_spi_fd=0;
+    
     return true;
 }
 
@@ -326,7 +325,19 @@ uint16_t AD5383::spi_xfer() {
     if(!_spi_fd)
         return 0;
 
-    if(ioctl(_spi_fd, SPI_IOC_MESSAGE(1),&_ioc_xfer) == -1)
+    struct spi_ioc_transfer tr = {
+		.tx_buf = (unsigned long)_out_buffer,
+		.rx_buf = (unsigned long)_in_buffer,
+		
+		.len = ARRAY_SIZE(_out_buffer),
+		.speed_hz = AD5383_SPI_SELECT_CLOCK_HZ,
+				
+		.delay_usecs = 0,
+		.bits_per_word = AD5383_SPI_SELECT_BITS,
+		.cs_change = false
+	};
+    
+    if(ioctl(_spi_fd, SPI_IOC_MESSAGE(1), &tr) == -1)
     {
         perror("spi_xfer/ioctl");
         return ret;

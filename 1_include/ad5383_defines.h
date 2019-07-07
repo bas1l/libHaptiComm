@@ -23,4 +23,7 @@
 #define AD5383_DEFAULT_GAIN 0XFFE
 #define AD5383_DEFAULT_OFFSET 2048
 
+#define AD5383_SPI_SELECT_CLOCK_HZ 30000000
+#define AD5383_SPI_SELECT_BITS 8
 
+#define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))

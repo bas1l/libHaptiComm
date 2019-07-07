@@ -69,10 +69,12 @@ WAVEFORM::create_dataWAV(struct motion * m)
     
     m->data.clear();
     m->data.reserve(numChannels);
+    
+    std::vector<double> tmpVec;
     for (int c = 0; c < numChannels; c++)
     {
-        std::vector<double> tmpVec;
         tmpVec.reserve(nbValue);
+        tmpVec.clear();
         for (int i = 0; i < nbValue; i++)
         {
             tmpVec.push_back((m->fileWAV->samples[c][(int)(i*incr)]));

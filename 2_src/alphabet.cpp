@@ -13,13 +13,11 @@ using namespace std;
 
 
 
-ALPHABET::ALPHABET() : 
-        listSymbols("abcdefghijklmnopqrstuvwxyz~+-1234567890 ") {}
+ALPHABET::ALPHABET(){}
 
 ALPHABET::ALPHABET(DEVICE * _dev, WAVEFORM * _wf) :
         dev(_dev), 
-        wf( _wf),
-        listSymbols("abcdefghijklmnopqrstuvwxyz~+-1234567890 ") {}
+        wf( _wf){}
 
 ALPHABET::~ALPHABET() {}
 
@@ -122,12 +120,16 @@ ALPHABET::insertSymbol(struct symbol s)
         wfLetter.insert(waveformLetterPair(act->chan, mv)); //add vector to the map
         mv.clear(); //clear the temporary vector
         
-        std::cout   << "motion name=" << s.id
-                    << "actuator: name=" << s.actList[cpt]
-                    << "; neutral=" << neutral
+        /*
+         * 
+        std::cout   << "motion name='" << s.id
+                    << "'|| actuator name='" << s.actList[cpt]
+                    << "'; neutral=" << neutral
                     << "; amplmax=" << amplmax
                     << "; amplmin=" << amplmin 
                     << std::endl;
+                    
+         */
     }
     
     s.data = wfLetter;

@@ -25,7 +25,11 @@
 #ifndef HAPTICOMM_CONFIGURATION_H_
 #define HAPTICOMM_CONFIGURATION_H_
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated"
 #include <config4cpp/Configuration.h>
+#pragma GCC diagnostic pop
+
 #include "device.h"
 #include "waveform.h"
 #include "alphabet.h"
@@ -64,60 +68,44 @@ public:
     HaptiCommConfiguration(const char * cfgSource);
     ~HaptiCommConfiguration();
 
-    void parse(const char * cfgSource, const char * scope = "") 
-        throw (HaptiCommConfigurationException);
-    
+    void parse(const char * cfgSource, const char * scope = "");
     
     //--------
     // Configuration functions.
     //--------
-    void configure(const char * cfgSource, DEVICE * dev, WAVEFORM * wf, ALPHABET * alph)
-        throw (HaptiCommConfigurationException);
+    void configure(const char * cfgSource, DEVICE * dev, WAVEFORM * wf, ALPHABET * alph);
     
-    void configureDevice(DEVICE * dev)
-        throw (HaptiCommConfigurationException);
+    void configureDevice(DEVICE * dev);
     
-    void configureWaveform(WAVEFORM * wf)
-        throw (HaptiCommConfigurationException);
+    void configureWaveform(WAVEFORM * wf);
     
-    void configureAlphabet(ALPHABET * alph, DEVICE * dev, WAVEFORM * wf)
-        throw (HaptiCommConfigurationException);
-   
+    void configureAlphabet(ALPHABET * alph, DEVICE * dev, WAVEFORM * wf);
+    
 private: 
     void initVariableMove(struct variableMove * vm);
     
     //--------
     // Lookup-style functions.
     //--------
-    struct actuator lookupActuator(const char * scopeActuator) 
-        const throw (HaptiCommConfigurationException);
+    struct actuator lookupActuator(const char * scopeActuator);
     
-    const char * lookupActuatorID(const char * scopeActuator) 
-        const throw (HaptiCommConfigurationException);
+    const char * lookupActuatorID(const char * scopeActuator);
     
-    struct motion lookupMotion(const char * scopeMotion) 
-        throw (HaptiCommConfigurationException);
+    struct motion lookupMotion(const char * scopeMotion);
     
-    struct symbol lookupSymbol(const char * scopeSymbol) 
-        throw (HaptiCommConfigurationException);
+    struct symbol lookupSymbol(const char * scopeSymbol);
 
-    void lookupList(const char * name, const char **& array, int & arraySize) 
-        const throw (HaptiCommConfigurationException);
+    void lookupList(const char * name, const char **& array, int & arraySize);
 
-    virtual int lookupInt(const char * name) 
-        const throw(HaptiCommConfigurationException);
+    virtual int lookupInt(const char * name);
     
-    virtual float lookupFloat(const char * name) 
-        const throw(HaptiCommConfigurationException);
+    virtual float lookupFloat(const char * name);
     
-    virtual bool lookupBoolean(const char * name) 
-        const throw(HaptiCommConfigurationException);
+    virtual bool lookupBoolean(const char * name);
     
-    virtual int lookupDurationMilliseconds(const char * name) 
-        const throw(HaptiCommConfigurationException);
+    virtual int lookupDurationMilliseconds(const char * name);
     
-    virtual int lookupDurationSeconds(const char * name) 
-        const throw(HaptiCommConfigurationException);
+    virtual int lookupDurationSeconds(const char * name);
 
     //--------
     // Instance variables
