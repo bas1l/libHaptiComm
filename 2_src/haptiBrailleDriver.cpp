@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <errno.h>
 #include <stdio.h>
 #include <time.h>
@@ -14,73 +15,108 @@
 using namespace std;
 
 
-HAPTIBRAILLEDRIVER::HAPTIBRAILLEDRIVER(int nb_actuator) : {
-	actuators = 
-}
+//int actuators_pins = {12, 13, 14, 16, 18, 22};
+HAPTIBRAILLEDRIVER::HAPTIBRAILLEDRIVER(){}
 
-HAPTIBRAILLEDRIVER::~HAPTIBRAILLEDRIVER() {
-}
+HAPTIBRAILLEDRIVER::~HAPTIBRAILLEDRIVER() {}
 
 
-bool HAPTIBRAILLEDRIVER::configure() {
+bool HAPTIBRAILLEDRIVER::configure(std::vector<int> act_pins) {
+	this->nb_actuators = act_pins.size();
+	this->actuators_pins = act_pins;
+	this->actuators_fd.resize(this->nb_actuators);
 	
-	if(!_connected_spi)
+	for (int i=0; i<this->nb_actuators; i++)
 	{
-		errno = ENOTCONN;
-        perror("configure/_connected_spi");
-		return false;
-	}
-
-	if (read_register(HAPTIBRAILLEDRIVER_REG_DEVID) != HAPTIBRAILLEDRIVER_READBACK_DEVID)
-	{
-		errno = ENXIO;
-        perror("configure/HAPTIBRAILLEDRIVER_REG_DEVID");
-		return false;
-	}
-	
-	write_register(HAPTIBRAILLEDRIVER_REG_POWER_CTL, 	HAPTIBRAILLEDRIVER_SELECT_POWER_CTL_MEASUREMENT_MODE);
-	write_register(HAPTIBRAILLEDRIVER_REG_DATA_FORMAT, HAPTIBRAILLEDRIVER_SELECT_DATA_FORMAT_16_G);
-	
-	write_register(HAPTIBRAILLEDRIVER_REG_TAP_AXES, 	HAPTIBRAILLEDRIVER_SELECT_TAP_AXES_ALL);
-	write_register(HAPTIBRAILLEDRIVER_REG_DUR, 		HAPTIBRAILLEDRIVER_SELECT_DUR);
-	write_register(HAPTIBRAILLEDRIVER_REG_THRESH_TAP, 	HAPTIBRAILLEDRIVER_SELECT_THRESH_TAP);
-	write_register(HAPTIBRAILLEDRIVER_REG_INT_ENABLE, 	HAPTIBRAILLEDRIVER_SELECT_INT_SINGLE_TAP);
-	
+		if( !(this->actuators_fd[i] = gpio_open(this->actuators_pins[i], GPIO_OUT)) ) 
+			return false;
+	}  
 	
 	return true;
 }
 
 
-uint8_t HAPTIBRAILLEDRIVER::spi_xfer() {
-    if(!_spi_fd)
-        return 0;
-    
-    struct spi_ioc_transfer tr = {
-		.tx_buf = (unsigned long)_out_buffer,
-		.rx_buf = (unsigned long)_in_buffer,
-		
-		.len = ARRAY_SIZE(_out_buffer),
-		.speed_hz = HAPTIBRAILLEDRIVER_SPI_SELECT_CLOCK_HZ,
-				
-		.delay_usecs = 0,
-		.bits_per_word = HAPTIBRAILLEDRIVER_SPI_SELECT_BPW,
-		.cs_change = false
-	};
-    
-    
-    if (gpio_write(_gpio_cs_fd, HAPTIBRAILLEDRIVER_GPIO_LOW) == -1)
-    {
-    	perror("spi_xfer/gpio_write");
-		return 0;
-    }
-    
-    if (gpio_write(_gpio_cs_fd, HAPTIBRAILLEDRIVER_GPIO_HIGH) == -1)
-	{
-		perror("spi_xfer/gpio_write");
-		return 0;
-	}
-		
-    return _in_buffer[1];
+bool HAPTIBRAILLEDRIVER::executeSymbol(std::vector<int> act_pins, unsigned long long  duration_ns)
+{
+	int i, idx;
+	std::vector<int>::iterator it, it2;
+	struct timespec tim_model, tim_rem, handled_rem;
+	
+	i = 0;
+	idx = 0;
+	tim_model.tv_sec  = duration_ns / 1000000000;
+	tim_model.tv_nsec = duration_ns % 1000000; // msec*10^6
+	
+	for (it=act_pins.begin(); it!=act_pins.end(); ++it)
+        {
+		it2 = std::find(actuators_pins.begin(), actuators_pins.end(), *it);
+		idx = std::distance(actuators_pins.begin(), it2);
+		if (gpio_write(actuators_fd[idx], GPIO_HIGH) == -1)
+		{
+			perror("spi_xfer/gpio_write");
+			return 0;
+		}
+        }
+	
+	//std::cout<<"sleep..."<<std::endl;
+	nanosleep(&tim_model, &handled_rem);
+	//std::cout<<"awake..."<<std::endl;
+	
+	for (it=act_pins.begin(); it!=act_pins.end(); ++it)
+        {
+		it2 = std::find(actuators_pins.begin(), actuators_pins.end(), *it);
+		idx = std::distance(actuators_pins.begin(), it2);
+		if (gpio_write(actuators_fd[idx], GPIO_LOW) == -1)
+		{
+			perror("spi_xfer/gpio_write");
+			return 0;
+		}
+        }
+	//std::cout<<"end."<<std::endl;
+	
+	return false;
+	
+}
+bool HAPTIBRAILLEDRIVER::executeSymbol(std::multimap<uint8_t,std::vector<uint16_t>> wfLetter, unsigned long long  duration_ns)
+{
+	int i, idx;
+	std::multimap<uint8_t, std::vector<uint16_t>>::iterator it = wfLetter.begin();
+	std::vector<int>::iterator it2;
+	struct timespec tim_model, tim_rem, handled_rem;
+	
+	i = 0;
+	idx = 0;
+	tim_model.tv_sec = duration_ns % 1000000;
+	tim_model.tv_nsec = duration_ns; // msec*10^6
+	
+	for (it=wfLetter.begin(); it!=wfLetter.end(); ++it)
+        {
+		it2 = std::find(actuators_pins.begin(), actuators_pins.end(), it->first);
+		idx = std::distance(actuators_pins.begin(), it2);
+		if (gpio_write(actuators_fd[idx], GPIO_HIGH) == -1)
+		{
+			perror("spi_xfer/gpio_write");
+			return 0;
+		}
+        }
+	
+	//std::cout<<"sleep..."<<std::endl;
+	nanosleep(&tim_model, &handled_rem);
+	//std::cout<<"awake..."<<std::endl;
+	
+	for (it=wfLetter.begin(); it!=wfLetter.end(); ++it)
+        {
+		it2 = std::find(actuators_pins.begin(), actuators_pins.end(), it->first);
+		idx = std::distance(actuators_pins.begin(), it2);
+		if (gpio_write(actuators_fd[idx], GPIO_LOW) == -1)
+		{
+			perror("spi_xfer/gpio_write");
+			return 0;
+		}
+        }
+	//std::cout<<"end."<<std::endl;
+	
+	return false;
 }
 
 int HAPTIBRAILLEDRIVER::gpio_open(int pin, int inout) {
@@ -97,7 +133,7 @@ int HAPTIBRAILLEDRIVER::gpio_open(int pin, int inout) {
 
 	snprintf(path, VALUE_MAX, "/sys/class/gpio/gpio%d/value", pin);
 	gpio_fd = open(path, O_WRONLY);
-	if (-1 == _gpio_cs_fd) {
+	if (-1 == gpio_fd) {
 		fprintf(stderr, "Failed to open gpio value for writing!\n");
 		return false;
 	}
@@ -154,7 +190,7 @@ int HAPTIBRAILLEDRIVER::gpio_direction(int pin, int dir) {
 		return(-1);
 	}
 
-	if (-1 == write(fd, &s_directions_str[HAPTIBRAILLEDRIVER_GPIO_IN == dir ? 0 : 3], HAPTIBRAILLEDRIVER_GPIO_IN == dir ? 2 : 3)) {
+	if (-1 == write(fd, &s_directions_str[GPIO_IN == dir ? 0 : 3], GPIO_IN == dir ? 2 : 3)) {
 		fprintf(stderr, "Failed to set direction!\n");
 		return(-1);
 	}
@@ -167,23 +203,13 @@ int HAPTIBRAILLEDRIVER::gpio_direction(int pin, int dir) {
 int HAPTIBRAILLEDRIVER::gpio_write(int gpio_fd, int value) {
 	static const char s_values_str[] = "01";
 
-	if (1 != write(gpio_fd, &s_values_str[HAPTIBRAILLEDRIVER_GPIO_LOW == value ? 0 : 1], 1)) {
+	if (1 != write(gpio_fd, &s_values_str[GPIO_LOW == value ? 0 : 1], 1)) {
 		fprintf(stderr, "Failed to write value!\n");
 		return(-1);
 	}
 
 	return(0);
 }
-
-
-
-
-
-
-
-
-
-
 
 
 

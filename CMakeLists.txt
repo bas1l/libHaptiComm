@@ -36,6 +36,7 @@ add_library(alphabet ${SOURCES_DIR}/alphabet.cpp)
 add_library(waveform ${SOURCES_DIR}/waveform.cpp)
 add_library(HaptiCommConfiguration ${SOURCES_DIR}/HaptiCommConfiguration.cpp)
 
+add_library(haptiBrailleDriver ${SOURCES_DIR}/haptiBrailleDriver.cpp)
 add_library(adxl345 ${SOURCES_DIR}/adxl345.cpp)
 
 set(HAPTICOMM_LIB ${CMAKE_BINARY_DIR}/libhapticomm.a)
@@ -43,6 +44,7 @@ add_custom_target(combined
         COMMAND ar -x $<TARGET_FILE:utils>
         COMMAND ar -x $<TARGET_FILE:config4cpp>
         COMMAND ar -x $<TARGET_FILE:ad5383>
+        COMMAND ar -x $<TARGET_FILE:haptiBrailleDriver>
         COMMAND ar -x $<TARGET_FILE:device>
         COMMAND ar -x $<TARGET_FILE:alphabet>
         COMMAND ar -x $<TARGET_FILE:waveform>
@@ -50,7 +52,7 @@ add_custom_target(combined
         COMMAND ar -x $<TARGET_FILE:audioFile>
         COMMAND ar -qcs ${HAPTICOMM_LIB} *.o
         WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        DEPENDS utils config4cpp ad5383 device alphabet waveform HaptiCommConfiguration audioFile
+        DEPENDS utils config4cpp ad5383 haptiBrailleDriver device alphabet waveform HaptiCommConfiguration audioFile
 )
 add_library(hapticomm STATIC IMPORTED GLOBAL)
 add_dependencies(hapticomm combined)

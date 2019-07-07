@@ -16,15 +16,16 @@
 class HAPTIBRAILLEDRIVER
 {
 public:
-    HAPTIBRAILLEDRIVER(int nb_actuator);
+    HAPTIBRAILLEDRIVER();
     ~HAPTIBRAILLEDRIVER();
 
     /**
      * @brief Initializes channels properties with default parameters
      */
-    bool configure(int _duration);
+    bool configure(std::vector<int> act_pins);
     
-    bool 
+    bool executeSymbol(std::vector<int> act_pins, unsigned long long  duration_ns);
+    bool executeSymbol(std::multimap<uint8_t,std::vector<uint16_t>> wfLetter, unsigned long long  duration_ns);
     
 private:
     
@@ -35,6 +36,8 @@ private:
     int gpio_direction(int pin, int dir);
     int gpio_export(int pin);
     
-    int * actuators;
+    std::vector<int> actuators_pins;
+    std::vector<int> actuators_fd;
+    int nb_actuators;
 };
 #endif // HAPTIBRAILLEDRIVER_H_
