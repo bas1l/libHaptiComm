@@ -36,48 +36,50 @@ bool HAPTIBRAILLEDRIVER::configure(std::vector<int> act_pins) {
 }
 
 
-bool HAPTIBRAILLEDRIVER::executeSymbol(std::vector<int> act_pins, unsigned long long  duration_ns)
+bool HAPTIBRAILLEDRIVER::executeSymbol(std::vector<uint8_t> act_pins, int duration_ms)
 {
-	int i, idx;
-	std::vector<int>::iterator it, it2;
+	int i, act_id;
+  std::vector<int>::iterator actpins_it, actFound_it;
 	struct timespec tim_model, tim_rem, handled_rem;
 	
+  // because std::distance can't match iterator<uint8_t> with vector<int>
+  std::vector<int> act_pins_conv(act_pins.begin(), act_pins.end());
+	
 	i = 0;
-	idx = 0;
-	tim_model.tv_sec  = duration_ns / 1000000000;
-	tim_model.tv_nsec = duration_ns % 1000000; // msec*10^6
-	
-	for (it=act_pins.begin(); it!=act_pins.end(); ++it)
-        {
-		it2 = std::find(actuators_pins.begin(), actuators_pins.end(), *it);
-		idx = std::distance(actuators_pins.begin(), it2);
-		if (gpio_write(actuators_fd[idx], GPIO_HIGH) == -1)
+	act_id = 0;
+	tim_model.tv_sec  = duration_ms / pow(10,3);
+	tim_model.tv_nsec = duration_ms * pow(10,6); // msec*10^6
+  
+	for (actpins_it=act_pins_conv.begin(); actpins_it!=act_pins_conv.end(); ++actpins_it)
+  {
+		actFound_it = std::find(actuators_pins.begin(), actuators_pins.end(), *actpins_it);
+		act_id = std::distance(actuators_pins.begin(), actFound_it);
+		if (gpio_write(actuators_fd[act_id], GPIO_HIGH) == -1)
 		{
 			perror("spi_xfer/gpio_write");
 			return 0;
 		}
-        }
+  }
 	
-	//std::cout<<"sleep..."<<std::endl;
+  
 	nanosleep(&tim_model, &handled_rem);
-	//std::cout<<"awake..."<<std::endl;
 	
-	for (it=act_pins.begin(); it!=act_pins.end(); ++it)
-        {
-		it2 = std::find(actuators_pins.begin(), actuators_pins.end(), *it);
-		idx = std::distance(actuators_pins.begin(), it2);
-		if (gpio_write(actuators_fd[idx], GPIO_LOW) == -1)
+	for (actpins_it=act_pins_conv.begin(); actpins_it!=act_pins_conv.end(); ++actpins_it)
+  {
+		actFound_it = std::find(actuators_pins.begin(), actuators_pins.end(), *actpins_it);
+		act_id = std::distance(actuators_pins.begin(), actFound_it);
+		if (gpio_write(actuators_fd[act_id], GPIO_LOW) == -1)
 		{
 			perror("spi_xfer/gpio_write");
 			return 0;
 		}
-        }
-	//std::cout<<"end."<<std::endl;
+  }
 	
-	return false;
-	
+  return false;
 }
-bool HAPTIBRAILLEDRIVER::executeSymbol(std::multimap<uint8_t,std::vector<uint16_t>> wfLetter, unsigned long long  duration_ns)
+
+
+bool HAPTIBRAILLEDRIVER::executeSymbol(std::multimap<uint8_t,std::vector<uint16_t>> wfLetter, int duration_ms)
 {
 	int i, idx;
 	std::multimap<uint8_t, std::vector<uint16_t>>::iterator it = wfLetter.begin();
@@ -86,11 +88,11 @@ bool HAPTIBRAILLEDRIVER::executeSymbol(std::multimap<uint8_t,std::vector<uint16_
 	
 	i = 0;
 	idx = 0;
-	tim_model.tv_sec = duration_ns % 1000000;
-	tim_model.tv_nsec = duration_ns; // msec*10^6
+	tim_model.tv_sec  = duration_ms / pow(10,3);
+	tim_model.tv_nsec = duration_ms * pow(10,6); // msec*10^6
 	
 	for (it=wfLetter.begin(); it!=wfLetter.end(); ++it)
-        {
+  {
 		it2 = std::find(actuators_pins.begin(), actuators_pins.end(), it->first);
 		idx = std::distance(actuators_pins.begin(), it2);
 		if (gpio_write(actuators_fd[idx], GPIO_HIGH) == -1)
@@ -105,7 +107,7 @@ bool HAPTIBRAILLEDRIVER::executeSymbol(std::multimap<uint8_t,std::vector<uint16_
 	//std::cout<<"awake..."<<std::endl;
 	
 	for (it=wfLetter.begin(); it!=wfLetter.end(); ++it)
-        {
+  {
 		it2 = std::find(actuators_pins.begin(), actuators_pins.end(), it->first);
 		idx = std::distance(actuators_pins.begin(), it2);
 		if (gpio_write(actuators_fd[idx], GPIO_LOW) == -1)
@@ -117,6 +119,46 @@ bool HAPTIBRAILLEDRIVER::executeSymbol(std::multimap<uint8_t,std::vector<uint16_
 	//std::cout<<"end."<<std::endl;
 	
 	return false;
+}
+
+bool HAPTIBRAILLEDRIVER::executeSymbol6by6(std::multimap<uint8_t,std::vector<uint16_t>> wfLetter, int duration_ms, int duration_between_symbol_ms)
+{
+  std::vector<uint8_t> actChans;
+  int cpt;
+  
+  actChans.resize(wfLetter.size());
+  cpt = 0;
+  
+  for (auto wfl_it = wfLetter.begin(); wfl_it != wfLetter.end(); wfl_it++)
+  {
+    actChans[cpt++] = wfl_it->first;
+  }
+  
+  return executeSymbol6by6(actChans, duration_ms, duration_between_symbol_ms);
+}
+
+bool HAPTIBRAILLEDRIVER::executeSymbol6by6(std::vector<uint8_t> actChannels, int duration_ms, int duration_between_symbol_ms)
+{
+  if (actChannels.size() <= 6)
+  {
+    return executeSymbol(actChannels, duration_ms);
+  }
+  else
+  {
+    std::vector<uint8_t> tmp_chans;
+    struct timespec tim_model, tim_rem, handled_rem;
+    
+    tim_model.tv_sec  = duration_between_symbol_ms / pow(10,3);
+    tim_model.tv_nsec = duration_between_symbol_ms * pow(10,6); // msec*10^6
+    
+    tmp_chans.assign(actChannels.begin(), actChannels.begin()+6);
+    executeSymbol(tmp_chans, duration_ms);
+    nanosleep(&tim_model, &handled_rem);
+    tmp_chans.assign(actChannels.begin()+6, actChannels.end());
+    executeSymbol(tmp_chans, duration_ms);
+  }
+  
+  return false;
 }
 
 int HAPTIBRAILLEDRIVER::gpio_open(int pin, int inout) {

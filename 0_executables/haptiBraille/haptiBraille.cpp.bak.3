@@ -33,8 +33,8 @@
 #define PROSODY_SENTENCE 3
 
 // all in milliseconds
-#define PROSODY_LETTER_DELAY 	100
-#define PROSODY_WORD_DELAY   	200
+#define PROSODY_LETTER_DELAY 	20
+#define PROSODY_WORD_DELAY   	150
 #define PROSODY_SENTENCE_DELAY  500
 #define DURATION_SYMBOL  	50
 
@@ -46,9 +46,6 @@ bool sentencesEmpty;
 
 void generateSentences(std::atomic<bool> & workdone, std::string str_alph);
 void workSymbols(std::atomic<bool> & workdone, ALPHABET* & alph, DEVICE * dev, int prosody);
-bool getWordActIDs(ALPHABET *& alph, std::deque<char> * letters, std::vector<uint8_t> * output);
-bool getWordValue(ALPHABET *& alph, std::deque<char> * letters, waveformLetter * output);
-  
 int  setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource, const char *& scope);
 static void usage();
 
@@ -208,7 +205,7 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, DEVICE * dev, i
   HAPTIBRAILLEDRIVER hb_driver;
   waveformLetter values;
   std::deque<char> letters;
-  int duration_ms;
+  int duration_ns;
   actuatorsMap act_map = dev->getActuatorMap();
   std::vector<int> actuators_pins;
   
@@ -217,7 +214,7 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, DEVICE * dev, i
     actuators_pins.push_back(it->second.chan);
   }
   hb_driver.configure(actuators_pins);
-  duration_ms  = DURATION_SYMBOL;
+  duration_ns  = DURATION_SYMBOL * ms2ns; // * ns
   
   // The goal of this function is to use the letters putted by the other
   // thread, one by one, and play them consecutively.
@@ -249,7 +246,7 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, DEVICE * dev, i
         else
         {
           values = alph->getl(letters.front());
-          hb_driver.executeSymbol(values, duration_ms);
+          hb_driver.executeSymbol(values, duration_ns);
           values.clear();
           letters.pop_front();
           std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
@@ -271,23 +268,14 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, DEVICE * dev, i
         }
         else
         {
-          static std::vector<uint8_t> v;
+          // values = alph->getl(letters.front());
           do {
-            bool found = getWordActIDs(alph, &letters, &v);
-            
-            if (found)
-            {
-              hb_driver.executeSymbol6by6(v, duration_ms, PROSODY_LETTER_DELAY/1.5);
-              v.clear();
-              std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
-            }
-            else
-            {
-              letters.clear();
-              std::cout<<"?"<<std::flush;
-            }
-            
-          } while (false);// (letters.size() != 0);
+            values = getWordValue(letters);
+            hb_driver.executeSymbol(values, duration_ns);
+            values.clear();
+            letters.pop_front();
+            std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
+          } while (letters.size() != 0);
         }
       }
     }
@@ -302,7 +290,7 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, DEVICE * dev, i
         while (!letters.empty())
         {
           values = alph->getl(letters.front());
-          hb_driver.executeSymbol(values, duration_ms);
+          hb_driver.executeSymbol(values, duration_ns);
           values.clear();
           letters.pop_front();
           std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
@@ -312,72 +300,6 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, DEVICE * dev, i
   }
 }
 
-
-bool getWordActIDs(ALPHABET *& alph, std::deque<char> * letters, std::vector<uint8_t> * output)
-{
-  string input = "";
-  bool found = false;
-  
-  // fill with all the input characters 
-  for (auto it = letters->begin(); it != letters->end(); it++)
-  {
-    input += *it;
-  }
-  
-  // work
-  while (input.size()>0 && !found)
-  {
-    *output = alph->getActList_chan(input);
-    if (output->size() == 0)
-      input.pop_back();
-    else
-      found = true;
-  }
-  
-  // remove the letters
-  letters->erase(letters->begin(), letters->begin()+input.size());
-  
-  return found;
-}
-
-
-bool getWordValue(ALPHABET *& alph, std::deque<char> * letters, waveformLetter * output)
-{
-  string input = "";
-  bool found;
-  
-  // fill the full sentence
-  std::cout << std::endl;
-  for (auto it = letters->begin(); it != letters->end(); it++)
-  {
-    input += *it;
-    //std::cout << *it << std::endl;
-  }
-  //std::cout << input << std::endl;
-  //std::cout << "input, size=" << input.size() << ", length="<<input.length() << std::endl;
-  
-  // work
-  while (input.size() > 0)
-  {
-    found = alph->getword(input, output);
-    if (found == false)
-      input.pop_back();
-    else
-      break;
-  }
-  
-  // remove the letters
-  //std::cout << "remove the letters..." << std::endl;
-  letters->erase(letters->begin(), letters->begin()+input.size());
-  /*std::cout << "letters remaining..." << std::endl;
-  for (auto it = letters->begin(); it != letters->end(); it++)
-  {
-    std::cout << *it << std::endl;
-  }
-  */
-  
-  return found;
-}
 
 static void
 usage()

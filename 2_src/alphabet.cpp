@@ -57,27 +57,78 @@ ALPHABET::getneutral()
 }
 
 
-waveformLetter
-ALPHABET::getl(std::string l) 
+symbol *
+ALPHABET::getsymbol(std::string l) 
 {
-    // searching for the letter l
-    it_dictionnary = dictionnary.find(l);
-    if (it_dictionnary != dictionnary.end())
-    {
-        return it_dictionnary->second.data;
-    }
-    else
-    {// if not found, return an empty vector 
-        return dictionnary.find("~")->second.data;
-    }
+  if ((it_dictionnary = dictionnary.find(l)) == dictionnary.end())
+  {
+    return NULL;
+  }
+  
+  return &(it_dictionnary->second);
+}
+
+bool
+ALPHABET::getword(std::string l, waveformLetter * wf) 
+{
+  symbol * s;
+  if ( (s=getsymbol(l)) == NULL)
+  {
+    return false;
+  }
+  
+  *wf = s->data;
+
+  return true;
 }
 
 waveformLetter
 ALPHABET::getl(char l) 
 {
-    std::string lstring(1, l);
-    return getl(lstring);
+  waveformLetter ret;
+  std::string lstring(1, l);
+  getword(lstring, &ret);
+  
+  return ret;  
 }
+
+
+std::vector<std::string>
+ALPHABET::getActList_name(string word) 
+{
+  symbol * s;
+  
+  if ( (s=getsymbol(word)) == NULL)
+  {
+    std::vector<std::string> output;
+    return output;
+  }
+  
+  return s->actList;
+}
+
+std::vector<uint8_t>
+ALPHABET::getActList_chan(string s) 
+{
+  struct actuator * act;
+  std::vector<std::string> actnames;
+  std::vector<uint8_t> actIDs;
+  int cpt, nb_act;
+  
+  act = new actuator();
+  actnames = getActList_name(s);
+  nb_act = actnames.size();
+  actIDs.resize(nb_act);
+  
+  for(cpt=0; cpt<nb_act; ++cpt)
+  {
+    *act = dev->getActuator(actnames[cpt]); //current actuator
+    actIDs[cpt] = act->chan;
+  }
+
+  return actIDs;
+}
+
 
 
 double 
@@ -177,12 +228,13 @@ ALPHABET::informationsSymbol(std::string id)
 void 
 ALPHABET::printData(std::string id)
 {
-    waveformLetter wfl = getl(id);
+    waveformLetter wfl;
     std::vector<uint16_t> data;
     int numSample, c, i;
     
     
     std::cout.precision(5);
+    getword(id, &wfl);
     informationsSymbol(id);
     for(auto it=wfl.begin(); it!=wfl.end(); ++it)
     {

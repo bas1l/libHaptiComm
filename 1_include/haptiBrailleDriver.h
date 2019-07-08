@@ -2,6 +2,7 @@
 #ifndef HAPTIBRAILLEDRIVER_H_
 #define HAPTIBRAILLEDRIVER_H_
 
+#include <math.h>
 #include <map>
 #include <stdint.h>
 #include <unistd.h>				//Needed for SPI port
@@ -24,8 +25,12 @@ public:
      */
     bool configure(std::vector<int> act_pins);
     
-    bool executeSymbol(std::vector<int> act_pins, unsigned long long  duration_ns);
-    bool executeSymbol(std::multimap<uint8_t,std::vector<uint16_t>> wfLetter, unsigned long long  duration_ns);
+    bool executeSymbol(std::vector<uint8_t> act_pins, int duration_ms);
+    bool executeSymbol(std::multimap<uint8_t,std::vector<uint16_t>> wfLetter, int duration_ms);
+    
+    bool executeSymbol6by6(std::vector<uint8_t> actChans, int duration_ms, int duration_between_symbol_ms);
+    bool executeSymbol6by6(std::multimap<uint8_t,std::vector<uint16_t>> wfLetter, int duration_ms, int duration_between_symbol_ms);
+    
     
 private:
     
