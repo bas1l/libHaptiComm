@@ -37,10 +37,9 @@
 int PROSODY_SEPARATORS[] = { '\0', '\0', ' ', '.' }; //without, letter, word, and sentence
 
 // all in milliseconds
-#define PROSODY_LETTER_DELAY 	700
-#define PROSODY_WORD_DELAY   	1000
+#define PROSODY_LETTER_DELAY 	20
+#define PROSODY_WORD_DELAY   	150
 #define PROSODY_SENTENCE_DELAY  500
-#define DURATION_SYMBOL  	700
 
 // keyboard keys
 #define KEY_ESC 27 // escape key
@@ -222,15 +221,6 @@ void generateSentences(std::atomic<bool> & workdone, std::string str_alph,
   lastis_pod = false;
   do {
     ch = getch();
-    /*
-     for (int x=0x000; x<=0xfff; x++)
-     {
-     if (ch == x)
-     {
-     printw("<%i>", x);
-     }
-     }
-     */
 
     if (ch == KEY_ERASE) {
       rmto_sentence();
@@ -247,7 +237,7 @@ void generateSentences(std::atomic<bool> & workdone, std::string str_alph,
       set_sentencesReady();
     }
   } while (!(EXIT_KEYPRESS(ch) || F_KEYPRESS(ch)));
-
+  
   STATE_PROGRAM = ch;
   close_window();
   set_jobdone();
