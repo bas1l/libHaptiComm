@@ -163,24 +163,16 @@ int main(int argc, char *argv[]) {
       std::cout << "[initialisation][options] cfgSource=" << cfgSource
           << std::endl;
       break;
-    case KEY_F1: // Japanese Braille
-      prosody = PROSODY_WORD;
-      cfgSource = "libHaptiComm/4_configuration/config_JapaneseBraille.cfg";
+    case KEY_F1: // configBlack
+      cfgSource = "libHaptiComm/4_configuration/configBlack.cfg";
       break;
-    case KEY_F5: // English Braille
-      prosody = PROSODY_LETTER;
+    case KEY_F2: // configBlack_withNumber
       cfgSource =
-          "libHaptiComm/4_configuration/configHaptiBraille_newDriver.cfg";
+          "libHaptiComm/4_configuration/configBlack_withNumber.cfg";
       break;
-    case KEY_F6: // English Braille
-      prosody = PROSODY_WORD;
+    case KEY_F3: // configBlack_withIllusion with all the tester things
       cfgSource =
-          "libHaptiComm/4_configuration/configHaptiBraille_newDriver.cfg";
-      break;
-    case KEY_F7: // English Braille
-      prosody = PROSODY_SENTENCE;
-      cfgSource =
-          "libHaptiComm/4_configuration/configHaptiBraille_newDriver.cfg";
+          "libHaptiComm/4_configuration/configBlack_withIllusion.cfg";
       break;
     default:
       break;
@@ -212,7 +204,6 @@ int main(int argc, char *argv[]) {
 
 void generateSentences(std::atomic<bool> & workdone, std::string str_alph,
     char separator) {
-  std::string s = "the quick brown fox jumps over the lazy dog";
   std::string str_prosody = " .";
   std::string str_ponc = "',;:!?-";
   bool lastis_pod; // part of dictionnary
@@ -284,20 +275,52 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, DEVICE * dev) {
         std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_WORD_DELAY));
       } 
       else {
-        values = alph->getl(letters.front());
-        int ovr = ad.execute_selective_trajectory(values, durationRefresh_ns);
-        if (ovr) {
-          overruns += ovr;
+        if (getWordValue(alph, &letters, &values)) {
+          int ovr = ad.execute_selective_trajectory(values, durationRefresh_ns);
+          if (ovr) {
+            overruns += ovr;
+          }
+          values.clear();
+          letters.pop_front();
+          std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
         }
-        values.clear();
-        letters.pop_front();
-        std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
+        else {
+          letters.clear();
+          std::cout << "?" << std::flush;
+        }
       }
     }
 
   }
 }
 
+
+bool getWordValue(ALPHABET *& alph, std::deque<char> * letters, waveformLetter * output)
+{
+  string input = "";
+  bool found;
+  
+  // create the full sentence string
+  for (auto it = letters->begin(); it != letters->end(); it++)
+  {
+    input += *it;
+  }
+  // work
+  while (input.size() > 0)
+  {
+    found = alph->getword(input, output);
+    if (!found)
+      input.pop_back();
+    else
+      break;
+  }
+  
+  // remove the letters
+  letters->erase(letters->begin(), letters->begin()+input.size());
+  
+  
+  return found;
+}
 
 
 
@@ -397,7 +420,7 @@ void init_window() {
   printw("You can start to write a letter, a word, a sentence \n");
   printw(" --- When you are done, press <ESCAPE> or <CTRL+C> to Exit ---\n");
   printw(
-      "<F1> = Japanese Braille | <F5> = English Braille (letter rythm) | <F6> = English Braille (word rythm) | <F7> = English Braille (sentence rythm)\n");
+      "<F1> = configBlack | <F2> = configBlack_withNumber | <F3> = configBlack_withIllusion\n");
 
 }
 
