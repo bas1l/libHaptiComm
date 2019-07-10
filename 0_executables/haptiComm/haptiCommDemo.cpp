@@ -60,6 +60,7 @@ int PROSODY_SEPARATORS[] = { '\0', '\0', ' ', '.' }; //without, letter, word, an
 
 // global variables
 int STATE_PROGRAM;
+bool needInitWindow;
 // global variables threads
 std::mutex m_mutex;
 std::condition_variable m_condVar;
@@ -72,6 +73,9 @@ bool sentencesReady;
 void generateSentences(std::atomic<bool> & workdone, std::string str_alph,
     char separator);
 void workSymbols(std::atomic<bool> & workdone, ALPHABET* & alph, DEVICE * dev);
+
+// utility thread funtions
+bool getWordValue(ALPHABET *& alph, std::deque<char> * letters, waveformLetter * output);
 
 // checkers
 bool signal4keypressed();
@@ -89,9 +93,14 @@ bool rmto_sentence();
 // configuration functions
 void create_window();
 void init_window();
+bool is_needInitWindow();
+void set_needInitWindow(bool val);
+bool check_windowFull();
 void rmto_window();
 void close_window();
 void resize_handler(int sig);
+
+
 int setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource,
     const char *& scope);
 static void usage();
@@ -211,20 +220,27 @@ void generateSentences(std::atomic<bool> & workdone, std::string str_alph,
 
   lastis_pod = false;
   do {
-    ch = getch();
-
+    if (check_windowFull()) {
+      set_needInitWindow(true);
+    }
+    ch = tolower(getch());
+    
     if (ch == KEY_ERASE) {
       rmto_sentence();
       rmto_window();
-    } else if (str_alph.find(tolower(ch)) != std::string::npos
+    } else if (str_alph.find(ch) != std::string::npos
         || str_prosody.find(ch) != std::string::npos) {
+      //ch = tolower(ch);
       printw("%c", ch);
       addto_sentence(ch);
     } else if (str_ponc.find(ch) != std::string::npos) {
       printw("%c", ch);
     }
-
     if (ch == separator || separator == '\0') {
+      if (is_needInitWindow()) { // if the window is full
+        init_window();
+        set_needInitWindow(false);
+      }
       set_sentencesReady();
     }
   } while (!(EXIT_KEYPRESS(ch) || F_KEYPRESS(ch)));
@@ -281,7 +297,6 @@ void workSymbols(std::atomic<bool> & workdone, ALPHABET *& alph, DEVICE * dev) {
             overruns += ovr;
           }
           values.clear();
-          letters.pop_front();
           std::this_thread::sleep_for(std::chrono::milliseconds(PROSODY_LETTER_DELAY));
         }
         else {
@@ -301,10 +316,13 @@ bool getWordValue(ALPHABET *& alph, std::deque<char> * letters, waveformLetter *
   bool found;
   
   // create the full sentence string
+  //std::cout << std::endl;
   for (auto it = letters->begin(); it != letters->end(); it++)
   {
     input += *it;
   }
+  //std::cout << "input<" << input << ">" << std::flush;
+  
   // work
   while (input.size() > 0)
   {
@@ -314,10 +332,11 @@ bool getWordValue(ALPHABET *& alph, std::deque<char> * letters, waveformLetter *
     else
       break;
   }
+  //std::cout << ", (remaining)size<" << input.size() << ">" << std::flush;
+  //std::cout << ", (remaining)input<" << input << ">" << std::flush;
   
   // remove the letters
   letters->erase(letters->begin(), letters->begin()+input.size());
-  
   
   return found;
 }
@@ -410,6 +429,24 @@ void create_window() {
   raw();
   keypad(stdscr, TRUE);
   noecho();
+  
+}
+
+bool is_needInitWindow(){
+  return needInitWindow;
+}
+
+void set_needInitWindow(bool val){
+  needInitWindow = val;
+}
+
+bool check_windowFull(){
+  int x = 0, y = 0;
+  getyx(stdscr, y, x);
+  
+  //std::cout << "<" << y <<"/" << LINES <<">" << std::flush;
+  //return false;
+  return (y >= (LINES-2));
 }
 
 void init_window() {
