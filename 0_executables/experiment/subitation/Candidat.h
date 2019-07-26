@@ -53,12 +53,11 @@ public:
 	bool exist();					// check if the candidat already exist
 	bool create();					// create the candidat
 	bool loadFromDB();				// load the candidat from the path directory variable
-	bool isNextExp();				// return if there is a next experiment
-	expEnum nextExp();				// return the next experiment to execute
-	//bool saveResults(vector<std::array<msec_t, 3>>* timers, vector<int> * answers);
-	bool saveResults(std::vector<msec_array_t> * timers, std::vector<int> * answers, 
+	bool is_nextExp();				// return if there is a next experiment
+	//bool save_results(vector<std::array<msec_t, 3>>* timers, vector<int> * answers);
+	bool save_results(std::vector<msec_array_t> * timers, std::vector<int> * answers, 
 					 std::vector<int> * confidence, int * seq_start, int * seq_end);
-	bool saveResultsCalibrationERM(std::vector<msec_array_t> * timers, std::vector<int> * answers, 
+	bool save_resultsCalibrationERM(std::vector<msec_array_t> * timers, std::vector<int> * answers, 
 						   std::vector<int> * confidence, 
 						   std::vector<std::vector<int>> * seq, std::vector<int> * identificationWAV, 
 						   int * seq_start, int * seq_end);
@@ -68,14 +67,15 @@ public:
 	string expstring(expEnum ee);					// get string of an expEnum
 
 	/* getters */
-	int 					getId();
-	string 					getFirstname();
-	string 					getLastname();
-	vector<pair<bool, expEnum>> getExpeOrder();
-	vector<vector<int>> 	getSequence();
-	string 					getPathDirectory();
-	string 					getPathDict();
-	string 					getLangage();
+    expEnum                 get_nextExp();              // return the next experiment to execute
+	int 					get_id();
+	string 					get_firstname();
+	string 					get_lastname();
+	vector<pair<bool, expEnum>> get_expeOrder();
+	vector<vector<int>> 	get_sequence();
+	string 					get_pathDirectory();
+	string 					get_pathDict();
+	string 					get_langage();
 
 
 
@@ -87,7 +87,7 @@ private:
 	string 	firstname; 						// firstname of the candidat
 	string 	lastname; 						// lastname of the candidat
 	int    	age; 							// age of the candidat
-	string 	type; 							// man or woman candidat
+	string 	gender; 					    // man or woman candidat
 	
 	/* general variables for making the use of some functions easier */
 	int a,i,j,r,s; 							// classic iteration variables
@@ -110,23 +110,22 @@ private:
 	string pathDict; 						// path of the main dictionary directory
 	
 	/* setters */
-	bool setId(int _id);
-	bool setName(string fn, string ln);
-	bool setlangage(string l);
-	bool setage(int _age);
-	bool settype(string _t);
-	bool setExpeOrder();
-	bool setSequence();
-	bool setPathDict(string p);
-	bool setPathDirectory(string p);
+	bool set_id(int _id);
+	bool set_name(string fn, string ln);
+	bool set_langage(string l);
+	bool set_age(int _age);
+	bool set_gender(string _t);
+	bool set_pathDict(string p);
+	bool set_pathDirectory(string p);
+	
 	/* initialisation */
 	bool initexpVariables();
 	bool initlangage();
-	bool initage();
-	bool inittype();
+	int read_age();
+	string read_gender();
 	bool initapc();
 	bool initseq();
-	bool initexpeOrder();
+	bool set_expeOrder();
 	bool saveInfo(); 						// save all initalised informations
 	/* tools, files and directories modifiers */
 	bool seteoe();

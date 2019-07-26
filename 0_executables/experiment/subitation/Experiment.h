@@ -52,6 +52,22 @@
 
 #define EXPERIMENT_SAMPLING_RATE 16000
 
+struct get_first
+{
+    template<typename T, typename U>
+    T const& operator()(std::pair<T, U> const& pair)
+    {
+        return pair.first;
+    }
+};
+struct get_second
+{
+    template<typename T, typename U>
+    U const& operator()(std::pair<T, U> const& pair)
+    {
+        return pair.second;
+    }
+};
 
 /************************************************ 
  * 												*
@@ -91,13 +107,14 @@ public:
 		
 	
 	/* b. Getters */
-	vector<msec_array_t> getTimer();
-	vector<int> 		 getAnswer();
-	vector<int> 		 getConfidence();
-	vector<vector<int>>  getSeq();
-	vector<int> 		 getERMCalibrationID();
-	int getSeq_start();
-	int getSeq_end();
+	std::vector<msec_array_t> get_answer_timers();
+	std::vector<int> 		 get_answer_values();
+	std::vector<int> 		 get_answer_confidences();
+	std::vector<vector<int>> get_actuators_sequences();
+	std::vector<char>         get_waveforms_sequences();
+	std::vector<int>          get_ERMCalibrationID();
+	int get_seq_start();
+	int get_seq_end();
 	
 	
 private:
@@ -112,6 +129,7 @@ private:
 	const char * 				cfgSource;
 	const char * 				scope;
 	int 						period_spi_ns; // period used to refresh datas
+	
 	/* b. AudioFile and sequence parameters */
 	int af_i;
 	int af_max;
@@ -122,11 +140,12 @@ private:
 	std::mutex 				m_mutex;
 	std::condition_variable m_condVar;
 	bool 					workdone;
-	bool 					is_recording;
+	bool 					recording;
 	bool	 				audioBufferReady;
 	pthread_attr_t     		attr;
 	pthread_t  				t_record;
-	pthread_t  				t_tap;
+    pthread_t               t_tap;
+    pthread_t               t_orchestration;
 
 	
 	
@@ -136,36 +155,40 @@ private:
 	
 	/* e. Candidat variables */
 	Candidat * 			c;
-	vector<vector<int>> seq;
 	vector<int> 		actchannelID;
 	expEnum 			expToExec;
+
+    /* f. input experiment variables */
+    // pair's vector of <ON/OFF actuator's value, waveforms> => ie. <[0 0 1 0 1 1], '1'>, <[1 1 1 0 1 0], '3'>, ...
+    std::vector< std::pair<std::vector<int>, char> > actuatorsAndWaveformIDs_sequences;
+    // map of <waveformIDs, waveforms> => ie. <'1', waveformLetter1>, <'2', waveformLetter2>, ...
+    std::map<char, waveformLetter> waveformIDsAndWF_map;
 	
-	/* f. output/result variables */
+    /* g. output/result variables */
 	highresclock_t 			c_start;
-	vector<msec_array_t> 	vvtimer;
-	vector<int> 			vanswer;
-	vector<int> 			vconfidence;
-	vector<int> 			vermCalibrationID;
+	vector<msec_array_t> 	answer_timers;
+	vector<int> 			answer_values;
+	vector<int> 			answer_confidences;
 	AudioFile<double> * 	af;
 	
 	
 /* 2. FUNCTIONS */
-	/* a. main tasks experiment */
+    /* a.1 main tasks experiment:: void threads functions */
 	static void * static_record_from_microphone(void * c);
-	static void * static_executeStimuli(void * c);
+    static void * static_execute_stimuli(void * c);
+    static void * static_start_experiment(void * c);
+    
+    /* a.2 main tasks experiment:: effective functions */
 	void record_from_microphone();
-	void executeStimuli();
+    void execute_stimuli();
+    void start_experiment();
 
-	bool executeCalibrationWord(waveformLetter values);
-	bool executeCalibrationERM(std::vector<waveformLetter> vvalues);
+    /* a.3 main tasks experiment:: sub-effective functions */
+	bool execute_calibration_word();
+	bool execute_calibration_ERM();
+	bool execute_space_finger();
+	bool execute_space_actuator();
 	
-	bool executeFingerSpace();
-	bool executeActuatorSpace(waveformLetter values);
-	bool executeActuatorTemp(waveformLetter values);
-	
-	waveformLetter  setupWaveformSpace(int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
-	waveformLetter  setupWaveformTemp( int * currSeq, waveformLetter values_copy, msec_array_t * vhrc);
-	void initactid4temp(); 
 	
 	/* b. threads related */
 	bool signal4recording();
@@ -177,23 +200,29 @@ private:
 	void stop_experiment();
 	
 	/* c. answers related */
-	bool writeAnswer(int * answeri);
-	bool writeConfidence(int * confidencei);
-	void fillAudioBuffer(AudioFile<double>::AudioBuffer buffer);
+	bool read_answer(int * answeri);
+	bool read_confidence(int * confidencei);
+	void set_audioBuffer(AudioFile<double>::AudioBuffer buffer);
 	void save_audio(int id_seq);
 		
 	/* d. checkers */
-	bool isrecording();
-	bool isstopedrecording();
-	bool isworkdone();
-	bool isrecordingorworkdone();
-	bool isAudioBufferReady();
+	bool is_recording();
+	bool is_stopedrecording();
+	bool is_workdone();
+	bool is_recordingorworkdone();
+	bool is_audioBufferReady();
 	
-	/* e. tools */
-	int init_captureHandle(snd_pcm_t ** capture_handle, unsigned int * exact_rate);
-	void randomWaiting();
-	msec_t nowLocal(highresclock_t start);
-	void dispTimers(int numSeq, int answeri, msec_array_t vhrc, msec_array_t timerDebug);
+	/* e. inner tools */
+    void tool_setup_waveformIDsAndWF_map(vector<char> waveformIDs);
+    void tool_setup_actuatorsAndWaveformIDs_sequences(vector<vector<int>> actuatorIDs, vector<char> waveformIDs);
+	int  tool_setup_captureHandle();
+    waveformLetter tool_get_sequenceWaveform_space(int sequence_id);
+    waveformLetter tool_get_sequenceCalibration_space();
+    
+    msec_t tool_now(highresclock_t start);
+	void   tool_randomWaiting();
+    void   tool_dispHeader(string s);
+    void   tool_dispTimers(int sequence_id, int answeri, msec_array_t vhrc, msec_array_t timerDebug);
 };
 
 #endif /* Experiment_H_ */

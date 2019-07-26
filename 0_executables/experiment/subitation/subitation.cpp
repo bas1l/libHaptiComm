@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	// check if the current user has another experiment to do
-	if (c.isNextExp() == false) 
+	if (!c.is_nextExp()) 
 	{
 		cerr << "No experiment left." << endl;
 		cerr << "The program is ending..." << endl; 
@@ -92,25 +92,26 @@ int main(int argc, char *argv[])
 	}
 	
 	/* get the results */
-	auto timers 	= exp.getTimer();
-	auto answers 	= exp.getAnswer();
-	auto confidence = exp.getConfidence();
-	auto seq 		= exp.getSeq();
-	auto ERMcalib 	= exp.getERMCalibrationID();
+	std::vector<msec_array_t> timers 	= exp.get_answer_timers();
+	std::vector<int> answers 	= exp.get_answer_values();
+	std::vector<int> confidence = exp.get_answer_confidences();
+	std::vector<std::vector<int>> seq = exp.get_actuators_sequences();
+	std::vector<char> wfIDs      = exp.get_waveforms_sequences();
+	std::vector<int> wfIDs_int;
+    std::transform(begin(wfIDs), end(wfIDs), begin(wfIDs_int), [](char c) { return c - '0'; });
 	
-	int start 		= exp.getSeq_start();
-	int end 		= exp.getSeq_end();
-	
+	int start = exp.get_seq_start();
+	int end = exp.get_seq_end();
 	/* push the results into the corresponding files */
 	std::cout<<"save results:"<<std::endl;
-	if (ERMcalib.size() == 0)
+	if (wfIDs_int.size() == 0)
 	{
-		c.saveResults(&timers, &answers, &confidence, &start, &end);
+		c.save_results(&timers, &answers, &confidence, &start, &end);
 	}
 	else
 	{
-		c.saveResultsCalibrationERM(&timers, &answers, &confidence, 
-									&seq, &ERMcalib, &start, &end);
+		c.save_resultsCalibrationERM(&timers, &answers, &confidence, 
+									&seq, &wfIDs_int, &start, &end);
 	}
 	
     return 0;

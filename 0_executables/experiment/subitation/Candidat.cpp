@@ -14,9 +14,9 @@ Candidat::Candidat(string _pathDict, string _pathDirectory,
 	  candidatsListFile("candidatsList.txt")
 {
 	cout<<"[candidat] new"<<endl;
-	setPathDict(_pathDict);
-	setPathDirectory(_pathDirectory);
-	setName(_firstname, _lastname);
+	set_pathDict(_pathDict);
+	set_pathDirectory(_pathDirectory);
+	set_name(_firstname, _lastname);
 }
 
 
@@ -66,7 +66,7 @@ bool Candidat::exist()
 	// if the participant already exists
 	if (exist)
 	{
-		this->setId(stoi(_id));
+		this->set_id(stoi(_id));
 		cout<<"[candidat] Exists in the database: id="<<to_string(this->id)<<endl;
 	}
 	else
@@ -100,7 +100,7 @@ bool Candidat::create()
 	}
 	//cout<<"idmax= "<<idMax<<endl; 
 	// set the id for the new candidate
-	this->setId(idMax+1);
+	this->set_id(idMax+1);
 	closedir(dp);
 
 	/* initialize the sequence vector  */
@@ -223,7 +223,7 @@ bool Candidat::loadFromDB(){
 
 
 // Return true if there is another exp to do
-bool Candidat::isNextExp()
+bool Candidat::is_nextExp()
 {
 	bool found = false;
 
@@ -238,7 +238,7 @@ bool Candidat::isNextExp()
 
 
 // return the next experiment to execute
-expEnum Candidat::nextExp(){
+expEnum Candidat::get_nextExp(){
 	expEnum ee;
 	bool found = false;
 
@@ -258,7 +258,7 @@ expEnum Candidat::nextExp(){
 }
 
 
-bool Candidat::saveResults(std::vector<msec_array_t> * timers, 
+bool Candidat::save_results(std::vector<msec_array_t> * timers, 
 						   std::vector<int> * answers, 
 						   std::vector<int> * confidence, 
 						   int * seq_start, int * seq_end){
@@ -330,7 +330,7 @@ bool Candidat::saveResults(std::vector<msec_array_t> * timers,
 
 
 
-bool Candidat::saveResultsCalibrationERM(std::vector<msec_array_t> * timers, 
+bool Candidat::save_resultsCalibrationERM(std::vector<msec_array_t> * timers, 
 						   std::vector<int> * answers, 
 						   std::vector<int> * confidence, 
 						   std::vector<std::vector<int>> * seqq, 
@@ -408,31 +408,31 @@ bool Candidat::saveResultsCalibrationERM(std::vector<msec_array_t> * timers,
 /*************
  * GETTER
  *************/
-int 						Candidat::getId(){ 				return this->id; }
-string 						Candidat::getFirstname(){ 		return this->firstname; }
-string 						Candidat::getLastname(){ 		return this->lastname; }
-vector<pair<bool, expEnum>> Candidat::getExpeOrder(){ 		return this->expeOrder; }
-vector<vector<int>> 		Candidat::getSequence(){ 		return this->seq; }
-string 						Candidat::getPathDirectory(){ 	return this->pathDirectory; }
-string 						Candidat::getPathDict(){ 		return this->pathDict; }
-string 						Candidat::getLangage(){ 		return this->langage; }
-	
+int 						Candidat::get_id(){ 				return this->id; }
+string 						Candidat::get_firstname(){ 		return this->firstname; }
+string 						Candidat::get_lastname(){ 		return this->lastname; }
+vector<pair<bool, expEnum>> Candidat::get_expeOrder(){ 		return this->expeOrder; }
+vector<vector<int>> 		Candidat::get_sequence(){ 		return this->seq; }
+string 						Candidat::get_pathDirectory(){ 	return this->pathDirectory; }
+string 						Candidat::get_pathDict(){ 		return this->pathDict; }
+string 						Candidat::get_langage(){ 		return this->langage; }
+
 
 /*************
  * SETTER
  *************/
-bool Candidat::setId(int _id){
+bool Candidat::set_id(int _id){
 	this->id = _id;
 	return true;
 }
 
-bool Candidat::setName(string fn, string ln){
+bool Candidat::set_name(string fn, string ln){
 	this->firstname = fn;
 	this->lastname = ln;
 	return true;
 }
 
-bool Candidat::setlangage(string l){
+bool Candidat::set_langage(string l){
 	bool ret = true;
 	if (l.compare("fr-fr") == 0)
 	{
@@ -452,33 +452,22 @@ bool Candidat::setlangage(string l){
 	return ret;
 }
 
-bool Candidat::setage(int _age){
+bool Candidat::set_age(int _age){
 	this->age = _age;
 	return true;
 }
 
-bool Candidat::settype(string _t){
-	this->type = _t;
-	return true;
-	
+bool Candidat::set_gender(string _t){
+	this->gender = _t;
+	return true;	
 }
 
-bool Candidat::setExpeOrder(){
-
-	return true;
-}
-
-bool Candidat::setSequence(){
-
-	return true;
-}
-
-bool Candidat::setPathDict(string p){
+bool Candidat::set_pathDict(string p){
 	this->pathDict = p;
 	return true;
 }
 
-bool Candidat::setPathDirectory(string p){
+bool Candidat::set_pathDirectory(string p){
 	this->pathDirectory = p;
 	return true;
 }
@@ -492,11 +481,11 @@ bool Candidat::setPathDirectory(string p){
 bool Candidat::initexpVariables(){
 	cout<<"More informations are needed to create the candidat:"<<endl;
 	this->initlangage();
-	this->initage();
-	this->inittype();
+    this->set_age(this->read_age());
+    this->set_gender(this->read_gender());
 	this->initapc();
 	this->initseq();
-	this->initexpeOrder();
+	this->set_expeOrder();
 	return true;
 }
 
@@ -505,25 +494,25 @@ bool Candidat::initlangage(){
 	//cout<<"Which is the langage to use? ('en-us' or 'fr-fr')"<<endl;
 	//cin >> tmp;
 	
-	return setlangage(tmp);
+	return set_langage(tmp);
 }
 
-bool Candidat::initage(){
+int Candidat::read_age(){
 	string tmp;
 	
 	cout<<"How old are you?"<<endl;
 	cin >> tmp;
 	
-	return setage(atoi(tmp.c_str()));
+	return atoi(tmp.c_str());
 }
 
-bool Candidat::inittype(){
+string Candidat::read_gender(){
 	string tmp;
 	
 	cout<<"Are you a man, a woman? ('h','m' or 'f', 'w')"<<endl;
 	cin >> tmp;
 	
-	return settype(tmp);
+	return tmp;
 }
 
 /* Initialise all the possible combinaisons of actuators */
@@ -553,7 +542,7 @@ bool Candidat::initseq(){
 	for(a=1; a<=nba; ++a)
 	{
 		idx.clear();
-		// (2) idx = getIdxCombinaison(apc, a)
+		// (2) idx = get_idxCombinaison(apc, a)
 		// for all the sequences
 		for(s=0; s<this->apc.size(); ++s)
 		{
@@ -586,7 +575,7 @@ bool Candidat::initseq(){
 	return true;
 }
 
-bool Candidat::initexpeOrder(){
+bool Candidat::set_expeOrder(){
 	expeOrder.push_back( std::make_pair(true, BrailleDevTemp) );
 	expeOrder.push_back( std::make_pair(true, FingersTemp) );
 	expeOrder.push_back( std::make_pair(true, BuzzerTemp) );
@@ -621,7 +610,7 @@ bool Candidat::saveInfo(){
 	mf<<endl;
 
 	mf<<"type:"<<endl;
-	mf<<this->type<<endl;
+	mf<<this->gender<<endl;
 	mf<<endl;
 
 	mf<<"langage:"<<endl;
@@ -662,15 +651,15 @@ bool Candidat::saveInfo(){
  *************/
 bool Candidat::seteoe()
 {
-	string expname( this->expstring(this->nextExp()) ); // current experiment string
+	string expname( this->expstring(this->get_nextExp()) ); // current experiment string
 	string line;
 	string expnew = "true," + expname;
 	string filein(this->pathDirectory+to_string(this->id)+"/"+this->infoFile);
 	string fileout(this->pathDirectory+to_string(this->id)+"/"+this->infoFile+".tmp");
 	std::ifstream fin(filein); //File to read from
 	std::ofstream fout(fileout); //Temporary file
-	if (!fin)  { cerr<<"[candidat][saveResults] "<<filein <<": Error opening file"<<endl; return true;}
-	if (!fout) { cerr<<"[candidat][saveResults] "<<fileout<<": Error opening file"<<endl; return true;}
+	if (!fin)  { cerr<<"[candidat][save_results] "<<filein <<": Error opening file"<<endl; return true;}
+	if (!fout) { cerr<<"[candidat][save_results] "<<fileout<<": Error opening file"<<endl; return true;}
 
 	while(getline(fin, line)) { // fill the tmp file
 		if (line.find(expname) != string::npos) // if the line of the current exp has been found
@@ -682,8 +671,8 @@ bool Candidat::seteoe()
 	fin.close();
 	fout.close();
 
-	if (remove(filein.c_str()) != 0) { cerr<<"[candidat][saveResults] "<<filein<<": Error deleting file"<<endl; }
-	if (rename(fileout.c_str(), filein.c_str()) != 0) { cerr<<"[candidat][saveResults] "<<fileout<<": Error renaming file"<<endl; }
+	if (remove(filein.c_str()) != 0) { cerr<<"[candidat][save_results] "<<filein<<": Error deleting file"<<endl; }
+	if (rename(fileout.c_str(), filein.c_str()) != 0) { cerr<<"[candidat][save_results] "<<fileout<<": Error renaming file"<<endl; }
 
 	return false;
 }
@@ -701,7 +690,7 @@ bool Candidat::fillcsvfile(std::string header,
 	bool is_new;
 	
 	// initialisation
-	expname = this->expstring(this->nextExp()); // current experiment string
+	expname = this->expstring(this->get_nextExp()); // current experiment string
 	fname = this->pathDirectory+to_string(this->id)+"/"+expname+".csv";
 	tmpname = fname+".tmp";
 	cptline = -1; // remove the header's count, start to -1
@@ -710,7 +699,7 @@ bool Candidat::fillcsvfile(std::string header,
 		f_out.open(tmpname);
 	}
 	catch (std::ifstream::failure e) {
-		std::cerr << "[candidat][saveResults] Exception opening "<<tmpname<<"file"<<std::endl;
+		std::cerr << "[candidat][save_results] Exception opening "<<tmpname<<"file"<<std::endl;
 	}
 	
 	// process
@@ -724,7 +713,7 @@ bool Candidat::fillcsvfile(std::string header,
 			f_in.open(fname);
 		}
 		catch (std::ifstream::failure e) {
-			std::cerr << "[candidat][saveResults] Exception opening "<<fname<<"file"<<std::endl;
+			std::cerr << "[candidat][save_results] Exception opening "<<fname<<"file"<<std::endl;
 		}
 		while(getline(f_in, line)) { // fill the tmp file up to line_start lines
 			f_out<<line<<std::endl;
@@ -769,13 +758,13 @@ bool Candidat::fillcsvfile(std::string header,
 	if (!is_new) {
 		f_in.close();
 		if (remove(fname.c_str()) != 0) { 
-			std::cerr<<"[candidat][saveResults] "<<fname<<": Error deleting file"<<std::endl; 
+			std::cerr<<"[candidat][save_results] "<<fname<<": Error deleting file"<<std::endl; 
 		}
 	}
 	if (rename(tmpname.c_str(), fname.c_str()) != 0) {
-		std::cerr<<"[candidat][saveResults] "<<tmpname<<": Error renaming file"<<std::endl; 
+		std::cerr<<"[candidat][save_results] "<<tmpname<<": Error renaming file"<<std::endl; 
 	}
-	std::cout<<"[candidat][saveResults] Results in: "<<fname<<"...[SUCCES]"<<std::endl;
+	std::cout<<"[candidat][save_results] Results in: "<<fname<<"...[SUCCES]"<<std::endl;
 	
 	return false;
 }
