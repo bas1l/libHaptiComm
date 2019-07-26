@@ -108,9 +108,9 @@ public:
 	
 	/* b. Getters */
 	std::vector<msec_array_t> get_answer_timers();
-	std::vector<int> 		 get_answer_values();
-	std::vector<int> 		 get_answer_confidences();
-	std::vector<vector<int>> get_actuators_sequences();
+	std::vector<int> 		  get_answer_values();
+	std::vector<int> 		  get_answer_confidences();
+	std::vector<vector<int>>  get_actuators_sequences();
 	std::vector<char>         get_waveforms_sequences();
 	std::vector<int>          get_ERMCalibrationID();
 	int get_seq_start();
@@ -140,8 +140,12 @@ private:
 	std::mutex 				m_mutex;
 	std::condition_variable m_condVar;
 	bool 					workdone;
-	bool 					recording;
-	bool	 				audioBufferReady;
+    bool                    recording;
+    bool                    executeMotion;
+    bool                    audioBufferReady;
+    bool                    waveformReady;
+    waveformLetter          current_waveform;
+    
 	pthread_attr_t     		attr;
 	pthread_t  				t_record;
     pthread_t               t_tap;
@@ -163,7 +167,7 @@ private:
     std::vector< std::pair<std::vector<int>, char> > actuatorsAndWaveformIDs_sequences;
     // map of <waveformIDs, waveforms> => ie. <'1', waveformLetter1>, <'2', waveformLetter2>, ...
     std::map<char, waveformLetter> waveformIDsAndWF_map;
-	
+    
     /* g. output/result variables */
 	highresclock_t 			c_start;
 	vector<msec_array_t> 	answer_timers;
@@ -184,13 +188,16 @@ private:
     void start_experiment();
 
     /* a.3 main tasks experiment:: sub-effective functions */
-	bool execute_calibration_word();
-	bool execute_calibration_ERM();
-	bool execute_space_finger();
-	bool execute_space_actuator();
+	bool start_calibration_word();
+	bool start_calibration_ERM();
+	bool start_space_finger();
+	bool start_space_actuator();
 	
 	
 	/* b. threads related */
+    bool signal4waveform_ready();
+    bool signal4motion();
+	bool signal4stopmotion();
 	bool signal4recording();
 	bool signal4stoprecording();
 	bool signal4stop_recording();
@@ -198,6 +205,10 @@ private:
 	void start_recording();
 	void stop_recording();
 	void stop_experiment();
+    bool start_motion();
+    bool stop_motion();
+    bool set_current_waveform(int sequence_id);
+    waveformLetter get_current_waveform();
 	
 	/* c. answers related */
 	bool read_answer(int * answeri);
@@ -206,11 +217,14 @@ private:
 	void save_audio(int id_seq);
 		
 	/* d. checkers */
+    bool is_executeMotion();
+    bool is_executeMotion_stoped();
 	bool is_recording();
-	bool is_stopedrecording();
+	bool is_recording_stoped();
 	bool is_workdone();
 	bool is_recordingorworkdone();
-	bool is_audioBufferReady();
+    bool is_audioBufferReady();
+    bool is_waveformReady();
 	
 	/* e. inner tools */
     void tool_setup_waveformIDsAndWF_map(vector<char> waveformIDs);
