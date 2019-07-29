@@ -59,7 +59,7 @@ struct get_first
     {
         return pair.first;
     }
-};
+};  
 struct get_second
 {
     template<typename T, typename U>
@@ -139,17 +139,17 @@ private:
 	/* c. Thread for executing tap and record voice and shared variables */
 	std::mutex 				m_mutex;
 	std::condition_variable m_condVar;
-	bool 					workdone;
-    bool                    recording;
-    bool                    executeMotion;
-    bool                    audioBufferReady;
-    bool                    waveformReady;
-    waveformLetter          current_waveform;
+  bool 					workdone;
+  bool                    recording;
+  bool                    executeMotion;
+  bool                    audioBufferReady;
+  bool                    waveformReady;
+  waveformLetter          current_waveform;
     
 	pthread_attr_t     		attr;
 	pthread_t  				t_record;
-    pthread_t               t_tap;
-    pthread_t               t_orchestration;
+  pthread_t               t_tap;
+  pthread_t               t_orchestration;
 
 	
 	
@@ -164,11 +164,11 @@ private:
 
     /* f. input experiment variables */
     // pair's vector of <ON/OFF actuator's value, waveforms> => ie. <[0 0 1 0 1 1], '1'>, <[1 1 1 0 1 0], '3'>, ...
-    std::vector< std::pair<std::vector<int>, char> > actuatorsAndWaveformIDs_sequences;
-    // map of <waveformIDs, waveforms> => ie. <'1', waveformLetter1>, <'2', waveformLetter2>, ...
-    std::map<char, waveformLetter> waveformIDsAndWF_map;
+  std::vector< std::pair<std::vector<int>, char> > actuatorsAndWaveformIDs_sequences;
+  // map of <waveformIDs, waveforms> => ie. <'1', waveformLetter1>, <'2', waveformLetter2>, ...
+  std::map<char, waveformLetter> waveformIDsAndWF_map;
     
-    /* g. output/result variables */
+  /* g. output/result variables */
 	highresclock_t 			c_start;
 	vector<msec_array_t> 	answer_timers;
 	vector<int> 			answer_values;
@@ -177,15 +177,15 @@ private:
 	
 	
 /* 2. FUNCTIONS */
-    /* a.1 main tasks experiment:: void threads functions */
+  /* a.1 main tasks experiment:: void threads functions */
 	static void * static_record_from_microphone(void * c);
-    static void * static_execute_stimuli(void * c);
-    static void * static_start_experiment(void * c);
+  static void * static_execute_stimuli(void * c);
+  static void * static_start_experiment(void * c);
     
-    /* a.2 main tasks experiment:: effective functions */
-	void record_from_microphone();
-    void execute_stimuli();
-    void start_experiment();
+  /* a.2 main tasks experiment:: effective functions */
+  void record_from_microphone();
+  void execute_stimuli();
+  void start_experiment();
 
     /* a.3 main tasks experiment:: sub-effective functions */
 	bool start_calibration_word();
@@ -195,8 +195,8 @@ private:
 	
 	
 	/* b. threads related */
-    bool signal4waveform_ready();
-    bool signal4motion();
+  bool signal4waveform_ready();
+  bool signal4motion();
 	bool signal4stopmotion();
 	bool signal4recording();
 	bool signal4stoprecording();
@@ -205,10 +205,10 @@ private:
 	void start_recording();
 	void stop_recording();
 	void stop_experiment();
-    bool start_motion();
-    bool stop_motion();
-    bool set_current_waveform(int sequence_id);
-    waveformLetter get_current_waveform();
+  bool start_motion();
+  bool stop_motion();
+  bool set_current_waveform(int sequence_id);
+  waveformLetter get_current_waveform();
 	
 	/* c. answers related */
 	bool read_answer(int * answeri);
@@ -217,26 +217,29 @@ private:
 	void save_audio(int id_seq);
 		
 	/* d. checkers */
-    bool is_executeMotion();
-    bool is_executeMotion_stoped();
+  bool is_executeMotion();
+  bool is_executeMotion_stoped();
+  bool is_executeMotionorworkdone();
 	bool is_recording();
 	bool is_recording_stoped();
+  bool is_recordingorworkdone();
+  bool is_waveformReady();
+  bool is_waveformReadyorworkdone();
 	bool is_workdone();
-	bool is_recordingorworkdone();
-    bool is_audioBufferReady();
-    bool is_waveformReady();
+  bool is_audioBufferReady();
 	
 	/* e. inner tools */
-    void tool_setup_waveformIDsAndWF_map(vector<char> waveformIDs);
-    void tool_setup_actuatorsAndWaveformIDs_sequences(vector<vector<int>> actuatorIDs, vector<char> waveformIDs);
+  void tool_setup_actuatorsAndWaveformIDs_sequences(vector<vector<int>> actuatorIDs, vector<char> waveformIDs);
+  void tool_setup_waveformIDsAndWF_map(vector<char> waveformIDs);
+      
 	int  tool_setup_captureHandle();
-    waveformLetter tool_get_sequenceWaveform_space(int sequence_id);
-    waveformLetter tool_get_sequenceCalibration_space();
+  waveformLetter tool_get_sequenceWaveform_space(int sequence_id);
+  waveformLetter tool_get_sequenceCalibration_space();
     
-    msec_t tool_now(highresclock_t start);
+  msec_t tool_now(highresclock_t start);
 	void   tool_randomWaiting();
-    void   tool_dispHeader(string s);
-    void   tool_dispTimers(int sequence_id, int answeri, msec_array_t vhrc, msec_array_t timerDebug);
+  void   tool_dispHeader(string s);
+  void   tool_dispTimers(int sequence_id, int answeri, msec_array_t vhrc, msec_array_t timerDebug);
 };
 
 #endif /* Experiment_H_ */

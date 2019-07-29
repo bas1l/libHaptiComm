@@ -84,13 +84,16 @@ bool Experiment::create() {
     haptiCommActuatorletter.push_back('2'); // configuration file's value for the hapticomm actuators
     haptiCommActuatorletter.push_back('3'); // configuration file's value for the hapticomm actuators
     haptiCommActuatorletter.push_back('4'); // configuration file's value for the hapticomm actuators
-    ERMActuatorletter.push_back('5'); // configuration file's value for the ERM actuators
-    ERMActuatorletter.push_back('6'); // configuration file's value for the ERM actuators
-    ERMActuatorletter.push_back('7'); // configuration file's value for the ERM actuators
-    ERMActuatorletter.push_back('8'); // configuration file's value for the ERM actuators
-    ERMCalibrationLetter.push_back('a');
-    ERMCalibrationLetter.push_back('b');
-    ERMCalibrationLetter.push_back('c');
+    ERMActuatorletter.push_back('1'); // configuration file's value for the ERM actuators
+    ERMActuatorletter.push_back('2'); // configuration file's value for the ERM actuators
+    ERMActuatorletter.push_back('3'); // configuration file's value for the ERM actuators
+    ERMActuatorletter.push_back('4'); // configuration file's value for the ERM actuators
+    //ERMCalibrationLetter.push_back('1');
+    ERMCalibrationLetter.push_back('2');
+    //ERMCalibrationLetter.push_back('3');
+    //ERMCalibrationLetter.push_back('4');
+    std::vector<std::vector<int>> actuatorIDs;
+    std::vector<int> placement = {1, 0, 0, 0, 0, 0};
     // decide which experiment has to be executed
     this->expToExec = this->c->get_nextExp(); // define current experiment
     switch (this->expToExec) {
@@ -106,14 +109,17 @@ bool Experiment::create() {
         break;
     case CalibrationWord:
         haptiCommActuatorletter.erase(haptiCommActuatorletter.begin()+1, haptiCommActuatorletter.end());
+        for (int i=0; i<this->c->get_sequence().size(); i++) {
+          actuatorIDs.push_back(placement);
+        }
         tool_setup_waveformIDsAndWF_map(haptiCommActuatorletter);
-        tool_setup_actuatorsAndWaveformIDs_sequences(this->c->get_sequence(),
-                haptiCommActuatorletter);
+        tool_setup_actuatorsAndWaveformIDs_sequences(actuatorIDs,
+            haptiCommActuatorletter);
         break;
     case CalibrationERM:
         tool_setup_waveformIDsAndWF_map(ERMCalibrationLetter);
         tool_setup_actuatorsAndWaveformIDs_sequences(this->c->get_sequence(),
-                ERMCalibrationLetter);
+            ERMCalibrationLetter);
         break;
     case FingersSpace:
         break;
@@ -141,9 +147,9 @@ bool Experiment::execute() {
     err = pthread_create(&(this->t_orchestration), &(this->attr),
             &Experiment::static_start_experiment, this);
 
+    err = pthread_join(this->t_orchestration, NULL);
     err = pthread_join(this->t_record, NULL);
     err = pthread_join(this->t_tap, NULL);
-    err = pthread_join(this->t_orchestration, NULL);
 
     return false;
 }
@@ -287,10 +293,9 @@ void Experiment::record_from_microphone() {
         }
         // waiting for the answer if the answer has not been given previously
         if (i == nbReadMax) {
-            std::cout << "[WARNING] Buffer full without asking to stop.."
+            std::cout << "[record_from_microphone][WARNING] Buffer full without asking to stop.."
                     << std::endl;
-            while (!signal4stop_recording()) {
-            }
+            while (!signal4stop_recording()) { }
         }
 
         // close the microphone
@@ -322,7 +327,7 @@ void Experiment::record_from_microphone() {
 
 // typedef       std::multimap<uint8_t, std::vector<uint16_t>>            waveformLetter;
 void Experiment::execute_stimuli() {
-    bool motion_done;
+    bool stoped_by_signal;
     int overruns, cpt, length_motion, length_motion_sub;
     waveformLetter local_waveform, tmp_waveform;
     std::vector<waveformLetter> splitted_local_waveform;
@@ -335,13 +340,15 @@ void Experiment::execute_stimuli() {
     
     while (!signal4stop_experiment()) // check if experiment is done
     {
-        cpt = 0;
-        motion_done = false;
+        stoped_by_signal = false;
+        splitted_local_waveform.clear();
         
         signal4waveform_ready();
+        
         local_waveform = get_current_waveform();
         length_motion = local_waveform.begin()->second.size();
         for (int i=0; i<length_motion; i+=length_motion_sub) {
+            tmp_waveform.clear();
             if(local_waveform.begin()->second.begin()+i+length_motion_sub > local_waveform.begin()->second.end()) {
                 for (it=local_waveform.begin(); it!=local_waveform.end(); ++it) {
                     std::vector<uint16_t> tmp_vector(it->second.begin()+i, it->second.end());
@@ -359,29 +366,31 @@ void Experiment::execute_stimuli() {
             splitted_local_waveform.push_back(tmp_waveform);
         }
         
+        
         signal4motion();  // wait for messaging the thread to start to move
-        while (!motion_done && !signal4stopmotion()) {
-            overruns += this->ad->execute_selective_trajectory(splitted_local_waveform[cpt++],
-                    this->period_spi_ns); // execute the sequence
-            if (cpt >= splitted_local_waveform.size()) {
-                motion_done = true;
-            }
+        if (signal4stop_experiment()) { break; }
+        
+        for (cpt=0; cpt<splitted_local_waveform.size(); cpt++) {
+          overruns += this->ad->execute_selective_trajectory(splitted_local_waveform[cpt],
+                      this->period_spi_ns); // execute the sequence
+          if (signal4stopmotion()) { 
+            stoped_by_signal = true;
+            break; 
+          }
         }
         this->ad->execute_trajectory(this->alph->getneutral(),
                 this->period_spi_ns);        // all actuators to neutral (security)
         
-        // motion has been finished before the candidate gave an answer
-        if (motion_done && is_executeMotion()) {
-            std::cout << "[WARNING] Buffer full without asking to stop.."
-                    << std::endl;
-            while (!signal4stopmotion()) {
-            }
+        if (!stoped_by_signal) {
+          //std::cout<<"[execute_stimuli][WARNING] Stimuli is finished before answering.."<<std::endl;
+          while(!signal4stopmotion()) { }
         }
-
+        
     }
+    
     std::cout << "[execute_stimuli] end of the function..." << std::endl;
     std::cout << "[execute_stimuli][OVERRUNS] Total overrruns="
-            << overruns << " samples." << std::endl;
+              << overruns << " samples." << std::endl;
 }
 
 void Experiment::start_experiment() {
@@ -450,47 +459,51 @@ bool Experiment::start_calibration_word() {
     sleep_for(milliseconds(50));                // let some time to open the mic
     tool_dispHeader(c->expstring(this->expToExec));
     cin.get();
-    for (i = this->seq_start; i < nb_sequences; i++) {  // for the sequence i
+    
+    
+    for (i = this->seq_start; i < nb_sequences; i++) { // for the sequence i
+        // display current sequence
         std::cout << "Push [ENTER] to start the next sequence. Say the number <"
-                << answerOrder[i / 10] << ">" << std::endl;
-        if (i != this->seq_start) std::cin.ignore();
-        std::cin.get();
-        std::cout << std::endl << "[main][Calibration] New sequence: [" << i
-                << "/" << nb_sequences << "]" << std::endl;
+                      << answerOrder[i / 10] << ">" << std::endl;
+              if (i != this->seq_start) std::cin.ignore();
+              std::cin.get();
+              std::cout << std::endl << "[main][Calibration] New sequence: [" << i
+                      << "/" << nb_sequences << "]" << std::endl;
         
         // initialisation
-        this->c_start = chrono::high_resolution_clock::now(); // https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
-        tool_randomWaiting(); // random waiting time to avoir any adapting rythm behavior during the exp
-
+        // set up the shared variable <current_waveform> corresponding to the sequence
+        set_current_waveform(i);
+        
+        // https://en.cppreference.com/w/cpp/chrono/high_resolution_clock/now
+        this->c_start = chrono::high_resolution_clock::now(); 
+        // random waiting time to avoid any adaptation behavior
+        tool_randomWaiting(); 
+        
         // work
+        vhrc[0] = tool_now(this->c_start);            // get timing before start
         start_recording();                    // start to record from microphone
-        vhrc[0] = tool_now(this->c_start);          // get timing before stimuli
-        //std::cout<<"[ACTUATOR] timer since start="<<vhrc[0].count()<<" ms"<<std::endl;
-        overruns += this->ad->execute_selective_trajectory(vvalues,
-                this->period_spi_ns); // execute the sequence
-        this->ad->execute_trajectory(this->alph->getneutral(),
-                this->period_spi_ns);        // all actuators to rest (security)
-        
+        start_motion();
         vhrc[1] = tool_now(this->c_start);           // get timing after stimuli
-        sleep_for(milliseconds(1));    // let some time to record the mic
+        sleep_for(milliseconds(1));           // let some time to record the mic
         
-        rect = read_answer(&answeri); // write the answer given by the participant
+        rect = read_answer(&answeri);    // read answer given by the participant
+        stop_motion();
+        vhrc[2] = tool_now(chrono::high_resolution_clock::now());  // don't care
+        
         sleep_for(milliseconds(1000));        // let some time to record the mic
-        
         stop_recording();                      // stop to record from microphone
-        
+
         // store and check the work
-        if (rect)                                         // if 's' answer, exit
-        {
+        if (rect) {                                      // if 's' answer, exit
             std::cout << "[EXIT] The experiment will be saved to i=" << i - 1
                     << "/" << nb_sequences << std::endl;
             break; // go to save
         }
-        save_audio(i);                      // save audio file
-        answer_timers.push_back(vhrc);      // save timers
-        answer_values.push_back(answeri);   // save answer
-        answer_confidences.push_back(4);    // save confidences
 
+        save_audio(i);                          // save audio file
+        answer_timers.push_back(vhrc);          // save timers
+        answer_values.push_back(answeri);       // save answer
+        answer_confidences.push_back(4);        // save confidence
     }
 
     this->seq_end = i;
@@ -623,6 +636,7 @@ bool Experiment::start_space_actuator() {
         
         rect = read_answer(&answeri);    // read answer given by the participant
         stop_motion();
+        vhrc[2] = tool_now(chrono::high_resolution_clock::now());  // don't care
         
         sleep_for(milliseconds(1000));        // let some time to record the mic
         stop_recording();                      // stop to record from microphone
@@ -727,7 +741,7 @@ bool Experiment::signal4waveform_ready() {
     // again acquire the lock. Then check if condition is met or not
     // If condition is met then continue else again go in waithis->t_record.
     this->m_condVar.wait(mlock,
-            std::bind(&Experiment::is_waveformReady, this));
+            std::bind(&Experiment::is_waveformReadyorworkdone, this));
     return true;
 }
 bool Experiment::signal4motion() {
@@ -738,14 +752,12 @@ bool Experiment::signal4motion() {
     // again acquire the lock. Then check if condition is met or not
     // If condition is met then continue else again go in waithis->t_record.
     this->m_condVar.wait(mlock,
-            std::bind(&Experiment::is_executeMotion, this));
+            std::bind(&Experiment::is_executeMotionorworkdone, this));
     return true;
 }
 bool Experiment::signal4stopmotion() {
-    std::unique_lock < std::mutex > mlock(this->m_mutex);
-    this->m_condVar.wait(mlock,
-            std::bind(&Experiment::is_executeMotion_stoped, this));
-    return true;
+    std::lock_guard < std::mutex > lk(this->m_mutex);   // locker to access shared variables
+     return is_executeMotion_stoped();
 }
 
 bool Experiment::signal4recording() {
@@ -788,11 +800,11 @@ void Experiment::stop_experiment() {
     //std::cout<<"[stop_experiment] in."<<std::endl;
     std::lock_guard < std::mutex > lk(this->m_mutex);   // locker to access shared variables
     this->workdone = true;                              // start of the microphone recording boolean
-    this->m_condVar.notify_one();                       // waiting thread is notified 
+    this->m_condVar.notify_all();                       // waiting thread is notified 
 }
 bool Experiment::start_motion() {
     std::lock_guard < std::mutex > lk(this->m_mutex);   // locker to access shared variables
-    executeMotion = true;
+    this->executeMotion = true;
     this->m_condVar.notify_one();                       // waiting thread is notified 
 }
 bool Experiment::stop_motion() {
@@ -803,7 +815,7 @@ bool Experiment::stop_motion() {
 }
 bool Experiment::set_current_waveform(int sequence_id) {
     std::lock_guard < std::mutex > lk(this->m_mutex);   // locker to access shared variables
-    current_waveform = tool_get_sequenceWaveform_space(sequence_id);
+    this->current_waveform = tool_get_sequenceWaveform_space(sequence_id);
     this->waveformReady = true;
 }
 waveformLetter Experiment::get_current_waveform() {
@@ -882,6 +894,16 @@ void Experiment::save_audio(int id_seq) {
 /*                 d. checkers              */
 /*                                          */
 /*------------------------------------------*/
+bool Experiment::is_waveformReadyorworkdone() {
+    return (is_workdone() || is_waveformReady());
+}
+bool Experiment::is_executeMotionorworkdone() {
+    return (is_workdone() || is_executeMotion());
+}
+bool Experiment::is_recordingorworkdone() {
+    return (is_workdone() || is_recording());
+}
+
 bool Experiment::is_recording() {
     return this->recording;
 }
@@ -890,9 +912,6 @@ bool Experiment::is_recording_stoped() {
 }
 bool Experiment::is_workdone() {
     return this->workdone;
-}
-bool Experiment::is_recordingorworkdone() {
-    return (is_workdone() || is_recording());
 }
 bool Experiment::is_audioBufferReady() {
     return this->audioBufferReady;
@@ -1026,7 +1045,7 @@ int Experiment::tool_setup_captureHandle() {
 void Experiment::tool_randomWaiting() {
     /* Time to wait before executing the sequence */
     int timespent, timeleft, randomttw;
-    randomttw = 250 + rand() % 2000; // randomize the time to wait between 1000-3000ms
+    randomttw = 250 + rand() % 10;//2000; // randomize the time to wait between 1000-3000ms
     timespent = (int) (tool_now(this->c_start).count()); // now - (beginning of the loop for this sequence)
     timeleft = randomttw - timespent;
     std::cout << "wait for: " << timeleft << "(ms)" << std::endl;

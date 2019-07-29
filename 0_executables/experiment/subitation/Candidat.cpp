@@ -261,82 +261,11 @@ expEnum Candidat::get_nextExp(){
 bool Candidat::save_results(std::vector<msec_array_t> * timers, 
 						   std::vector<int> * answers, 
 						   std::vector<int> * confidence, 
-						   int * seq_start, int * seq_end){
-
-	std::vector<std::vector<int>> results;
-	std::string header;
-	int nb_lines, nb_columns, nb_timers, curr_item;
-	int l, t;
-	int x=0;
-	
-	nb_columns = 0;
-	// header of the CSV file
-	header = "id_seq";
-	header += ",actuator1,actuator2,actuator3,actuator4,actuator5,actuator6";
-	header += ",before_stimuli(ms),after_stimuli(ms),time_answer(ms)";
-	if (answers->size() != 0)
-	{
-		header += ",value_answer(0:6)";
-		nb_columns++;
-	}
-	if (confidence->size() != 0)
-	{
-		header += ",confidence(0:4)";
-		nb_columns++;
-	}
-	nb_timers = (timers->at(0)).size();
-	nb_columns += this->seq[0].size() + nb_timers + 1; // +3 for ID sequence, anwser, and confidence slots
-	nb_lines = timers->size();
-	results.resize(nb_lines, std::vector<int>(nb_columns));
-	
-	// for each lines
-	for (l=0; l<nb_lines; l++)
-	{
-		curr_item = 0;
-		// id of the sequence
-		results[l][curr_item++] = *seq_start + l;
-		// value of the sequence
-		for (t=0; t<this->seq[*seq_start+l].size(); ++t) {
-			results[l][curr_item++] = this->seq[*seq_start + l][t];
-		}
-		// for each timers
-		for (t=0; t<nb_timers; t++, curr_item++)
-		{
-			results[l][curr_item] = (timers->at(l))[t].count();
-		}
-		// answer
-		if (l < answers->size())
-		{
-			results[l][curr_item++] = answers->at(l);
-		}
-		// confidence
-		if (l < confidence->size())
-		{
-			results[l][curr_item++] = confidence->at(l);
-		}
-	}
-	
-	/* save the results in a csv file */
-	fillcsvfile(header, results, seq_start, seq_end);
-
-	/* if seq_end = max, the experiment has been done */
-	if (this->seq.size() == *seq_end)
-	{
-		return seteoe();
-	}
-
-	return false;
-}
-
-
-
-bool Candidat::save_resultsCalibrationERM(std::vector<msec_array_t> * timers, 
-						   std::vector<int> * answers, 
-						   std::vector<int> * confidence, 
 						   std::vector<std::vector<int>> * seqq, 
 						   std::vector<int> * identificationWAV, 
-						   int * seq_start, int * seq_end){
+						   int * seq_start, int * seq_end) {
 
+  std::cout<<"[save_results] "<<std::flush;
 	std::vector<std::vector<int>> results;
 	std::string header;
 	int nb_lines, nb_columns, nb_timers, curr_item;
@@ -347,57 +276,64 @@ bool Candidat::save_resultsCalibrationERM(std::vector<msec_array_t> * timers,
 	header = "id_seq";
 	header += ",actuator1,actuator2,actuator3,actuator4,actuator5,actuator6";
 	header += ",before_stimuli(ms),after_stimuli(ms),time_answer(ms)";
-	if (answers->size() != 0)
-	{
+	if (answers->size() != 0) {
 		header += ",value_answer(0:6)";
 		nb_columns++;
 	}
-	if (confidence->size() != 0)
-	{
+	if (confidence->size() != 0) {
 		header += ",confidence(0:4)";
 		nb_columns++;
 	}
-	if (identificationWAV->size() != 0)
-	{
+	if (identificationWAV->size() != 0) {
 		header += ",identificationWAV";
 		nb_columns++;
 	}
+  std::cout<<"initialisation, "<<std::flush;
 	
 	nb_timers = (timers->at(0)).size();
 	nb_columns += (seqq->at(0)).size() + nb_timers + 1; // +1 for ID sequence slots
 	nb_lines = timers->size();
 	results.resize(nb_lines, std::vector<int>(nb_columns));
+  std::cout<<"nb_lines="<<nb_lines<<", "<<std::flush;
 	// for each lines
-	for (l=0; l<nb_lines; l++, curr_item=0)
-	{
+	for (l=0; l<nb_lines; l++, curr_item=0) {
 		// id of the sequence
 		results[l][curr_item++] = l;
+	  std::cout<<"sequence="<<l<<", "<<std::flush;
 		// value of the sequence
 		for (t=0; t<(seqq->at(l)).size(); ++t) {
 			results[l][curr_item++] = (seqq->at(l))[t];
 		}
+    std::cout<<"seqq, "<<std::flush;
 		// for each timers
-		for (t=0; t<nb_timers; ++t)
-		{
+		for (t=0; t<nb_timers; ++t) {
 			results[l][curr_item++] = (timers->at(l))[t].count();
 		}
+    std::cout<<"timers, "<<std::flush;
 		// answer
 		results[l][curr_item++] = answers->at(l);
+    std::cout<<"answers="<<answers->at(l)<<", "<<std::flush;
 		// confidence
 		results[l][curr_item++] = confidence->at(l);
+    std::cout<<"confidence="<<confidence->at(l)<<", "<<std::flush;
 		// wav identification for 50, 100 or 150/200ms duration ERM
 		results[l][curr_item] = identificationWAV->at(l);
+    std::cout<<"identificationWAV="<<identificationWAV->at(l)<<", "<<std::flush;
 	}
+  std::cout<<"initialisation2, "<<std::flush;
 	
 	
 	/* save the results in a csv file */
 	fillcsvfile(header, results, seq_start, seq_end);
 
+  std::cout<<"fillcsvfile, "<<std::flush;
 	/* if seq_end = max, the experiment has been done */
-	if (seqq->size() == *seq_end)
-	{
+	if (seqq->size() == *seq_end) {
 		return seteoe();
 	}
+  std::cout<<"seteoe, "<<std::flush;
+
+  std::cout<<std::endl;
 
 	return false;
 }
@@ -408,31 +344,31 @@ bool Candidat::save_resultsCalibrationERM(std::vector<msec_array_t> * timers,
 /*************
  * GETTER
  *************/
-int 						Candidat::get_id(){ 				return this->id; }
-string 						Candidat::get_firstname(){ 		return this->firstname; }
-string 						Candidat::get_lastname(){ 		return this->lastname; }
-vector<pair<bool, expEnum>> Candidat::get_expeOrder(){ 		return this->expeOrder; }
-vector<vector<int>> 		Candidat::get_sequence(){ 		return this->seq; }
-string 						Candidat::get_pathDirectory(){ 	return this->pathDirectory; }
-string 						Candidat::get_pathDict(){ 		return this->pathDict; }
-string 						Candidat::get_langage(){ 		return this->langage; }
+int 						  Candidat::get_id(){ return this->id; }
+string 						Candidat::get_firstname(){ return this->firstname; }
+string 						Candidat::get_lastname(){ return this->lastname; }
+vector<pair<bool, expEnum>> Candidat::get_expeOrder(){ return this->expeOrder; }
+vector<vector<int>> Candidat::get_sequence(){ return this->seq; }
+string 						Candidat::get_pathDirectory(){ return this->pathDirectory; }
+string 						Candidat::get_pathDict(){ return this->pathDict; }
+string 						Candidat::get_langage(){ return this->langage; }
 
 
 /*************
  * SETTER
  *************/
-bool Candidat::set_id(int _id){
+bool Candidat::set_id(int _id) {
 	this->id = _id;
 	return true;
 }
 
-bool Candidat::set_name(string fn, string ln){
+bool Candidat::set_name(string fn, string ln) {
 	this->firstname = fn;
 	this->lastname = ln;
 	return true;
 }
 
-bool Candidat::set_langage(string l){
+bool Candidat::set_langage(string l) {
 	bool ret = true;
 	if (l.compare("fr-fr") == 0)
 	{
@@ -452,22 +388,22 @@ bool Candidat::set_langage(string l){
 	return ret;
 }
 
-bool Candidat::set_age(int _age){
+bool Candidat::set_age(int _age) {
 	this->age = _age;
 	return true;
 }
 
-bool Candidat::set_gender(string _t){
+bool Candidat::set_gender(string _t) {
 	this->gender = _t;
 	return true;	
 }
 
-bool Candidat::set_pathDict(string p){
+bool Candidat::set_pathDict(string p) {
 	this->pathDict = p;
 	return true;
 }
 
-bool Candidat::set_pathDirectory(string p){
+bool Candidat::set_pathDirectory(string p) {
 	this->pathDirectory = p;
 	return true;
 }
@@ -478,7 +414,7 @@ bool Candidat::set_pathDirectory(string p){
 /*************
  * INITIALISATION
  *************/
-bool Candidat::initexpVariables(){
+bool Candidat::initexpVariables() {
 	cout<<"More informations are needed to create the candidat:"<<endl;
 	this->initlangage();
     this->set_age(this->read_age());
@@ -489,7 +425,7 @@ bool Candidat::initexpVariables(){
 	return true;
 }
 
-bool Candidat::initlangage(){
+bool Candidat::initlangage() {
 	string tmp = "fr-fr";
 	//cout<<"Which is the langage to use? ('en-us' or 'fr-fr')"<<endl;
 	//cin >> tmp;
@@ -497,7 +433,7 @@ bool Candidat::initlangage(){
 	return set_langage(tmp);
 }
 
-int Candidat::read_age(){
+int Candidat::read_age() {
 	string tmp;
 	
 	cout<<"How old are you?"<<endl;
@@ -506,7 +442,7 @@ int Candidat::read_age(){
 	return atoi(tmp.c_str());
 }
 
-string Candidat::read_gender(){
+string Candidat::read_gender() {
 	string tmp;
 	
 	cout<<"Are you a man, a woman? ('h','m' or 'f', 'w')"<<endl;
@@ -516,7 +452,7 @@ string Candidat::read_gender(){
 }
 
 /* Initialise all the possible combinaisons of actuators */
-bool Candidat::initapc(){
+bool Candidat::initapc() {
 	int nbs = pow(2, this->nba) - 1; // (number of sequences) - (the '000000' sequence)
 	cout<<"[candidat] initapc> Number of (sequence, motor) = ("<<nbs<<", "<<this->nba<<")"<<endl;
 	for(int i=1; i<nbs+1; i++)
@@ -534,7 +470,7 @@ bool Candidat::initapc(){
 }
 
 /* Initialise the sequences that will be used for the expEnums */
-bool Candidat::initseq(){
+bool Candidat::initseq() {
 	std::srand ( unsigned ( std::time(0) ) ); // initialise the rand and srand
 	vector<int> idx; // index vector of the combinaisons used for a specific number of actuator
 	int sum_of_elems; // sum of the actuator used during a sequence
@@ -582,11 +518,11 @@ bool Candidat::set_expeOrder(){
 	
 	expeOrder.push_back( std::make_pair(true, FingersSpace) );
 	expeOrder.push_back( std::make_pair(false, BrailleDevSpace) );
-	expeOrder.push_back( std::make_pair(true, BuzzerSpace) );
+	expeOrder.push_back( std::make_pair(false, BuzzerSpace) );
 	
 	std::random_shuffle(expeOrder.begin(), expeOrder.end());
 	
-	expeOrder.push_back( std::make_pair(false, CalibrationERM) );
+	expeOrder.push_back( std::make_pair(true, CalibrationERM) );
 	expeOrder.push_back( std::make_pair(false, CalibrationWord) );	// when writing and reading, it will be executed first
 	
 	return true;
