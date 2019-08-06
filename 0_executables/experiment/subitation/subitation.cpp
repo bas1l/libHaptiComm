@@ -92,22 +92,7 @@ int main(int argc, char *argv[])
 		return 1;
 	}
 	
-	/* get the results */
-	std::vector<msec_array_t> timers 	= exp.get_answer_timers();
-	std::vector<int> answers 	        = exp.get_answer_values();
-	std::vector<int> confidence       = exp.get_answer_confidences();
-	std::vector<std::vector<int>> seq = exp.get_actuators_sequences();
-	std::vector<char> wfIDs           = exp.get_waveforms_sequences();
-	std::vector<int> wfIDs_int;
-	wfIDs_int.reserve(wfIDs.size());
-	for( char i : wfIDs ) wfIDs_int.push_back( i-'0' );
 	
-	int start = exp.get_seq_start();
-	int end = exp.get_seq_end();
-	/* push the results into the corresponding files */
-	std::cout<<"save results:"<<std::endl;
-  c.save_results(&timers, &answers, &confidence, 
-                &seq, &wfIDs_int, &start, &end);
 	
   return 0;
 }

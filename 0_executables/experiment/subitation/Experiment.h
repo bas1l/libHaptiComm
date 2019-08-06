@@ -211,7 +211,7 @@ private:
   waveformLetter get_current_waveform();
 	
 	/* c. answers related */
-	bool read_answer(int * answeri);
+	int read_answer(int * answeri);
 	bool read_confidence(int * confidencei);
 	void set_audioBuffer(AudioFile<double>::AudioBuffer buffer);
 	void save_audio(int id_seq);
@@ -240,6 +240,7 @@ private:
 	void   tool_randomWaiting();
   void   tool_dispHeader(string s);
   void   tool_dispTimers(int sequence_id, int answeri, msec_array_t vhrc, msec_array_t timerDebug);
+  void   tool_save_results();
 };
 
 #endif /* Experiment_H_ */

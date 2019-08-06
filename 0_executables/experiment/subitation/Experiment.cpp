@@ -71,6 +71,7 @@ bool Experiment::create() {
     this->recording = false; // allow t_record to start or stop the recording
     this->audioBufferReady = false;
 
+    
     /* (4/6)[SPI COMMUNICATION] period for the SPI communication */
     this->cfg->configure(cfgSource, dev, wf, alph); // hapticomm configuration file
     double durationRefresh_ms = 1 / (double) alph->getFreqRefresh_mHz();
@@ -148,6 +149,10 @@ bool Experiment::execute() {
             &Experiment::static_start_experiment, this);
 
     err = pthread_join(this->t_orchestration, NULL);
+    
+    tool_save_results();
+    
+    
     err = pthread_join(this->t_record, NULL);
     err = pthread_join(this->t_tap, NULL);
 
@@ -257,6 +262,7 @@ void Experiment::record_from_microphone() {
     {
         i = 0;
         signal4recording();  // wait for messaging the thread to start to record
+        if (signal4stop_experiment()) { break; }
 
         // open the microphone
         if ((err = snd_pcm_prepare(this->capture_handle)) < 0) {
@@ -271,7 +277,7 @@ void Experiment::record_from_microphone() {
         sleep_for(milliseconds(ttw)); // let some time for alsa to feed the buffer
 
         // record until the answer is given
-        while (!signal4stop_recording() && i != nbReadMax) {
+        while (!signal4stop_experiment() && !signal4stop_recording() && i != nbReadMax) {
             clk_read_before = chrono::high_resolution_clock::now(); // get timer when the mic is opened    
             if ((err = snd_pcm_readi(this->capture_handle, buf[i++], sizeBuf))
                     < 0) {
@@ -291,8 +297,11 @@ void Experiment::record_from_microphone() {
                 overruns += ttw_left;
 
         }
+        
+        if (signal4stop_experiment()) { break; }
         // waiting for the answer if the answer has not been given previously
         if (i == nbReadMax) {
+            
             std::cout << "[record_from_microphone][WARNING] Buffer full without asking to stop.."
                     << std::endl;
             while (!signal4stop_recording()) { }
@@ -323,6 +332,8 @@ void Experiment::record_from_microphone() {
     std::cout << "[record_from_microphone] end of the function..." << std::endl;
     std::cout << "[record_from_microphone][OVERRUNS] Total overrruns="
             << overruns << " samples." << std::endl;
+    
+    stop_experiment();
 }
 
 // typedef       std::multimap<uint8_t, std::vector<uint16_t>>            waveformLetter;
@@ -391,6 +402,8 @@ void Experiment::execute_stimuli() {
     std::cout << "[execute_stimuli] end of the function..." << std::endl;
     std::cout << "[execute_stimuli][OVERRUNS] Total overrruns="
               << overruns << " samples." << std::endl;
+    
+    stop_experiment();
 }
 
 void Experiment::start_experiment() {
@@ -494,7 +507,7 @@ bool Experiment::start_calibration_word() {
         stop_recording();                      // stop to record from microphone
 
         // store and check the work
-        if (rect) {                                      // if 's' answer, exit
+        if (rect == 1) {                                      // if 's' answer, exit
             std::cout << "[EXIT] The experiment will be saved to i=" << i - 1
                     << "/" << nb_sequences << std::endl;
             break; // go to save
@@ -518,14 +531,14 @@ bool Experiment::start_calibration_ERM() {
     // environmental variables
     waveformLetter valuestmp;
     std::vector<int> waveformIDs;
-    bool rect;
-    int i, j, overruns, nb_sequences;
+    
+    int i, j, overruns, nb_sequences, rect;
     /* output variables */
     msec_array_t vhrc;
     msec_array_t timerDebug;
     int answeri, confidencei;
 
-    rect = false;
+    rect = 0;
     i = 0;
     j = 0;
     overruns = 0;
@@ -562,18 +575,22 @@ bool Experiment::start_calibration_ERM() {
         vhrc[1] = tool_now(this->c_start);           // get timing after stimuli
         sleep_for(milliseconds(1));           // let some time to record the mic
         rect = read_answer(&answeri); // read input keyboard of the participant answer
-        sleep_for(milliseconds(1000));        // let some time to record the mic
-        stop_recording();                      // stop to record from microphone
-
         // store and check the work
-        if (rect)                                         // if 's' answer, exit
+        if (rect == 1)                                         // if 's' answer, exit
         {
             std::cout << "[EXIT] The experiment will be saved to i=" << i - 1
                     << "/" << nb_sequences << std::endl;
             break; // go to save
         }
+        else if (rect == 2) {
+          i--;
+          continue;
+        }
         read_confidence(&confidencei); // read input keyboard of the participant confidence
 
+        sleep_for(milliseconds(1000));        // let some time to record the mic
+        stop_recording();                      // stop to record from microphone
+        
         save_audio(i);                              // save audio file
         answer_timers.push_back(vhrc);                    // save timers
         answer_values.push_back(answeri);                 // save answer
@@ -593,15 +610,15 @@ bool Experiment::start_space_actuator() {
     /* (1/5)[MEMORY ALLOCATION] */
     // environmental variables
     waveformLetter valuestmp;
-    bool rect;
-    int i, overruns, nb_sequences;
+    
+    int i, overruns, nb_sequences, rect;
     // output variables
     msec_array_t vhrc;
     msec_array_t timerDebug;
     int answeri, confidencei;
 
     /* (2/5)[INITIALISATION] */
-    rect = false;
+    rect = 0;
     overruns = 0;
     i = 0;
     nb_sequences = this->actuatorsAndWaveformIDs_sequences.size();
@@ -617,7 +634,7 @@ bool Experiment::start_space_actuator() {
         std::cout << std::endl;
         std::cout << "[main] New sequence: [" << i << "/" << nb_sequences
                 << "]" << std::endl;
-
+        
         // initialisation
         // set up the shared variable <current_waveform> corresponding to the sequence
         set_current_waveform(i);
@@ -626,7 +643,7 @@ bool Experiment::start_space_actuator() {
         this->c_start = chrono::high_resolution_clock::now(); 
         // random waiting time to avoid any adaptation behavior
         tool_randomWaiting(); 
-
+        
         // work
         vhrc[0] = tool_now(this->c_start);            // get timing before start
         start_recording();                    // start to record from microphone
@@ -638,17 +655,22 @@ bool Experiment::start_space_actuator() {
         stop_motion();
         vhrc[2] = tool_now(chrono::high_resolution_clock::now());  // don't care
         
-        sleep_for(milliseconds(1000));        // let some time to record the mic
-        stop_recording();                      // stop to record from microphone
-
         // store and check the work
-        if (rect) {                                      // if 's' answer, exit
+        if (rect == 1) {                                      // if 's' answer, exit
             std::cout << "[EXIT] The experiment will be saved to i=" << i - 1
                     << "/" << nb_sequences << std::endl;
             break; // go to save
         }
+        else if (rect == 2) {
+          i--;
+          stop_recording();                      // stop to record from microphone
+          continue;
+        }
         read_confidence(&confidencei);
-
+        
+        sleep_for(milliseconds(1000));        // let some time to record the mic
+        stop_recording();                      // stop to record from microphone
+        
         save_audio(i);                                       // save audio file
         answer_timers.push_back(vhrc);                           // save timers
         answer_values.push_back(answeri);                        // save answer
@@ -827,23 +849,26 @@ waveformLetter Experiment::get_current_waveform() {
 /*                 c. Answer related        */
 /*                                          */
 /*------------------------------------------*/
-bool Experiment::read_answer(int * answeri) {
-    bool ret = false;
+int Experiment::read_answer(int * answeri) {
+    int ret = 0;
     string ans;
-    std::cout << "What was the answer? ['s' = save and quit]" << std::endl;
+    std::cout << "What was the answer?\t['s' = save and quit]\t['r' = restart]" << std::endl;
     cin >> ans;
     if (isdigit(ans[0])) {
         //std::cout<<"'"<<ans<<"' is a digit -> '"<<atoi(ans.c_str())<<"'"<<std::endl;
         *answeri = atoi(ans.c_str());
+    } else if (0 == ans.compare("r")) { 
+      ret = 2;
     } else if (0 == ans.compare("s") || 0 == ans.compare("\x18")
-            || 0 == ans.compare("\x18s")) // if has to stop/pause the experiment
-                    {
-        ret = true;
-    }
+        || 0 == ans.compare("\x18s")) {// if has to stop/pause the experiment
+      ret = 1;
+    } 
 
     //std::cout<<"The new answer is='"<<ans<<"'"<<std::endl;
     return ret;
 }
+
+
 
 //answer_confidences
 bool Experiment::read_confidence(int * confidencei) {
@@ -1045,7 +1070,7 @@ int Experiment::tool_setup_captureHandle() {
 void Experiment::tool_randomWaiting() {
     /* Time to wait before executing the sequence */
     int timespent, timeleft, randomttw;
-    randomttw = 250 + rand() % 10;//2000; // randomize the time to wait between 1000-3000ms
+    randomttw = 250 + rand() % 2000; // randomize the time to wait between 1000-3000ms
     timespent = (int) (tool_now(this->c_start).count()); // now - (beginning of the loop for this sequence)
     timeleft = randomttw - timespent;
     std::cout << "wait for: " << timeleft << "(ms)" << std::endl;
@@ -1120,4 +1145,22 @@ void Experiment::tool_setup_waveformIDsAndWF_map(vector<char> waveforms) {
     }
 }
 
+void Experiment::tool_save_results() {
+  /* get the results */
+  std::vector<msec_array_t> timers  = this->get_answer_timers();
+  std::vector<int> answers          = this->get_answer_values();
+  std::vector<int> confidence       = this->get_answer_confidences();
+  std::vector<std::vector<int>> seq = this->get_actuators_sequences();
+  std::vector<char> wfIDs           = this->get_waveforms_sequences();
+  std::vector<int> wfIDs_int;
+  wfIDs_int.reserve(wfIDs.size());
+  for( char i : wfIDs ) wfIDs_int.push_back( i-'0' );
+  
+  int start = this->get_seq_start();
+  int end = this->get_seq_end();
+  /* push the results into the corresponding files */
+  std::cout<<"save results:"<<std::endl;
+  c->save_results(&timers, &answers, &confidence, 
+                &seq, &wfIDs_int, &start, &end); 
+}
 

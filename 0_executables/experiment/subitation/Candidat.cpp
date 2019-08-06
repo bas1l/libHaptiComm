@@ -264,8 +264,6 @@ bool Candidat::save_results(std::vector<msec_array_t> * timers,
 						   std::vector<std::vector<int>> * seqq, 
 						   std::vector<int> * identificationWAV, 
 						   int * seq_start, int * seq_end) {
-
-  std::cout<<"[save_results] "<<std::flush;
 	std::vector<std::vector<int>> results;
 	std::string header;
 	int nb_lines, nb_columns, nb_timers, curr_item;
@@ -288,52 +286,39 @@ bool Candidat::save_results(std::vector<msec_array_t> * timers,
 		header += ",identificationWAV";
 		nb_columns++;
 	}
-  std::cout<<"initialisation, "<<std::flush;
 	
 	nb_timers = (timers->at(0)).size();
 	nb_columns += (seqq->at(0)).size() + nb_timers + 1; // +1 for ID sequence slots
 	nb_lines = timers->size();
 	results.resize(nb_lines, std::vector<int>(nb_columns));
-  std::cout<<"nb_lines="<<nb_lines<<", "<<std::flush;
 	// for each lines
 	for (l=0; l<nb_lines; l++, curr_item=0) {
 		// id of the sequence
 		results[l][curr_item++] = l;
-	  std::cout<<"sequence="<<l<<", "<<std::flush;
 		// value of the sequence
 		for (t=0; t<(seqq->at(l)).size(); ++t) {
 			results[l][curr_item++] = (seqq->at(l))[t];
 		}
-    std::cout<<"seqq, "<<std::flush;
 		// for each timers
 		for (t=0; t<nb_timers; ++t) {
 			results[l][curr_item++] = (timers->at(l))[t].count();
 		}
-    std::cout<<"timers, "<<std::flush;
 		// answer
 		results[l][curr_item++] = answers->at(l);
-    std::cout<<"answers="<<answers->at(l)<<", "<<std::flush;
 		// confidence
 		results[l][curr_item++] = confidence->at(l);
-    std::cout<<"confidence="<<confidence->at(l)<<", "<<std::flush;
 		// wav identification for 50, 100 or 150/200ms duration ERM
 		results[l][curr_item] = identificationWAV->at(l);
-    std::cout<<"identificationWAV="<<identificationWAV->at(l)<<", "<<std::flush;
 	}
-  std::cout<<"initialisation2, "<<std::flush;
 	
 	
 	/* save the results in a csv file */
 	fillcsvfile(header, results, seq_start, seq_end);
 
-  std::cout<<"fillcsvfile, "<<std::flush;
 	/* if seq_end = max, the experiment has been done */
 	if (seqq->size() == *seq_end) {
 		return seteoe();
 	}
-  std::cout<<"seteoe, "<<std::flush;
-
-  std::cout<<std::endl;
 
 	return false;
 }
