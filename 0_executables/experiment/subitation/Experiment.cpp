@@ -446,15 +446,14 @@ bool Experiment::start_calibration_word() {
     using namespace std::chrono;
     std::cout << "[experiment][executeActuator] start..." << std::endl;
     // environmental variables
-    bool rect;            // 
-    int i, j, nb_sequences, timeleft, randomttw, overruns;
+    int i, j, nb_sequences, timeleft, randomttw, overruns, rect;
     waveformLetter vvalues;
     /* output variables */
     msec_array_t vhrc;            // vector of high resolution clock
     msec_array_t timerDebug;    // vector of high resolution clock for debugging
     int answeri, confidencei;
     
-    rect = false;
+    rect = 0;
     overruns = 0;
     i = 0;
     timeleft = 0;
@@ -476,12 +475,13 @@ bool Experiment::start_calibration_word() {
     
     for (i = this->seq_start; i < nb_sequences; i++) { // for the sequence i
         // display current sequence
-        std::cout << "Push [ENTER] to start the next sequence. Say the number <"
-                      << answerOrder[i / 10] << ">" << std::endl;
-              if (i != this->seq_start) std::cin.ignore();
-              std::cin.get();
-              std::cout << std::endl << "[main][Calibration] New sequence: [" << i
-                      << "/" << nb_sequences << "]" << std::endl;
+        
+		std::cout << std::endl << "[main][Calibration] \t\t [" << i
+			  << "/" << nb_sequences << "]" << std::endl;
+		std::cout << "Say the number <\t\t"
+                      << answerOrder[i / 10] << "\t\t>\t[ENTER] for next sequence" << std::endl;
+		if (i != this->seq_start) std::cin.ignore();
+		std::cin.get();
         
         // initialisation
         // set up the shared variable <current_waveform> corresponding to the sequence
@@ -503,16 +503,21 @@ bool Experiment::start_calibration_word() {
         stop_motion();
         vhrc[2] = tool_now(chrono::high_resolution_clock::now());  // don't care
         
-        sleep_for(milliseconds(1000));        // let some time to record the mic
-        stop_recording();                      // stop to record from microphone
-
-        // store and check the work
+        // store and check the answer
         if (rect == 1) {                                      // if 's' answer, exit
             std::cout << "[EXIT] The experiment will be saved to i=" << i - 1
                     << "/" << nb_sequences << std::endl;
             break; // go to save
         }
-
+        else if (rect == 2) {
+          i--;
+          stop_recording();                      // stop to record from microphone
+          continue;
+        }
+        
+        sleep_for(milliseconds(1000));        // let some time to record the mic
+        stop_recording();                      // stop to record from microphone
+                
         save_audio(i);                          // save audio file
         answer_timers.push_back(vhrc);          // save timers
         answer_values.push_back(answeri);       // save answer
