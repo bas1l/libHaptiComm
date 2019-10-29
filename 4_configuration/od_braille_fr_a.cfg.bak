@@ -1,0 +1,1006 @@
+#####################################
+# File 		: nd_braille_fr_a.cfg	#
+# Version 	: 1.2					#
+# Created	: 30/09/2019			#
+# Modified	: 30/09/2019			#
+# Author(s)	: Basil Duvernoy		#
+#			  Sven Topp				#
+#####################################
+# Description :						#
+# This configuration file sets up	#
+# The HaptiBraille to produce 		#
+# French Braille".					#
+# Braille codes sourced from:		#
+# 									#
+#####################################
+# Version Hisotry :					#
+# v 1.2								#
+#  - Changed to antoine" number code#
+#  - Changed actuator names to dot1-#
+#    dot6.							#
+# v 1.1								#
+#  - Added capital accents.			#
+#  - Added capital letters			#
+#  - Added numbers					#
+#                        			#
+# v 1.0								#
+#  - Basic lower case alphabet		#
+#####################################
+HaptiComm {
+	waveform {
+		freqRefresh = "10000"; #Hz 20 000 a tester
+		pathWAV = "libHaptiComm/4_configuration/wav/alphabet/";
+    
+		uid-motion {
+			id   = "silence";
+			name = "silence motion";
+			wav  = pathWAV + "TapMulti.wav";
+		}
+	}#End-Waveform
+    
+    
+	alphabet {
+		
+		#################################
+		# Lower case alphabet			#
+		#################################
+		
+		uid-symbol {
+			id = "a";
+			motion = "silence";
+			actuatorArrangement = ["dot1"];
+		}
+		
+		uid-symbol {
+			id = "b";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2"];
+		}
+		
+		uid-symbol {
+			id = "c";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "d";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "e";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "f";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "g";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "h";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "i";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "j";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "k";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot3"];
+		}
+		
+		uid-symbol {
+			id = "l";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot3"];
+		}
+		
+		uid-symbol {
+			id = "m";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot3", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "n";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "o";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot3", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "p";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot3", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "q";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "r";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot3", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "s";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "t";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "u";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot3", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "v";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot3", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "w";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "x";
+			motion = "silence";
+			actuatorArrangement = ["dot1" "dot3", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "y";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "z";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot3", "dot5", "dot6"];
+		}
+		
+		#########################################
+		# lower case accent characters			#
+		#########################################
+		
+		uid-symbol {
+			id = "ç";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot3", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "é";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "à";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot3", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "è";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "ù";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "â";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "ê";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "î";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "ô";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "û";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "ë";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "ï";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "ü";
+			motion = "silence";
+			actuatorArrangement = ["dot1", "dot2", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "œ";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot4", "dot6"];
+		}
+		
+		#################################
+		#UPPER case alphabet			#
+		#################################
+		
+		uid-symbol {
+			id = "A";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1"];
+		}
+		
+		uid-symbol {
+			id = "B";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2"];
+		}
+		
+		uid-symbol {
+			id = "C";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "D";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "E";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "F";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "G";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "H";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "I";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot2", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "J";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot2", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "K";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot3"];
+		}
+		
+		uid-symbol {
+			id = "L";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3"];
+		}
+		
+		uid-symbol {
+			id = "M";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot3", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "N";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "O";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot3", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "P";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "Q";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "R";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "S";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot2", "dot3", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "T";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot2", "dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "U";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot3", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "V";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "W";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot2", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "X";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1" "dot3", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Y";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Z";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot3", "dot5", "dot6"];
+		}
+		
+		#########################################
+		# UPPER case accent characters			#
+		#########################################
+		
+		uid-symbol {
+			id = "Ç";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "É";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "À";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "È";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot2", "dot3", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Ù";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot2", "dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Â";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Ê";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Î";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Ô";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Û";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Ë";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Ï";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Ü";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "Œ";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot6"];
+			actuatorArrangement2 = ["dot2", "dot4", "dot6"];
+		}
+		
+		#################################
+		# Punctuation					#
+		#################################
+		
+		uid-symbol {
+			id = ",";
+			motion = "silence";
+			actuatorArrangement = ["dot2"];
+		}
+		
+		uid-symbol {
+			id = "%;";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3"];
+		}
+		
+		uid-symbol {
+			id = ":";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot5"];
+		}
+		
+		uid-symbol {
+			id = ".";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "?";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "!";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3""dot5"];
+		}
+		
+		uid-symbol {
+			id = "%"";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "'";
+			motion = "silence";
+			actuatorArrangement = ["dot3"];
+		}
+		
+		uid-symbol {
+			id = "«";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "»";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "(";
+			motion = "silence";
+			actuatorArrangement = ["dot2", "dot3", "dot6"];
+		}
+		
+		uid-symbol {
+			id = ")";
+			motion = "silence";
+			actuatorArrangement = ["dot3", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "/";
+			motion = "silence";
+			actuatorArrangement = ["dot3", "dot4"];
+		}
+		
+		#############################
+		# Symbols					#
+		#############################
+		
+		uid-symbol {
+			id = "@";
+			motion = "silence";
+			actuatorArrangement = ["dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "-";
+			motion = "silence";
+			actuatorArrangement = ["dot3", "dot6"];
+		}
+		
+		#####################################
+		# Mathematics Symbols				#
+		#####################################
+		
+		uid-symbol {
+			id = "1";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot1", "dot6"];
+		}
+		
+			uid-symbol {
+			id = "2";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "3";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot1", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "4";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot1", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "5";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot1", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "6";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "7";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "8";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "9";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot2", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "0";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "+";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot2", "dot3", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "=";
+			motion = "silence";
+			actuatorArrangement = ["dot6"];
+			actuatorArrangement2 = ["dot2", "dot3", "dot5", "dot6"];
+		}
+		
+		#################################
+		# Currency Symbols				#
+		#################################
+		
+		uid-symbol {
+			id = "¢";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot5"];
+			actuatorArrangement2 = ["dot1", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "€";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot5"];
+			actuatorArrangement2 = ["dot1", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "£";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot5"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3"];
+		}
+		
+		uid-symbol {
+			id = "$";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot5"];
+			actuatorArrangement2 = ["dot2", "dot3", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "¥";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot5"];
+			actuatorArrangement2 = ["dot1", "dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "≤";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot5"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "≥";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot5"];
+			actuatorArrangement2 = ["dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "[";
+			motion = "silence";
+			actuatorArrangement = ["dot4", "dot5"];
+			actuatorArrangement2 = ["dot2", "dot3", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "]";
+			motion = "silence";
+			actuatorArrangement = ["dot3", "dot5", "dot6"];
+			actuatorArrangement2 = ["dot4", "dot5"];
+		}
+		
+		#################################
+		# Special Symbols				#
+		#################################
+		
+		uid-symbol {
+			id = "©";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot1", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "°";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot1", "dot3", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "§";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "®";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "™";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot2", "dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "&";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "<";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot1", "dot2", "dot6"];
+		}
+		
+		uid-symbol {
+			id = ">";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot3", "dot4", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "~";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot2", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "*";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot3", "dot5"];
+		}
+		
+		uid-symbol {
+			id = "\";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot3", "dot4"];
+		}
+		
+		uid-symbol {
+			id = "%#";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot3", "dot4", "dot5", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "%%";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot3", "dot4", "dot6"];
+		}
+		
+		uid-symbol {
+			id = "_";
+			motion = "silence";
+			actuatorArrangement = ["dot5"];
+			actuatorArrangement2 = ["dot3", "dot6"];
+		}
+		
+		
+	}#End-Alphabet
+    
+device {
+	
+	ad5383 {
+		channelMinValue = "0";#Numerical-AD5383 Value
+		channelMaxValue = "4095";#Numerical-AD5383 Value
+		nbChannel = "32";#Integer
+	}
+	
+	actuators {
+		nbActuator = "6";#Integer
+		actuatorMinValue = "0";
+		actuatorMaxValue = "4095";
+
+		actuatorDefaults {
+			name="";#String
+			id = "";#String
+			dacChannel = "-1";#Channel-AD5383 number according to ad5383.nbChannel
+			windingDirection = "anticlockwise";#anticlockwise or clockwise
+			actionValues {
+				neutral = "2048";#Numerical-AD5383 Value
+				max = "4095";#Numerical-AD5383 Value
+				min = "0";#Numerical-AD5383 Value
+				up = "2700";#Numerical-AD5383 Value
+			}
+		}
+		uid-actuator {@copyFrom "HaptiComm.device.actuators.actuatorDefaults";
+			windingDirection = "clockwise";# anticlockwise by default
+			id = "dot3";
+			name = "left hand ringfinger fingertip";
+			dacChannel = "10";
+		}
+		uid-actuator {@copyFrom "HaptiComm.device.actuators.actuatorDefaults";
+            windingDirection = "clockwise";# anticlockwise by default
+			id = "dot2";
+			name = "left hand middlefinger fingertip";
+			dacChannel = "9";
+		}
+		uid-actuator {@copyFrom "HaptiComm.device.actuators.actuatorDefaults";
+			windingDirection = "clockwise";# anticlockwise by default
+            id = "dot1";
+			name = "left hand forefinger fingertip";
+			dacChannel = "11";
+		}
+		uid-actuator {@copyFrom "HaptiComm.device.actuators.actuatorDefaults";
+			windingDirection = "clockwise";# anticlockwise by default
+			id = "dot4";
+			name = "right hand forefinger fingertip";
+			dacChannel = "14";   
+			actionValues.up = "2500";
+		}
+		uid-actuator {@copyFrom "HaptiComm.device.actuators.actuatorDefaults";
+			windingDirection = "clockwise";# anticlockwise by default
+			id = "dot5";
+			name = "right hand middlefinger fingertip";
+			dacChannel = "18";   
+			actionValues.up = "2600";
+		}
+		uid-actuator {@copyFrom "HaptiComm.device.actuators.actuatorDefaults";
+			windingDirection = "clockwise";# anticlockwise by default
+			id = "dot6";
+			name = "right hand ringfinger fingertip";
+			dacChannel = "19";   
+			actionValues.up = "2500";
+		}
+	}
+}#End-Device
+    
+
+}#End-HaptiComm

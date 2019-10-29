@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd build;
+
+if [ "$#" -eq 0 ]; then
+    sudo make
+elif [ "$#" -eq 1 ]; then
+    sudo make "$1"
+else
+    echo "usage: ./make.sh [label]"
+fi
+cd ..;

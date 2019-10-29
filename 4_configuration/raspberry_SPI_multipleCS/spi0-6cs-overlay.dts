@@ -1,0 +1,106 @@
+/dts-v1/;
+/plugin/;
+
+
+/ {
+	compatible = "brcm,bcm2835", "brcm,bcm2836", "brcm,bcm2708", "brcm,bcm2709";
+
+	fragment@0 {
+		target = <&gpio>;
+		__overlay__ {
+			spi0_cs_pins: spi0_cs_pins {
+				brcm,pins = <8 7 25 5 6 12>;
+				brcm,function = <1>; /* output */
+			};
+		};
+	};
+
+	fragment@1 {
+		target = <&spi0>;
+		frag1: __overlay__ {
+			/* needed to avoid dtc warning */
+			#address-cells = <1>;
+			#size-cells = <0>;
+			pinctrl-names = "default";
+			pinctrl-0 = <&spi0_pins &spi0_cs_pins>;
+			cs-gpios = <&gpio 8 1>, <&gpio 7 1>, <&gpio 25 1>, <&gpio 5 1>, <&gpio 6 1>, <&gpio 12 1>;
+			status = "okay";
+
+			spidev0_0: spidev@0 {
+				compatible = "spidev";
+				reg = <0>;      /* CE0 */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				spi-max-frequency = <125000000>;
+				status = "okay";
+			};
+			
+			spidev0_1: spidev@1 {
+				compatible = "spidev";
+				reg = <1>;      /* CE1 */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				spi-max-frequency = <125000000>;
+				status = "okay";
+			};
+			
+			spidev0_2: spidev@2 {
+				compatible = "spidev";
+				reg = <2>;      /* CE2 */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				spi-max-frequency = <125000000>;
+				status = "okay";
+			};
+			
+			spidev0_3: spidev@3 {
+				compatible = "spidev";
+				reg = <3>;      /* CE3 */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				spi-max-frequency = <125000000>;
+				status = "okay";
+			};
+			
+			spidev0_4: spidev@4 {
+				compatible = "spidev";
+				reg = <4>;      /* CE4 */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				spi-max-frequency = <125000000>;
+				status = "okay";
+			};
+			
+			spidev0_5: spidev@5 {
+				compatible = "spidev";
+				reg = <5>;      /* CE5 */
+				#address-cells = <1>;
+				#size-cells = <0>;
+				spi-max-frequency = <125000000>;
+				status = "okay";
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <&aux>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	__overrides__ {
+		cs0_pin  = <&spi0_cs_pins>,"brcm,pins:0", <&frag1>,"cs-gpios:4";
+		cs1_pin  = <&spi0_cs_pins>,"brcm,pins:4", <&frag1>,"cs-gpios:16";
+		cs2_pin  = <&spi0_cs_pins>,"brcm,pins:8", <&frag1>,"cs-gpios:28";
+		cs3_pin  = <&spi0_cs_pins>,"brcm,pins:12", <&frag1>,"cs-gpios:40";
+		cs4_pin  = <&spi0_cs_pins>,"brcm,pins:16", <&frag1>,"cs-gpios:52";
+		cs5_pin  = <&spi0_cs_pins>,"brcm,pins:20", <&frag1>,"cs-gpios:64";
+		cs0_spidev = <&spidev0_0>,"status";
+		cs1_spidev = <&spidev0_1>,"status";
+		cs2_spidev = <&spidev0_2>,"status";
+		cs3_spidev = <&spidev0_3>,"status";
+		cs4_spidev = <&spidev0_4>,"status";
+		cs5_spidev = <&spidev0_5>,"status";
+	};
+};

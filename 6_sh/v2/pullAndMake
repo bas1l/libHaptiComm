@@ -1,0 +1,1 @@
+cd libHaptiComm/; sudo git pull origin; cd ..; ./make

@@ -119,6 +119,7 @@ void HaptiCommConfiguration::configure(const char * cfgSource, DEVICE * dev, WAV
     parse(cfgSource, "HaptiComm");
     configureDevice(dev);
     configureWaveform(wf);
+    std::cout << "configureAlphabet.Start..." << std::endl;
     configureAlphabet(alph, dev, wf);
 }
 

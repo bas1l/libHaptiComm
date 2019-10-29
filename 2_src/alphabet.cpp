@@ -171,8 +171,6 @@ ALPHABET::insertSymbol(struct symbol s)
         wfLetter.insert(waveformLetterPair(act->chan, mv)); //add vector to the map
         mv.clear(); //clear the temporary vector
         
-        /*
-         * 
         std::cout   << "motion name='" << s.id
                     << "'|| actuator name='" << s.actList[cpt]
                     << "'; neutral=" << neutral
@@ -180,7 +178,7 @@ ALPHABET::insertSymbol(struct symbol s)
                     << "; amplmin=" << amplmin 
                     << std::endl;
                     
-         */
+         
     }
     
     s.data = wfLetter;

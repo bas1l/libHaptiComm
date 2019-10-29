@@ -1,0 +1,1 @@
+/usr/bin/c++   -O2 -std=c++11   CMakeFiles/parseSpeech.dir/main.cpp.o  -o parseSpeech -rdynamic ../../../libwavFileReader.a 
