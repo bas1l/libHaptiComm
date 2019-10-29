@@ -51,6 +51,7 @@ typedef std::multimap<uint8_t, std::vector<uint16_t>> waveformLetter;
  *          - its timer of the used actuators
  *          - its type of motion
  */
+
 struct symbol
 {
     waveformLetter data;
@@ -84,25 +85,15 @@ public :
     void configure(DEVICE * _dev, WAVEFORM * _wf);
     
     
-    // getters
-    symbol *        getsymbol(std::string l) ;
-    std::string     getlistSymbols();
-    
-    std::vector<std::string>  getActList_name(string s);
-    std::vector<uint8_t>      getActList_chan(string s);
-    
-    bool            getword(std::string l, waveformLetter * wf);
-    waveformLetter  getl(char l);
-    
+    std::string getlistSymbols();
     double getFreqRefresh_mHz();
+    waveformLetter getl(std::string l);
+    waveformLetter getl(char l);
     std::vector<std::vector<uint16_t>> getneutral();
-
-
-    // 
+        
     void informationsSymbol(std::string id);
     void printData(std::string id);
     
-    // setters
     bool insertSymbol(struct symbol s);
     
 private:

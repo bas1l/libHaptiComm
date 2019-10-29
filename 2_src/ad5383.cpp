@@ -342,12 +342,10 @@ uint16_t AD5383::spi_xfer() {
         perror("spi_xfer/ioctl");
         return ret;
     }
-    
     /*
     std::cout << "out : 0b " << std::bitset<8>(_out_buffer[0]) << " " << std::bitset<8>(_out_buffer[1]) << " " << std::bitset<8>(_out_buffer[2]) << std::endl;
     std::cout << "in  : 0b " << std::bitset<8>(_in_buffer[0]) << " " << std::bitset<8>(_in_buffer[1]) << " " << std::bitset<8>(_in_buffer[2]) << std::endl;
-    */
-    
+*/
     ret = (_in_buffer[2] >> 2) | ((_in_buffer[1] & 0x3f) << 6);
     return ret;
 }

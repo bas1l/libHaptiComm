@@ -88,6 +88,7 @@ HaptiCommConfiguration::~HaptiCommConfiguration()
 
 
 void HaptiCommConfiguration::parse(const char * cfgSource, const char * scope) 
+throw (HaptiCommConfigurationException)
 {
     //Configuration * cfg = (Configuration *)m_cfg;
 
@@ -114,17 +115,18 @@ void HaptiCommConfiguration::parse(const char * cfgSource, const char * scope)
 
 
 void HaptiCommConfiguration::configure(const char * cfgSource, DEVICE * dev, WAVEFORM * wf, ALPHABET * alph)
+throw (HaptiCommConfigurationException)
 {
     
     parse(cfgSource, "HaptiComm");
     configureDevice(dev);
     configureWaveform(wf);
-    std::cout << "configureAlphabet.Start..." << std::endl;
     configureAlphabet(alph, dev, wf);
 }
 
 //--------
 void HaptiCommConfiguration::configureDevice(DEVICE * dev)
+throw (HaptiCommConfigurationException)
 {
     StringBuffer __m_scope = m_scope;
     
@@ -166,6 +168,7 @@ void HaptiCommConfiguration::configureDevice(DEVICE * dev)
 
 
 void HaptiCommConfiguration::configureWaveform(WAVEFORM * wf)
+throw (HaptiCommConfigurationException)
 {
     StringBuffer __m_scope = m_scope;
     
@@ -208,6 +211,7 @@ void HaptiCommConfiguration::configureAlphabet(
                         ALPHABET * alph, 
                         DEVICE * dev, 
                         WAVEFORM * wf)
+throw (HaptiCommConfigurationException)
 {
     alph->configure(dev, wf);
     
@@ -266,7 +270,7 @@ HaptiCommConfiguration::initVariableMove(struct variableMove * vm)
 
 struct actuator 
 HaptiCommConfiguration::lookupActuator(const char * scopeActuator) 
-{
+const throw (HaptiCommConfigurationException){
     
     StringBuffer scopeActions;
     struct actuator ac = {};
@@ -292,7 +296,8 @@ HaptiCommConfiguration::lookupActuator(const char * scopeActuator)
 
 
 const char * 
-HaptiCommConfiguration::lookupActuatorID(const char * scopeActuator)
+HaptiCommConfiguration::lookupActuatorID(const char * scopeActuator) 
+const throw (HaptiCommConfigurationException)
 {
     try {
         return m_cfg->lookupString(scopeActuator, "id");
@@ -304,6 +309,7 @@ HaptiCommConfiguration::lookupActuatorID(const char * scopeActuator)
 
 struct motion 
 HaptiCommConfiguration::lookupMotion(const char * scopeMotion) 
+throw (HaptiCommConfigurationException)
 {    
     struct motion * m = new motion();
     
@@ -321,6 +327,7 @@ HaptiCommConfiguration::lookupMotion(const char * scopeMotion)
 
 struct symbol 
 HaptiCommConfiguration::lookupSymbol(const char * scopeSymbol) 
+throw (HaptiCommConfigurationException)
 {   
     struct symbol * s = new symbol();
     StringVector list;
@@ -347,6 +354,7 @@ HaptiCommConfiguration::lookupSymbol(const char * scopeSymbol)
 
 
 void HaptiCommConfiguration::lookupList(const char * name, const char **& array, int & arraySize)
+const throw (HaptiCommConfigurationException)
 {
     //Configuration * cfg = (Configuration *)m_cfg;
     try {
@@ -359,6 +367,7 @@ void HaptiCommConfiguration::lookupList(const char * name, const char **& array,
 
 
 int HaptiCommConfiguration::lookupInt(const char * name) 
+const throw (HaptiCommConfigurationException)
 {
     //Configuration * cfg = (Configuration *)m_cfg;
     try {
@@ -371,6 +380,7 @@ int HaptiCommConfiguration::lookupInt(const char * name)
 
 
 float HaptiCommConfiguration::lookupFloat(const char * name) 
+const throw (HaptiCommConfigurationException)
 {
     //Configuration * cfg = (Configuration *)m_cfg;
     try {
@@ -383,6 +393,7 @@ float HaptiCommConfiguration::lookupFloat(const char * name)
 
 
 bool HaptiCommConfiguration::lookupBoolean(const char * name) 
+const throw (HaptiCommConfigurationException)
 {
     //Configuration * cfg = (Configuration *)m_cfg;
     try {
@@ -394,7 +405,8 @@ bool HaptiCommConfiguration::lookupBoolean(const char * name)
 
 
 
-int HaptiCommConfiguration::lookupDurationMilliseconds(const char * name)
+int HaptiCommConfiguration::lookupDurationMilliseconds(const char * name) 
+const throw (HaptiCommConfigurationException)
 {
     //Configuration * cfg = (Configuration *)m_cfg;
     try {
@@ -406,7 +418,8 @@ int HaptiCommConfiguration::lookupDurationMilliseconds(const char * name)
 
 
 
-int HaptiCommConfiguration::lookupDurationSeconds(const char * name)
+int HaptiCommConfiguration::lookupDurationSeconds(const char * name) 
+const throw (HaptiCommConfigurationException)
 {
     //Configuration * cfg = (Configuration *)m_cfg;
     try {
