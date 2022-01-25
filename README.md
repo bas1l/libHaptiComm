@@ -1,4 +1,5 @@
 README for the HaptiComm Library 
+
 Author: Basil Duvernoy
 Date: 2020/04/06
 
