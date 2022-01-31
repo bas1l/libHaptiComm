@@ -16,6 +16,7 @@
 #include <unistd.h>
 
 #include "ctype.h"
+
 // hapticomm headers
 #include "HaptiCommConfiguration.h"
 #include "waveform.h"
@@ -23,12 +24,13 @@
 #include "utils.h"
 #include "alphabet.h"
 
-
+// mechanism to deliver tactile messages (letter by letter, by words, or wait for the full sentence.)
 #define PROSODY_WITHOUT	 0
 #define PROSODY_LETTER 	 1
 #define PROSODY_WORD   	 2
 #define PROSODY_SENTENCE 3
 
+// Delay in ms between characters 
 #define PROSODY_LETTER_DELAY 	20
 #define PROSODY_WORD_DELAY   	150
 #define PROSODY_SENTENCE_DELAY  500
@@ -46,9 +48,9 @@ static void usage();
 
 bool signal4keypressed();
 void copySentences(std::deque<char> * letters);
-bool addto_sentence(char ch);
+void addto_sentence(char ch);
 bool is_sentencesEmpty();
-bool jobdone();
+void jobdone();
 bool is_jobdone();
 
 
@@ -68,15 +70,11 @@ int main(int argc, char *argv[])
     WAVEFORM * wf   = new WAVEFORM();
     ALPHABET * alph = new ALPHABET();
 
-    /*INITIALISE GLOBAL VARIABLES
-     * 
-     */
+    /* INITIALISE VARIABLES */
+	// global
     workdone = false;
     sentencesEmpty = true;
-    /* INITIALISE VARIABLES
-     * 
-     */
-	/* time of prosody (letter, word or sentence rythms) */
+	// local
 	setOpt(&argc, argv, &prosody, cfgSource, scope);
 	cfg->configure(cfgSource, dev, wf, alph);
 	std::cout<<"[initialisation][options] prosody=";
@@ -97,10 +95,9 @@ int main(int argc, char *argv[])
 	}
 	std::cout<<"[initialisation][options] cfgSource="<<cfgSource<<std::endl;
     std::cout<<"[initialisation] ...done."<<std::endl;
-    /* SETUP ENVIRONEMENT
-	 * printw and timer
-	 *
-	*/
+
+    /* SETUP ENVIRONEMENT */
+	// printw and timer
 	struct timespec t;
 	struct sched_param param;
 	param.sched_priority = sched_get_priority_max(SCHED_FIFO);
@@ -119,26 +116,22 @@ int main(int argc, char *argv[])
     keypad(stdscr, TRUE);
     noecho();
     
-    /* INITIALISE THREAD
-     * 
-     */
+    /* INITIALISE THREAD */
     extract_text = std::thread(workSymbols, std::ref(workdone), std::ref(alph), prosody);
-    send_to_dac = std::thread( generateSentences, std::ref(workdone), alph->getlistSymbols());
+    send_to_dac = std::thread(generateSentences, std::ref(workdone), alph->getlistSymbols());
     
-    /* WORK
-     * 
-     */
+    /* WORK */
     extract_text.join();
     send_to_dac.join();
+	std::cout<<"[End][join] threads done."<<std::endl;
     
-    /* CLEAN
-     * 
-     */
+    /* CLEAN */
     delete cfg;
     delete dev;
     delete wf;
     delete alph;
-    
+	std::cout<<"[End][clean] variables flushed."<<std::endl;
+
     return exitStatus;
 }
 
@@ -151,21 +144,24 @@ void generateSentences(std::atomic<bool> & workdone, std::string str_alph)
 	//printw("alphabet:%s", str_alph.c_str());
     
     int ch;
-    printw("You can start to write a letter, a word, a sentence \n --- When you are done, press '*' to Exit ---\n");
+    printw("You can start to write a letter, a word, a sentence \n");
+    printw("--- When you are done, press '*' to Exit ---\n");
     do{
         if (ch != ERR)
         {
             // if part of the alphabet
-            if (   str_alph.find(ch) != std::string::npos ||
+            if (str_alph.find(ch) != std::string::npos ||
 				str_prosody.find(ch) != std::string::npos)
             {
                 printw("%c", ch);
                 addto_sentence(ch);
-            }// if part of the ponctuation
+            }
+			// if part of the ponctuation
             else if (str_ponc.find(ch) != std::string::npos)
             {
                 printw("%c", ch);
             }
+			// if '0' is pressed, display the secret sentence
             else if (ch == '0')
             {
                // printw("%s. ", s);
@@ -175,12 +171,13 @@ void generateSentences(std::atomic<bool> & workdone, std::string str_alph)
                 	addto_sentence(s[i]);
                 }
             }
+			// if not part of the symbols, do nothing
             else
             {
                 //printw("\n<Key not implemented> Need to Exit ? Press '*'.\n");
             }
           }
-    }while((ch = tolower(getch())) != '*');
+    } while((ch = tolower(getch())) != '*');
     
     
     printw("\tWHC::create_sentences::End\n");
@@ -407,7 +404,7 @@ int setOpt(int *argc, char *argv[], int * prosody, const char *& cfgSource, cons
 /*
  * SHARED VARIABLES MODIFIERS
  */
-bool addto_sentence(char ch)
+void addto_sentence(char ch)
 {
 	std::lock_guard<std::mutex> lk(m_mutex); // locker to access shared variables
 	sentences.push(ch);
@@ -426,7 +423,7 @@ void copySentences(std::deque<char> * letters)
 	m_condVar.notify_one(); // waiting thread is notified 
 }
 
-bool jobdone()
+void jobdone()
 {
 	std::unique_lock<std::mutex> mlock(m_mutex);
 	workdone = true;
