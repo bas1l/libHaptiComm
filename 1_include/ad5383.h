@@ -42,7 +42,7 @@ public:
      * @return
      */
     bool spi_open(const char* port_name = "/dev/spidev0.0", 
-    			  uint8_t transfer_mode = SPI_MODE_2, 				uint8_t bit_justification = -1, 
+    			  uint8_t transfer_mode = SPI_MODE_2, 				uint8_t bit_justification = 0, 
 				  uint8_t bits_per_word = AD5383_SPI_SELECT_BITS, 	uint32_t max_speed = AD5383_SPI_SELECT_CLOCK_HZ);
 
     /**

@@ -96,6 +96,7 @@ int main(int argc, char *argv[])
 	std::cout<<"[initialisation][options] cfgSource="<<cfgSource<<std::endl;
     std::cout<<"[initialisation] ...done."<<std::endl;
 
+
     /* SETUP ENVIRONEMENT */
 	// printw and timer
 	struct timespec t;
@@ -120,6 +121,7 @@ int main(int argc, char *argv[])
     extract_text = std::thread(workSymbols, std::ref(workdone), std::ref(alph), prosody);
     send_to_dac = std::thread(generateSentences, std::ref(workdone), alph->getlistSymbols());
     
+
     /* WORK */
     extract_text.join();
     send_to_dac.join();
