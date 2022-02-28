@@ -42,7 +42,7 @@ public:
      * @return
      */
     bool spi_open(const char* port_name = "/dev/spidev0.0", 
-    			  uint8_t transfer_mode = SPI_MODE_2, 				uint8_t bit_justification = 0, 
+    			  uint8_t transfer_mode = SPI_MODE_2, 				uint8_t bit_justification = -1, 
 				  uint8_t bits_per_word = AD5383_SPI_SELECT_BITS, 	uint32_t max_speed = AD5383_SPI_SELECT_CLOCK_HZ);
 
     /**
@@ -93,6 +93,13 @@ public:
      * @param value (between 0 and 4095)
      */
     void execute_single_channel(uint16_t value, int channel);
+
+    /**
+     * @brief Read one channel
+     * @param channel (between 0 and 4095)
+     * @return the voltage value of the channel
+     */
+    uint16_t read_channel(int channel);
 
 private:
     uint8_t* format_msg(bool reg_b, bool reg_read, uint8_t reg_channels, uint8_t reg_addr, uint16_t reg_data);

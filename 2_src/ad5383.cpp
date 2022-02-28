@@ -156,12 +156,12 @@ int AD5383::execute_trajectory(const std::vector<std::vector<uint16_t> >& values
 
     struct timespec ts = {
         .tv_sec = 0,
-                .tv_nsec = period_ns
+        .tv_nsec = period_ns
     };
 
     struct itimerspec its = {
         .it_interval = ts,
-                .it_value = ts
+        .it_value = ts
     };
 
     if(values.size() > num_channels)
@@ -296,7 +296,18 @@ void AD5383::execute_single_target(const std::vector<uint16_t> values) {
 
 
 void AD5383::execute_single_channel(uint16_t value, int channel) {
-    spi_xfer(AD5383_REG_A,AD5383_WRITE, channel ,AD5383_REG_DATA, value);
+    spi_xfer(AD5383_REG_A, AD5383_WRITE, channel, AD5383_REG_DATA, value);
+}
+
+uint16_t AD5383::read_channel(int channel) {
+    // ask AD5383 to send data during the next SPI message
+    spi_xfer(AD5383_REG_A, AD5383_READ, channel, AD5383_REG_DATA, 0);
+    // nop condition to read the output value
+    spi_xfer(0,0,0,0,0);
+    
+    uint16_t ret = (_in_buffer[1]<<8) + _in_buffer[2];
+
+    return (ret&0x3FFC)>>2;
 }
 
 
@@ -345,7 +356,7 @@ uint16_t AD5383::spi_xfer() {
     /*
     std::cout << "out : 0b " << std::bitset<8>(_out_buffer[0]) << " " << std::bitset<8>(_out_buffer[1]) << " " << std::bitset<8>(_out_buffer[2]) << std::endl;
     std::cout << "in  : 0b " << std::bitset<8>(_in_buffer[0]) << " " << std::bitset<8>(_in_buffer[1]) << " " << std::bitset<8>(_in_buffer[2]) << std::endl;
-*/
+    */
     ret = (_in_buffer[2] >> 2) | ((_in_buffer[1] & 0x3f) << 6);
     return ret;
 }
